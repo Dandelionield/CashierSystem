@@ -52,7 +52,7 @@ public class Menu extends JPanel{
 	private String[] LoginSalir = {"SalirLight","SalirDark"};
 	private String[] ConfiguracionesSalir = {"CerrarLight","CerrarDark"};
 	
-	private final Components cp = new Components("./src/ResourcePackCaja/", m, l, Fondo);
+	private final Components cp = new Components("./src/ResourcePackCaja/", Fondo[m], m);
 	
 	public Menu(JFrame frame, String Usuario, String Nombre){
 		

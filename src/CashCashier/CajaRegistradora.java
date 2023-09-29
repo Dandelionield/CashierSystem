@@ -116,7 +116,7 @@ public class CajaRegistradora extends JPanel{
 	private String[] CajaFacturar = {"FacturarLight","FacturarDark"};
 	private String[] CajaImprimir = {"ImprimirLight","ImprimirDark"};
 	
-	private final Components cp = new Components("./src/ResourcePackCaja/", m, l, Fondo);
+	private final Components cp = new Components("./src/ResourcePackCaja/", Fondo[m], m);
 
 	public CajaRegistradora(boolean a, Factura p){
 		

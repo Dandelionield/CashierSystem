@@ -55,7 +55,7 @@ public class Configuraciones extends JPanel{
 	private String[] ConfiguracionesGuardar = {"GuardarLight","GuardarDark"};
 	private String[] ConfiguracionesSalir = {"CerrarLight","CerrarDark"};
 	
-	private final Components cp = new Components("./src/ResourcePackCaja/", m, l, Fondo);
+	private final Components cp = new Components("./src/ResourcePackCaja/", Fondo[m], m);
 	
 	public Configuraciones(JFrame frame){
 		

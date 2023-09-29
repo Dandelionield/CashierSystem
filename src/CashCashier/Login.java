@@ -56,7 +56,7 @@ public class Login extends JPanel{
 	private String[] LoginVer = {"VerLight","VerDark"};
 	private String[] LoginSalir = {"SalirLight","SalirDark"};
 	
-	private final Components cp = new Components("./src/ResourcePackCaja/", m, l, Fondo);
+	private final Components cp = new Components("./src/ResourcePackCaja/", Fondo[m], m);
 	
 	public Login(){
 		

@@ -24,30 +24,27 @@ public class Components{
 	private final String url;
 	private final String extention;
 	private final int m;
-	private final int l;
-	private final Color[] Fondo;
-	private final Color[] Default = {new Color(0, 0, 0, 0), new Color(0, 0, 0, 0)};
+	private final Color Fondo;
+	private final Color Default = new Color(0, 0, 0, 0);
 	
 	private JScrollPane Table = new JScrollPane();
 	private DefaultTableModel Tablita = new DefaultTableModel();
 	private JTable Tablitita = new JTable();
 	
-	public Components(String url, String extention, int m, int l, Color[] Fondo){
+	public Components(String url, String extention, Color Fondo, int m){
 		
 		this.url = url;
-		this.extention = extention;
+		this.extention = "."+extention;
 		this.m = m;
-		this.l = l;
 		this.Fondo = Fondo;
 		
 	}
 	
-	public Components(String url, int m, int l, Color[] Fondo){
+	public Components(String url, Color Fondo, int m){
 		
 		this.url = url;
 		this.extention = ".png";
 		this.m = m;
-		this.l = l;
 		this.Fondo = Fondo;
 		
 	}
@@ -55,9 +52,8 @@ public class Components{
 	public Components(String url, String extention){
 		
 		this.url = url;
-		this.extention = extention;
+		this.extention = "."+extention;
 		this.m = 0;
-		this.l = 0;
 		this.Fondo = Default;
 		
 	}
@@ -67,7 +63,6 @@ public class Components{
 		this.url = url;
 		this.extention = ".png";
 		this.m = 0;
-		this.l = 0;
 		this.Fondo = Default;
 		
 	}
@@ -77,7 +72,6 @@ public class Components{
 		this.url = "";
 		this.extention = ".png";
 		this.m = 0;
-		this.l = 0;
 		this.Fondo = Default;
 		
 	}
@@ -130,7 +124,7 @@ public class Components{
 					
 				}
 
-				component.setBackground(Fondo[m]);
+				component.setBackground(Fondo);
 
 				if (row==-1){
 
@@ -151,7 +145,7 @@ public class Components{
 			}
 		};
 
-		Render.setBackground(Fondo[m]);
+		Render.setBackground(Fondo);
 
 		for (int i = 0; i < Tablitita.getColumnCount(); i++) {
 
@@ -161,7 +155,7 @@ public class Components{
 
 		JViewport viewport = new JViewport();
 		viewport.setView(Tablitita);
-		viewport.setBackground(Fondo[m]);
+		viewport.setBackground(Fondo);
 
 		Table = new JScrollPane();
 		Table.setViewport(viewport);
@@ -207,7 +201,7 @@ public class Components{
 
 				}
 
-				component.setBackground(Fondo[m]);
+				component.setBackground(Fondo);
 
 				if (row==-1){
 
@@ -228,7 +222,7 @@ public class Components{
 			}
 		};
 
-		Render.setBackground(Fondo[m]);
+		Render.setBackground(Fondo);
 
 		for (int i = 0; i < Tablitita.getColumnCount(); i++) {
 
@@ -238,7 +232,7 @@ public class Components{
 
 		JViewport viewport = new JViewport();
 		viewport.setView(Tablitita);
-		viewport.setBackground(Fondo[m]);
+		viewport.setBackground(Fondo);
 
 		Table = new JScrollPane();
 		Table.setViewport(viewport);
@@ -362,7 +356,7 @@ public class Components{
 		PanelTexto.setFont(new Font("Clarendon Blk BT", Font.PLAIN, size));
 		PanelTexto.setBorder(new MatteBorder(0, 0, 2, 0, Border));
 		PanelTexto.setCaretColor(Caret);
-		PanelTexto.setBackground(Fondo[m]);
+		PanelTexto.setBackground(Fondo);
 		PanelTexto.setEditable(Editable);
 		PanelTexto.setVisible(Visible);
 		
@@ -390,7 +384,7 @@ public class Components{
 		PanelTexto.setFont(Format);
 		PanelTexto.setBorder(new MatteBorder(0, 0, 2, 0, Border));
 		PanelTexto.setCaretColor(Caret);
-		PanelTexto.setBackground(Fondo[m]);
+		PanelTexto.setBackground(Fondo);
 		PanelTexto.setEditable(Editable);
 		PanelTexto.setVisible(Visible);
 		

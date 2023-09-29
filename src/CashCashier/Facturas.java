@@ -104,7 +104,7 @@ public class Facturas extends JPanel{
 	private String[][] ColumnaNombre1 = {{"Código","Producto","Cantidad","Precio","Total"},{"Code","Product","Amount","Price","Total"}};
 	private String[][] ColumnaNombre2 = {{"Código","Fecha"},{"Code","Date"}};
 	
-	private final Components cp = new Components("./src/ResourcePackCaja/", m, l, Fondo);
+	private final Components cp = new Components("./src/ResourcePackCaja/", Fondo[m], m);
 	
 	public Facturas(){
 		

@@ -83,7 +83,7 @@ public class RegistrarUsuario extends JPanel{
 	private String[] CajaEditar = {"EditarLight","EditarDark"};
 	private String[] CajaCandado = {"CandadoAbierto","CandadoCerrado"};
 	
-	private final Components cp = new Components(url, m, l, Fondo);
+	private final Components cp = new Components(url, Fondo[m], m);
 
 	public RegistrarUsuario(String id){
 		
