@@ -1,4 +1,4 @@
-package CashCashier;
+package Objects;
 
 public class Archivo{
 	

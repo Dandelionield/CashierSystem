@@ -1,6 +1,6 @@
-package CashCashier;
+package Objects;
 
-class Trabajador{
+public class Trabajador{
 	
     private String Codigo;
 	private String ID;

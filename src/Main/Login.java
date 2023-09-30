@@ -1,4 +1,7 @@
-package CashCashier;
+package Main;
+
+import Objects.Components;
+import Objects.Trabajador;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;

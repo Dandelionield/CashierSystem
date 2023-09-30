@@ -1,6 +1,6 @@
-package CashCashier;
+package Objects;
 
-class Factura{
+public class Factura{
 	
     private String Code;
 	private String ID;

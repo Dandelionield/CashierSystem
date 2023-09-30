@@ -1,4 +1,8 @@
-package CashCashier;
+package Main;
+
+import Objects.Components;
+import CashCashier.Dashboard;
+import Inventory.Inventario;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;

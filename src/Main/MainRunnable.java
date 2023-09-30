@@ -1,4 +1,4 @@
-package CashCashier;
+package Main;
 
 import java.awt.EventQueue;
 

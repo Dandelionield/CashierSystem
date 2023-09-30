@@ -1,6 +1,7 @@
-package CashCashier;
+package Inventory;
 
 import java.awt.EventQueue;
+import Objects.*;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;

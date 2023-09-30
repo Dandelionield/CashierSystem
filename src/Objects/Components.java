@@ -1,4 +1,4 @@
-package CashCashier;
+package Objects;
 
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.DefaultTableCellRenderer;

@@ -1,4 +1,10 @@
-package CashCashier;
+package Main;
+
+import Objects.Conexion;
+import Objects.Factura;
+import Objects.Cliente;
+import Objects.Trabajador;
+import Objects.Archivo;
 
 import javax.swing.SwingUtilities;
 import javax.swing.SwingConstants;

@@ -1,4 +1,4 @@
-package CashCashier;
+package Main;
 
 import javax.swing.JFrame;
 import java.awt.geom.RoundRectangle2D;

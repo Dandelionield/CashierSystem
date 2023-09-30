@@ -1,5 +1,13 @@
 package CashCashier;
 
+import Main.Mecanics;
+import Main.Runner;
+import Main.Login;
+import Objects.Components;
+import Objects.Factura;
+import Objects.Cliente;
+import Objects.Trabajador;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;

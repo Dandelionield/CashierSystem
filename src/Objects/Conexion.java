@@ -1,4 +1,4 @@
-package CashCashier;
+package Objects;
 
 import javax.swing.JOptionPane;
 import java.sql.DriverManager;

@@ -1,5 +1,9 @@
 package CashCashier;
 
+import Main.Mecanics;
+import Objects.Cliente;
+import Objects.Factura;
+
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JLayeredPane;
