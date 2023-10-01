@@ -1,7 +1,7 @@
 package Inventory;
-
 import java.awt.EventQueue;
 import Objects.*;
+
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -9,9 +9,11 @@ import javax.swing.JScrollPane;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.border.MatteBorder;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 
 import javax.swing.JTable;
 import javax.swing.JLabel;
@@ -32,6 +34,10 @@ import java.sql.ResultSet;
 
 import javax.swing.JButton;
 import javax.swing.table.DefaultTableModel;
+
+import Main.Login;
+import Main.Runner;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
@@ -40,18 +46,7 @@ import java.io.File;
 
 public class Inventario extends JFrame {
 
-	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
-	private JTable table;
-	private JLabel txttabla;
-	private JLabel txtcodigo;
-	private JTextField codigo;
-	private JTextField producto;
-	private JTextField precio;
-	private JTextField existencias;
-	private JTextField marca;
-	private JScrollPane scrolldescripcion;
-	private String ruta="";
+
 
 	/**
 	 * Launch the application.
@@ -73,35 +68,61 @@ public class Inventario extends JFrame {
 	 * Create the frame.
 	 */
 	
+	private static final long serialVersionUID = 1L;
+	private JPanel contentPane, panel;
+	private JLabel txttabla,txtcodigo, txtdescripcion, txtunidad, txtmarca, txtexistencia, txtproductos, txtprecio, txtInformacion, txtidioma;
+	private JTextField codigo, producto, precio, existencias, marca;
+	private JScrollPane scrolldescripcion;
+	private String ruta="";
+	
+	private JTable table;	
 	private DefaultTableModel modelo;
-    private ImageIcon regi;
-    private String [] len={"Informacion de producto:","Productos Disponibles:","Codigo:", "Producto:", "Precio:", "Existencias:","Unidad:","Marca:","Descripcion:","Seleccionar Imagen","Guardar","Eliminar"};
+    
+	
+	private ImageIcon regi;
+    static String [] len={"Informacion de producto:","Productos Disponibles:","Codigo:", "Producto:", "Precio:", "Existencias:","Unidad:","Marca:","Descripcion:","Seleccionar Imagen","Guardar","Eliminar","(ESP)"};
 	private JComboBox<String> unidad;
 	private JLabel foto;
 	private JTextArea descripcion;;
-   
+	static boolean access=false, idioma=true, modi=false;
+	private JButton btnEliminar, btnimage, btnguardar;
+	private JLabel lenguaje;
+	private JLabel mode;
+	private JLabel volver;
+	private JLabel editar;
+
+
 	
 	public Inventario() {
+		
+		
 		setResizable(false);
 		setTitle("Inventario");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 939, 565);
+		setBounds(100, 100, 1013, 609);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JPanel panel = new JPanel();
+		panel = new JPanel();
 		panel.setBorder(null);
 		panel.setBackground(Color.WHITE);
-		panel.setBounds(10, 11, 903, 504);
+		panel.setBounds(49, 25, 903, 504);
 		contentPane.add(panel);
 		panel.setLayout(null);
 		
+		JLabel fondo=new JLabel("");
+		fondo.setBounds(0, 0, 1013, 609);
+		ImageIcon imgfondo = new ImageIcon(new ImageIcon("./src/ResourcePackCaja/Fondo.JPG").getImage().getScaledInstance(fondo.getWidth(), fondo.getHeight(), Image.SCALE_DEFAULT));
+        fondo.setIcon(imgfondo);
+        contentPane.add(fondo);
 		
 		foto = new JLabel("");
-		foto.setBounds(270, 62, 204, 176);
+		foto.setBounds(25, 98, 204, 176);
+		ImageIcon pfoto = new ImageIcon(new ImageIcon("./src/ResourcePackCaja/image-not-found.png").getImage().getScaledInstance(foto.getWidth(), foto.getHeight(), Image.SCALE_DEFAULT));
+        foto.setIcon(pfoto);
 		foto.setBorder(new LineBorder(new Color(0, 0, 0)));
 		panel.add(foto);
 		
@@ -165,89 +186,102 @@ public class Inventario extends JFrame {
         mostrar();
 
 		
-		JLabel txtInformacion = new JLabel("Informacion de Producto:");
-		txtInformacion.setBounds(10, 22, 191, 26);
+		txtInformacion = new JLabel(len[0]);
+		txtInformacion.setBounds(262, 21, 191, 26);
 		txtInformacion.setFont(new java.awt.Font("Arial", 3, 14));
 		panel.add(txtInformacion);
 		
-		txttabla = new JLabel("Productos Disponibles:");
+		txttabla = new JLabel(len[1]);
 		txttabla.setBounds(512, 25, 218, 21);
 		txttabla.setFont(new java.awt.Font("Arial", 3, 14));
 		panel.add(txttabla);
 		
-		txtcodigo = new JLabel("Codigo:");
-		txtcodigo.setBounds(10, 62, 60, 26);
+		txtcodigo = new JLabel(len[2]);
+		txtcodigo.setBounds(262, 61, 60, 26);
 		txtcodigo.setFont(new java.awt.Font("Microsoft JhengHei UI", 1, 12));
 		panel.add(txtcodigo);
 		
 		codigo = new JTextField();
-		codigo.setBounds(69, 66, 86, 20);
+		codigo.setBounds(321, 65, 86, 20);
+		codigo.setBorder(new MatteBorder(0, 0, 2, 0, Color.BLUE));
+		codigo.setBackground(null);
 		panel.add(codigo);
 		codigo.setColumns(10);
 		
-		JLabel txtproducto = new JLabel("Producto:");
-		txtproducto.setFont(new Font("Microsoft JhengHei UI", Font.BOLD, 12));
-		txtproducto.setBounds(10, 99, 72, 26);
-		panel.add(txtproducto);
+		txtproductos = new JLabel(len[3]);
+		txtproductos.setFont(new Font("Microsoft JhengHei UI", Font.BOLD, 12));
+		txtproductos.setBounds(262, 98, 72, 26);
+		panel.add(txtproductos);
 		
 		producto = new JTextField();
-		producto.setBounds(92, 103, 144, 20);
+		producto.setBounds(344, 102, 144, 20);
+		producto.setBorder(new MatteBorder(0, 0, 2, 0, Color.BLUE));
+		producto.setBackground(null);
 		panel.add(producto);
 		producto.setColumns(10);
 		
-		JLabel txtprecio = new JLabel("Precio:");
+		txtprecio = new JLabel(len[4]);
 		txtprecio.setFont(new Font("Microsoft JhengHei UI", Font.BOLD, 12));
-		txtprecio.setBounds(10, 134, 72, 26);
+		txtprecio.setBounds(262, 133, 72, 26);
 		panel.add(txtprecio);
 		
 		precio = new JTextField();
 		precio.setColumns(10);
-		precio.setBounds(92, 138, 144, 20);
+		precio.setBorder(new MatteBorder(0, 0, 2, 0, Color.BLUE));
+		precio.setBackground(null);
+		precio.setBounds(344, 137, 144, 20);
 		panel.add(precio);
 		
-		JLabel txtexistencias = new JLabel("Existencias:");
-		txtexistencias.setFont(new Font("Microsoft JhengHei UI", Font.BOLD, 12));
-		txtexistencias.setBounds(10, 171, 72, 26);
-		panel.add(txtexistencias);
+		txtexistencia = new JLabel(len[5]);
+		txtexistencia.setFont(new Font("Microsoft JhengHei UI", Font.BOLD, 12));
+		txtexistencia.setBounds(262, 170, 72, 26);
+		panel.add(txtexistencia);
 		
 		existencias = new JTextField();
 		existencias.setColumns(10);
-		existencias.setBounds(92, 175, 144, 20);
+		existencias.setBorder(new MatteBorder(0, 0, 2, 0, Color.BLUE));
+		existencias.setBackground(null);
+		existencias.setBounds(344, 174, 144, 20);
 		panel.add(existencias);
 		
-		JLabel txtmarca = new JLabel("Marca:");
+		txtmarca = new JLabel(len[7]);
 		txtmarca.setFont(new Font("Microsoft JhengHei UI", Font.BOLD, 12));
-		txtmarca.setBounds(10, 243, 72, 26);
+		txtmarca.setBounds(262, 242, 72, 26);
 		panel.add(txtmarca);
 		
 		marca = new JTextField();
 		marca.setColumns(10);
-		marca.setBounds(92, 247, 144, 20);
+		marca.setBorder(new MatteBorder(0, 0, 2, 0, Color.BLUE));
+		marca.setBackground(null);
+		marca.setBounds(344, 246, 144, 20);
 		panel.add(marca);
 		
-		JLabel txtunidad = new JLabel("Unidad:");
+		txtunidad = new JLabel(len[6]);
 		txtunidad.setFont(new Font("Microsoft JhengHei UI", Font.BOLD, 12));
-		txtunidad.setBounds(10, 208, 72, 26);
+		txtunidad.setBounds(262, 207, 72, 26);
 		panel.add(txtunidad);
 		
 		DefaultComboBoxModel<String> modl = new DefaultComboBoxModel<>(new String[] {"u", "Kg", "g", "L"});
 		unidad = new JComboBox<>(modl);
-		unidad.setBounds(92, 214, 60, 22);
+		unidad.setBounds(344, 213, 60, 22);
 		panel.add(unidad);
 		
-		JLabel txtdescripcion = new JLabel("Descripcion:");
+		txtdescripcion = new JLabel(len[8]);
 		txtdescripcion.setFont(new Font("Microsoft JhengHei UI", Font.BOLD, 12));
-		txtdescripcion.setBounds(10, 280, 72, 26);
+		txtdescripcion.setBounds(262, 280, 72, 26);
 		panel.add(txtdescripcion);
 		
 		
 		descripcion = new JTextArea();
-		descripcion.setBounds(10, 317, 228, 176);
+		descripcion.setBounds(262, 317, 226, 176);
+		descripcion.setLineWrap(true);
+		descripcion.setWrapStyleWord(true);
 		descripcion.setBorder(new LineBorder(new Color(0, 0, 0)));
-		panel.add(descripcion);
+		JScrollPane scrollarea = new JScrollPane(descripcion);
+        scrollarea.setBounds(262, 317, 226, 176);
+		panel.add(scrollarea);		
 		
-		
-		JButton btnimage = new JButton("añadir imagen");
+		btnimage = new JButton(len[9]);
 		btnimage.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent d) {
 				
@@ -258,7 +292,7 @@ public class Inventario extends JFrame {
 		               
 		               ruta= archivo.getAbsolutePath();
 		               System.out.println(ruta);
-		            //   iArchivo(ruta,"C:\\ResourcePackCaja\\Resourses inventory");
+		               iArchivo("./src/");
 		               
 		            ImageIcon ima = new ImageIcon(new ImageIcon(ruta).getImage().getScaledInstance(foto.getWidth(), foto.getHeight(), Image.SCALE_DEFAULT));
 		               foto.setIcon(ima);
@@ -267,10 +301,10 @@ public class Inventario extends JFrame {
 				
 			}
 		});
-		btnimage.setBounds(270, 246, 204, 23);
+		btnimage.setBounds(25, 283, 204, 23);
 		panel.add(btnimage);
 		
-		JButton btnguardar = new JButton("Guardar");
+		btnguardar = new JButton(len[10]);
 		btnguardar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
@@ -315,10 +349,10 @@ public class Inventario extends JFrame {
 				
 			}
 		});
-		btnguardar.setBounds(270, 394, 204, 36);
+		btnguardar.setBounds(25, 390, 204, 36);
 		panel.add(btnguardar);
 		
-		JButton btnEliminar = new JButton("Eliminar");
+		btnEliminar = new JButton(len[11]);
 		btnEliminar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent d) {
 				
@@ -338,18 +372,18 @@ public class Inventario extends JFrame {
 				
 			}
 		});
-		btnEliminar.setBounds(270, 441, 204, 36);
+		btnEliminar.setBounds(25, 437, 204, 36);
 		panel.add(btnEliminar);
 		
 		JLabel candado = new JLabel("");
-		candado.setBounds(424, 317, 50, 50);		
+		candado.setBounds(843, 0, 50, 50);		
 		ImageIcon can = new ImageIcon(new ImageIcon("./src/ResourcePackCaja/CandadoCerrado.png").getImage().getScaledInstance(candado.getWidth(), candado.getHeight(), Image.SCALE_DEFAULT));
         candado.setIcon(can);		
 		panel.add(candado);
 		
 		
-		JLabel editar = new JLabel("");
-		editar.setBounds(364, 317, 50, 50);
+		editar = new JLabel("");
+		editar.setBounds(452, 11, 50, 50);
 		ImageIcon ed = new ImageIcon(new ImageIcon("./src/ResourcePackCaja/EditarLight.png").getImage().getScaledInstance(editar.getWidth(), editar.getHeight(), Image.SCALE_DEFAULT));
         editar.setIcon(ed);
 
@@ -365,12 +399,14 @@ public class Inventario extends JFrame {
 
 			            regi = new ImageIcon(new ImageIcon("./src/ResourcePackCaja/CandadoAbierto.png").getImage().getScaledInstance(candado.getWidth(), candado.getHeight(), Image.SCALE_DEFAULT));
 			            candado.setIcon(regi);
+			            btnguardar.setText("Editar");
 			        }
 
 			        if (access == false) {
 
 			            regi = new ImageIcon(new ImageIcon("./src/ResourcePackCaja/CandadoCerrado.png").getImage().getScaledInstance(candado.getWidth(), candado.getHeight(), Image.SCALE_DEFAULT));
 			            candado.setIcon(regi);
+			            btnguardar.setText("Guardar");
 
 			        }
 
@@ -381,14 +417,149 @@ public class Inventario extends JFrame {
 
 		panel.add(editar);
 		
+		volver = new JLabel("");
+		volver.setBounds(25, 21, 50, 50);
+		ImageIcon imgv = new ImageIcon(new ImageIcon("./src/ResourcePackCaja/CerrarLight.png").getImage().getScaledInstance(volver.getWidth(), volver.getHeight(), Image.SCALE_DEFAULT));
+        volver.setIcon(imgv);
+		volver.addMouseListener(new MouseAdapter() {
+			
+			public void mouseClicked(MouseEvent e) {
+				
+				    
 
+			    
+						
+			}
+		});
+		panel.add(volver);
+		
+		
+		
+		mode = new JLabel("");
+		mode.setBounds(80, 21, 50, 50);
+		ImageIcon imgmode = new ImageIcon(new ImageIcon("./src/ResourcePackCaja/Dark.png").getImage().getScaledInstance(mode.getWidth(), mode.getHeight(), Image.SCALE_DEFAULT));
+        mode.setIcon(imgmode);
+		mode.addMouseListener(new MouseAdapter() {
+			
+			public void mouseClicked(MouseEvent e) {
+				
+				 modi=!modi;
+				 
+				 modifymode(modi);
+				
+				
+						
+			}
+		});
+		panel.add(mode);
+		
+		lenguaje = new JLabel("");
+		lenguaje.setBounds(137, 21, 50, 50);
+		ImageIcon imglen = new ImageIcon(new ImageIcon("./src/ResourcePackCaja/idiomaLight.png").getImage().getScaledInstance(lenguaje.getWidth(), lenguaje.getHeight(), Image.SCALE_DEFAULT));
+        lenguaje.setIcon(imglen);
+		lenguaje.addMouseListener(new MouseAdapter() {
+			
+			public void mouseClicked(MouseEvent e) {
+				
+				idioma=!(idioma);
+				
+				if(idioma==true) {
+					String leno[]= {"Informacion de producto:","Productos Disponibles:","Codigo:", "Producto:", "Precio:", "Existencias:","Unidad:","Marca:","Descripcion:","Seleccionar Imagen","Guardar","Eliminar","(ESP)"};
+					len=leno;
+				}
+				
+				if(idioma==false) {
+					String leno[]= {"Product information:","Available products:","Code:", "Product:", "Price:", "Stock:","Unit:","Brand:","Description:","Select Image","Save","Delete","(ENG)"};
+					len=leno;
+				}
+				
+				
+				modifylen();
+				
+		        repaint();
+				
+				
+			}
+		});
+		panel.add(lenguaje);
+		
+		txtidioma = new JLabel(len[12]);
+		txtidioma.setBounds(197, 35, 42, 21);
+		panel.add(txtidioma);
+		
+
+		
+		
+	}
+	
+	protected void iArchivo(String ruta)  {
+
+
+		
+	}
+
+	public void modifylen() {
+
+		txtInformacion.setText(len[0]);		
+		txttabla.setText(len[1]);
+		txtcodigo.setText(len[2]);
+		txtproductos.setText(len[3]);
+		txtprecio.setText(len[4]);
+		txtexistencia.setText(len[5]);
+		txtunidad.setText(len[6]);
+		txtmarca.setText(len[7]);
+		txtdescripcion.setText(len[8]);
+		btnimage.setText(len[9]);
+		btnguardar.setText(len[10]);
+		btnEliminar.setText(len[11]);
+		txtidioma.setText(len[12]);
+		String []titulos={len[2], len[3], len[4], len[5], len[7]};
+		modelo = new DefaultTableModel(null,titulos);
+		table.setModel(modelo);
+		mostrar();	
+	}
+	
+	public void modifymode(boolean b) {
+		
+		Color colorin=Color.BLACK,fondo=Color.WHITE;
+		String md="Dark",mdo="Light";
+		
+		if(b==false) {
+			colorin=Color.WHITE;
+			fondo=Color.DARK_GRAY;
+			md="Light";
+			mdo="Dark";
+		}
+		
+		panel.setBackground(fondo);
+		txtInformacion.setForeground(colorin);	
+		txttabla.setForeground(colorin);
+		txtcodigo.setForeground(colorin);
+		txtproductos.setForeground(colorin);
+		txtprecio.setForeground(colorin);
+		txtexistencia.setForeground(colorin);
+		txtunidad.setForeground(colorin);
+		txtmarca.setForeground(colorin);
+		txtdescripcion.setForeground(colorin);
+		txtidioma.setForeground(colorin);	
+		mode.setIcon(new ImageIcon(new ImageIcon("./src/ResourcePackCaja/"+md+".png").getImage().getScaledInstance(mode.getWidth(), mode.getHeight(), Image.SCALE_DEFAULT)));
+		lenguaje.setIcon(new ImageIcon(new ImageIcon("./src/ResourcePackCaja/idioma"+mdo+".png").getImage().getScaledInstance(lenguaje.getWidth(), lenguaje.getHeight(), Image.SCALE_DEFAULT)));
+		editar.setIcon(new ImageIcon(new ImageIcon("./src/ResourcePackCaja/Editar"+mdo+".png").getImage().getScaledInstance(lenguaje.getWidth(), lenguaje.getHeight(), Image.SCALE_DEFAULT)));
+		volver.setIcon(new ImageIcon(new ImageIcon("./src/ResourcePackCaja/cerrar"+mdo+".png").getImage().getScaledInstance(lenguaje.getWidth(), lenguaje.getHeight(), Image.SCALE_DEFAULT)));
+		
+		
+		codigo.setForeground(colorin);
+		precio.setForeground(colorin);
+		producto.setForeground(colorin);
+		existencias.setForeground(colorin);
+		marca.setForeground(colorin);
+		
 		
 		
 	}
 	
 	
 	
-	private boolean access=false;
 	
 
 	
@@ -448,9 +619,5 @@ public class Inventario extends JFrame {
            
            
            return archivo;
-           
-           
-		
-	}
-	
+    }       
 }
