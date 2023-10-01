@@ -175,7 +175,7 @@ public class Menu extends JPanel{
 			public void actionPerformed(ActionEvent e){
 				
 				Inventario Inv = new Inventario();
-				
+				Inv.setLocationRelativeTo(null);
 				Inv.setVisible(true);
 				
 				LoginFrame.dispose();
