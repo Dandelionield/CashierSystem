@@ -10,6 +10,7 @@ import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.MatteBorder;
+import javax.swing.SwingConstants;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -91,7 +92,7 @@ public class Inventario extends JFrame {
 	private JLabel volver;
 	private JLabel editar;
 
-
+	private final Components cp = new Components("./src/ResourcePackCaja/", Color.WHITE, 0);
 	
 	public Inventario() {
 		
@@ -185,7 +186,6 @@ public class Inventario extends JFrame {
         table.setModel(modelo);		
         mostrar();
 
-		
 		txtInformacion = new JLabel(len[0]);
 		txtInformacion.setBounds(262, 21, 191, 26);
 		txtInformacion.setFont(new java.awt.Font("Arial", 3, 14));
@@ -201,10 +201,11 @@ public class Inventario extends JFrame {
 		txtcodigo.setFont(new java.awt.Font("Microsoft JhengHei UI", 1, 12));
 		panel.add(txtcodigo);
 		
-		codigo = new JTextField();
+		codigo = cp.TextPanel("", cp.setBounds(321, 65, 86, 20), SwingConstants.LEFT, new Font("Microsoft JhengHei UI", Font.BOLD, 12), Color.BLUE, Color.BLUE, true, true);
+		/*codigo = new JTextField();
 		codigo.setBounds(321, 65, 86, 20);
 		codigo.setBorder(new MatteBorder(0, 0, 2, 0, Color.BLUE));
-		codigo.setBackground(null);
+		codigo.setBackground(null);//*/
 		panel.add(codigo);
 		codigo.setColumns(10);
 		
