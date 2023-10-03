@@ -92,7 +92,7 @@ public class Inventario extends JFrame {
 	private JLabel volver;
 	private JLabel editar;
 
-	private final Components cp = new Components("./src/ResourcePackCaja/", Color.WHITE, 0);
+	private final Components cp = new Components("./src/ResourcePackCaja/", null, 0);
 	
 	public Inventario() {
 		
@@ -181,7 +181,7 @@ public class Inventario extends JFrame {
 		JScrollPane scrolltabla = new JScrollPane();
 		scrolltabla.setBounds(512, 62, 381, 431);
 		scrolltabla.setViewportView(table);
-		table.setBackground(new Color(192, 192, 192));
+		table.setBackground(null);
 		panel.add(scrolltabla);	
         table.setModel(modelo);		
         mostrar();
@@ -426,7 +426,19 @@ public class Inventario extends JFrame {
 			
 			public void mouseClicked(MouseEvent e) {
 				
-				    
+				Runner.contentPane.removeAll();
+				
+				Runner.Inicio = new Login();
+				
+				Runner.contentPane.add(Runner.Inicio, Integer.valueOf(0));
+				
+				Runner lg = new Runner();
+
+				lg.setVisible(true);
+				
+				dispose();
+				
+				repaint();
 
 			    
 						
@@ -522,12 +534,12 @@ public class Inventario extends JFrame {
 	
 	public void modifymode(boolean b) {
 		
-		Color colorin=Color.BLACK,fondo=Color.WHITE;
+		Color colorin=new Color(20, 35, 54),fondo=Color.WHITE;
 		String md="Dark",mdo="Light";
 		
 		if(b==false) {
 			colorin=Color.WHITE;
-			fondo=Color.DARK_GRAY;
+			fondo=new Color(20, 35, 54);
 			md="Light";
 			mdo="Dark";
 		}
