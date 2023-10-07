@@ -6,6 +6,11 @@ import Objects.Cliente;
 import Objects.Trabajador;
 import Objects.Archivo;
 
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
+
 import javax.swing.SwingUtilities;
 import javax.swing.SwingConstants;
 import javax.swing.ImageIcon;
@@ -25,12 +30,14 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.io.IOException;
 import java.awt.AWTException;
 import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import javax.imageio.ImageIO;
 
 public class Mecanics {
@@ -405,484 +412,53 @@ public class Mecanics {
         return Code;
 
     }
+	
+	public static void main(String[] abc){
+		
+		Conexion cn = new Conexion();
+		
+		Factura p = cn.getFactura(1);
+		
+		Facturar(p);
+		
+		cn.Close();
+		
+		/*byte edad = 18;
+		
+		Factura p = new Factura("FTRA-23091020",150000,18000.00,132000.00,Conexion.getSerieMatrix("CP1;Masa de Cerdo;2.0;21200.0$;42400.0$;CP2;Lomo de Cerdo;4.0;22400.0$;89600.0$"),
+		"10/09/2023 - 22:27:43",new Trabajador("2220080008","1043641881","Felipe","May Salguedo","3016184993",
+		"felipemaysalguedo@gmail.com","Trv 54 #80-26 Urb Portales de Alicante C2 B3 Apto 306Trv 54 #80-26 Urb Portales de Alicante C2 B3 Apto 306",'M',edad,true),
+		new Cliente("Felipe","May Salguedo","1043641881","3016184993",
+		"felipemaysalguedo@gmail.com","Trv 54 #80-26 Urb Portales de Alicante C2 B3 Apto 306Trv 54 #80-26 Urb Portales de Alicante C2 B3 Apto 306"));//*/
+		
+	}
 
     public static void Facturar(Factura p) {
 
         int m = getMode(true);
         int l = getLanguage(true);
-
-        int Fila = 0;
-        int z = 14;
-        Color[] Fondo = {new Color(238, 248, 254), new Color(20, 35, 54)};
-        String[] FacturaTitulo = {"Factura", "Check"};
-        String[] ProductoTexto = {"Producto", "Product"};
-        String[] CantidadTexto = {"Cantidad", "Amount"};
-        String[] PrecioTexto = {"Precio", "Price"};
-        String[] TotalTexto = {"Total", "Total"};
-        String[] EmpleadoTexto = new String[2];
-
-        int indice = Mecanics.getEmploye(p.getEmploye().getCode());
-
-        if (indice != -1) {
-
-            Trabajador d = Mecanics.Employe.get(indice);
-
-            EmpleadoTexto[0] = "Empleado: " + d.getName() + " " + d.getLastName();
-            EmpleadoTexto[1] = "Employe: " + d.getName() + " " + d.getLastName();
-
-        }
-
-        String[] ClienteTexto = {"Cliente: " + p.getClient().getID() + " " + p.getClient().getName(), "Client: " + p.getClient().getID() + " " + p.getClient().getName()};
-        String[] PagoTexto = {"Pago: " + p.getPay() + "$", "Payment: " + p.getPay() + "$"};
-        String[] VueltoTexto = {"Vuelto: " + p.getChange() + "$", "Vuelto: " + p.getChange() + "$"};
-        String[] TotalPayTexto = {"Total a Pagar: " + p.getTotal() + "$", "Total Bill: " + p.getTotal() + "$"};
-
-        JLabel[][] Label = new JLabel[p.getBuyout().length][4];
-
-        JFrame frameFactura = new JFrame();
-
-        frameFactura.setResizable(false);
-        frameFactura.setTitle(FacturaTitulo[l]);
-        frameFactura.setIconImage(Toolkit.getDefaultToolkit().getImage("./src/ResourcePackCaja/Icono.png"));
-        frameFactura.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frameFactura.setBounds(200, 200, 450, 400 + (25 * p.getBuyout().length));
-        frameFactura.setLocationRelativeTo(null);
-
-        JPanel contentPane = new JPanel();
-
-        contentPane.setBackground(Fondo[m]);
-
-        JLabel Portada = new JLabel("");
-
-        Portada.setBounds(170, 10, 100, 100);
-        ImageIcon icono = new ImageIcon(new ImageIcon("./src/ResourcePackCaja/Icono.png").getImage().getScaledInstance(Portada.getWidth(), Portada.getHeight(), Image.SCALE_SMOOTH));
-
-        Portada.setIcon(icono);
-        Portada.setBackground(new Color(0, 0, 0, 0));
-        Portada.setOpaque(true);
-
-        JLabel Titulo = new JLabel(getTitle(true));
-
-        if (m == 0) {
-
-            Titulo.setForeground(Color.BLACK);
-
-        } else if (m == 1) {
-
-            Titulo.setForeground(Color.WHITE);
-
-        }
-
-        Titulo.setHorizontalAlignment(SwingConstants.CENTER);
-        Titulo.setBackground(new Color(0, 0, 0, 0));
-        Titulo.setOpaque(true);
-        Titulo.setFont(new Font("Clarendon Blk BT", Font.BOLD, 20));
-        Titulo.setBounds(17, 130, 400, 30);
-
-        JLabel Direccion = new JLabel(getAddress(true));
-
-        if (m == 0) {
-
-            Direccion.setForeground(Color.BLACK);
-
-        } else if (m == 1) {
-
-            Direccion.setForeground(Color.WHITE);
-
-        }
-
-        Direccion.setHorizontalAlignment(SwingConstants.CENTER);
-        Direccion.setBackground(new Color(0, 0, 0, 0));
-        Direccion.setOpaque(true);
-        Direccion.setFont(new Font("Clarendon Blk BT", Font.BOLD, 15));
-        Direccion.setBounds(17, 165, 400, 30);
-
-        JLabel Empleado = new JLabel(EmpleadoTexto[l]);
-
-        if (m == 0) {
-
-            Empleado.setForeground(Color.BLACK);
-
-        } else if (m == 1) {
-
-            Empleado.setForeground(Color.WHITE);
-
-        }
-
-        Empleado.setHorizontalAlignment(SwingConstants.LEFT);
-        Empleado.setBackground(new Color(0, 0, 0, 0));
-        Empleado.setOpaque(true);
-        Empleado.setFont(new Font("Clarendon Blk BT", Font.BOLD, 13));
-        Empleado.setBounds(17, 210, 250, 20);
-
-        JLabel Cliente = new JLabel(ClienteTexto[l]);
-
-        if (m == 0) {
-
-            Cliente.setForeground(Color.BLACK);
-
-        } else if (m == 1) {
-
-            Cliente.setForeground(Color.WHITE);
-
-        }
-
-        Cliente.setHorizontalAlignment(SwingConstants.LEFT);
-        Cliente.setBackground(new Color(0, 0, 0, 0));
-        Cliente.setOpaque(true);
-        Cliente.setFont(new Font("Clarendon Blk BT", Font.BOLD, 13));
-        Cliente.setBounds(17, 240, 300, 20);
-
-        JLabel Producto = new JLabel(ProductoTexto[l]);
-
-        if (m == 0) {
-
-            Producto.setForeground(Color.BLACK);
-
-        } else if (m == 1) {
-
-            Producto.setForeground(Color.WHITE);
-
-        }
-
-        Producto.setHorizontalAlignment(SwingConstants.CENTER);
-        Producto.setBackground(new Color(0, 0, 0, 0));
-        Producto.setOpaque(true);
-        Producto.setFont(new Font("Clarendon Blk BT", Font.BOLD, 13));
-        Producto.setBounds(17, 280, 80, 20);
-
-        JLabel Cantidad = new JLabel(CantidadTexto[l]);
-
-        if (m == 0) {
-
-            Cantidad.setForeground(Color.BLACK);
-
-        } else if (m == 1) {
-
-            Cantidad.setForeground(Color.WHITE);
-
-        }
-
-        Cantidad.setHorizontalAlignment(SwingConstants.CENTER);
-        Cantidad.setBackground(new Color(0, 0, 0, 0));
-        Cantidad.setOpaque(true);
-        Cantidad.setFont(new Font("Clarendon Blk BT", Font.BOLD, 13));
-        Cantidad.setBounds(117, 280, 80, 20);
-
-        JLabel Precio = new JLabel(PrecioTexto[l]);
-
-        if (m == 0) {
-
-            Precio.setForeground(Color.BLACK);
-
-        } else if (m == 1) {
-
-            Precio.setForeground(Color.WHITE);
-
-        }
-
-        Precio.setHorizontalAlignment(SwingConstants.CENTER);
-        Precio.setBackground(new Color(0, 0, 0, 0));
-        Precio.setOpaque(true);
-        Precio.setFont(new Font("Clarendon Blk BT", Font.BOLD, 13));
-        Precio.setBounds(217, 280, 80, 20);
-
-        JLabel Total = new JLabel(TotalTexto[l]);
-
-        if (m == 0) {
-
-            Total.setForeground(Color.BLACK);
-
-        } else if (m == 1) {
-
-            Total.setForeground(Color.WHITE);
-
-        }
-
-        Total.setHorizontalAlignment(SwingConstants.CENTER);
-        Total.setBackground(new Color(0, 0, 0, 0));
-        Total.setOpaque(true);
-        Total.setFont(new Font("Clarendon Blk BT", Font.BOLD, 13));
-        Total.setBounds(317, 280, 80, 20);
-
-        JLabel Pago = new JLabel(PagoTexto[l]);
-
-        if (m == 0) {
-
-            Pago.setForeground(Color.BLACK);
-
-        } else if (m == 1) {
-
-            Pago.setForeground(Color.WHITE);
-
-        }
-
-        Pago.setHorizontalAlignment(SwingConstants.LEFT);
-        Pago.setBackground(new Color(0, 0, 0, 0));
-        Pago.setOpaque(true);
-        Pago.setFont(new Font("Clarendon Blk BT", Font.BOLD, 13));
-        Pago.setBounds(17, frameFactura.getHeight() - 80, 120, 20);
-
-        JLabel Vuelto = new JLabel(VueltoTexto[l]);
-
-        if (m == 0) {
-
-            Vuelto.setForeground(Color.BLACK);
-
-        } else if (m == 1) {
-
-            Vuelto.setForeground(Color.WHITE);
-
-        }
-
-        Vuelto.setHorizontalAlignment(SwingConstants.LEFT);
-        Vuelto.setBackground(new Color(0, 0, 0, 0));
-        Vuelto.setOpaque(true);
-        Vuelto.setFont(new Font("Clarendon Blk BT", Font.BOLD, 13));
-        Vuelto.setBounds(137, frameFactura.getHeight() - 80, 120, 20);
-
-        JLabel TotalPagar = new JLabel(TotalPayTexto[l]);
-
-        if (m == 0) {
-
-            TotalPagar.setForeground(Color.BLACK);
-
-        } else if (m == 1) {
-
-            TotalPagar.setForeground(Color.WHITE);
-
-        }
-
-        TotalPagar.setHorizontalAlignment(SwingConstants.LEFT);
-        TotalPagar.setBackground(new Color(0, 0, 0, 0));
-        TotalPagar.setOpaque(true);
-        TotalPagar.setFont(new Font("Clarendon Blk BT", Font.BOLD, 13));
-        TotalPagar.setBounds(247, frameFactura.getHeight() - 80, 230, 20);
-
-        JLabel Date = new JLabel(p.getDate());
-
-        if (m == 0) {
-
-            Date.setForeground(Color.BLACK);
-
-        } else if (m == 1) {
-
-            Date.setForeground(Color.WHITE);
-
-        }
-
-        Date.setHorizontalAlignment(SwingConstants.LEFT);
-        Date.setBackground(new Color(0, 0, 0, 0));
-        Date.setOpaque(true);
-        Date.setFont(new Font("Clarendon Blk BT", Font.BOLD, 13));
-        Date.setBounds(0, 0, 150, 20);
-
-        JLabel Codigo = new JLabel(p.getCode());
-
-        if (m == 0) {
-
-            Codigo.setForeground(Color.BLACK);
-
-        } else if (m == 1) {
-
-            Codigo.setForeground(Color.WHITE);
-
-        }
-
-        Codigo.setHorizontalAlignment(SwingConstants.RIGHT);
-        Codigo.setBackground(new Color(0, 0, 0, 0));
-        Codigo.setOpaque(true);
-        Codigo.setFont(new Font("Clarendon Blk BT", Font.BOLD, 13));
-        Codigo.setBounds(278, 0, 150, 20);
-
-        contentPane.add(Titulo);
-        contentPane.add(Portada);
-        contentPane.add(Direccion);
-        contentPane.add(Empleado);
-        contentPane.add(Cliente);
-        contentPane.add(Producto);
-        contentPane.add(Cantidad);
-        contentPane.add(Precio);
-        contentPane.add(Total);
-        contentPane.add(Pago);
-        contentPane.add(Vuelto);
-        contentPane.add(TotalPagar);
-        contentPane.add(Date);
-        contentPane.add(Codigo);
-
-        contentPane.setLayout(null);
-        contentPane.setComponentZOrder(Portada, 0);
-        contentPane.setComponentZOrder(Titulo, 1);
-        contentPane.setComponentZOrder(Direccion, 2);
-        contentPane.setComponentZOrder(Empleado, 3);
-        contentPane.setComponentZOrder(Cliente, 4);
-        contentPane.setComponentZOrder(Producto, 5);
-        contentPane.setComponentZOrder(Cantidad, 6);
-        contentPane.setComponentZOrder(Precio, 7);
-        contentPane.setComponentZOrder(Total, 8);
-        contentPane.setComponentZOrder(Pago, 9);
-        contentPane.setComponentZOrder(Vuelto, 10);
-        contentPane.setComponentZOrder(TotalPagar, 11);
-        contentPane.setComponentZOrder(Date, 12);
-        contentPane.setComponentZOrder(Codigo, 13);
-
-        for (Object[] q : p.getBuyout()) {
-
-            Label[Fila][0] = new JLabel(q[1].toString());
-
-            if (m == 0) {
-
-                Label[Fila][0].setForeground(Color.BLACK);
-
-            } else if (m == 1) {
-
-                Label[Fila][0].setForeground(Color.WHITE);
-
-            }
-
-            Label[Fila][0].setHorizontalAlignment(SwingConstants.LEFT);
-            Label[Fila][0].setBackground(new Color(0, 0, 0, 0));
-            Label[Fila][0].setOpaque(true);
-            Label[Fila][0].setFont(new Font("Clarendon Blk BT", Font.PLAIN, 11));
-            Label[Fila][0].setBounds(17, 310 + (20 * Fila), 100, 20);
-
-            Label[Fila][1] = new JLabel("");
-
-            for (Archivo b : Archive) {
-
-                if (q[0].toString().equalsIgnoreCase(b.getCode()) == true) {
-
-                    Label[Fila][1].setText(q[2].toString() + " " + b.getUnid());
-
-                    break;
-
-                }
-
-            }
-
-            if (m == 0) {
-
-                Label[Fila][1].setForeground(Color.BLACK);
-
-            } else if (m == 1) {
-
-                Label[Fila][1].setForeground(Color.WHITE);
-
-            }
-
-            Label[Fila][1].setHorizontalAlignment(SwingConstants.LEFT);
-            Label[Fila][1].setBackground(new Color(0, 0, 0, 0));
-            Label[Fila][1].setOpaque(true);
-            Label[Fila][1].setFont(new Font("Clarendon Blk BT", Font.PLAIN, 12));
-            Label[Fila][1].setBounds(138, 310 + (20 * Fila), 80, 20);
-
-            Label[Fila][2] = new JLabel(q[3].toString());
-
-            if (m == 0) {
-
-                Label[Fila][2].setForeground(Color.BLACK);
-
-            } else if (m == 1) {
-
-                Label[Fila][2].setForeground(Color.WHITE);
-
-            }
-
-            Label[Fila][2].setHorizontalAlignment(SwingConstants.LEFT);
-            Label[Fila][2].setBackground(new Color(0, 0, 0, 0));
-            Label[Fila][2].setOpaque(true);
-            Label[Fila][2].setFont(new Font("Clarendon Blk BT", Font.PLAIN, 12));
-            Label[Fila][2].setBounds(234, 310 + (20 * Fila), 80, 20);
-
-            Label[Fila][3] = new JLabel(q[4].toString());
-
-            if (m == 0) {
-
-                Label[Fila][3].setForeground(Color.BLACK);
-
-            } else if (m == 1) {
-
-                Label[Fila][3].setForeground(Color.WHITE);
-
-            }
-
-            Label[Fila][3].setHorizontalAlignment(SwingConstants.CENTER);
-            Label[Fila][3].setBackground(new Color(0, 0, 0, 0));
-            Label[Fila][3].setOpaque(true);
-            Label[Fila][3].setFont(new Font("Clarendon Blk BT", Font.PLAIN, 12));
-            Label[Fila][3].setBounds(317, 310 + (20 * Fila), 80, 20);
-
-            contentPane.add(Label[Fila][0]);
-            contentPane.add(Label[Fila][1]);
-            contentPane.add(Label[Fila][2]);
-            contentPane.add(Label[Fila][3]);
-
-            contentPane.setComponentZOrder(Label[Fila][0], z);
-            z++;
-            contentPane.setComponentZOrder(Label[Fila][1], z);
-            z++;
-            contentPane.setComponentZOrder(Label[Fila][2], z);
-            z++;
-            contentPane.setComponentZOrder(Label[Fila][3], z);
-            z++;
-
-            Label[Fila][0].setVisible(true);
-            Label[Fila][1].setVisible(true);
-            Label[Fila][2].setVisible(true);
-            Label[Fila][3].setVisible(true);
-
-            Fila++;
-
-        }
-
-        Titulo.setVisible(true);
-        Portada.setVisible(true);
-        Direccion.setVisible(true);
-        Empleado.setVisible(true);
-        Cliente.setVisible(true);
-        Producto.setVisible(true);
-        Cantidad.setVisible(true);
-        Precio.setVisible(true);
-        Total.setVisible(true);
-        Pago.setVisible(true);
-        Vuelto.setVisible(true);
-        TotalPagar.setVisible(true);
-        Date.setVisible(true);
-        Codigo.setVisible(true);
-
-        frameFactura.setContentPane(contentPane);
-
-        frameFactura.setVisible(true);
-
-        SwingUtilities.invokeLater(() -> {
-
-            JFrame Run = frameFactura;
-
-            try {
-
-                Thread.sleep(1000);
-                JFrameToPNG(frameFactura, p.getCode() + ".png");
-
-            } catch (InterruptedException | AWTException | IOException e) {
-
-                JOptionPane.showMessageDialog(null, "Error: " + e, "Error", JOptionPane.ERROR_MESSAGE);
-
-            }
-
-        });
-
-    }
-
-    private static void JFrameToPNG(JFrame frame, String fileName) throws AWTException, IOException {
-
-        Robot robot = new Robot();
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        BufferedImage image = robot.createScreenCapture(new Rectangle(screenSize));
-        BufferedImage frameImage = image.getSubimage(frame.getLocationOnScreen().x + 8, frame.getLocationOnScreen().y + 32, frame.getWidth() - 20, frame.getHeight() - 45);
-
-        File file = new File(fileName);
-        ImageIO.write(frameImage, "png", file);
-
+		
+		Path Downloads = Paths.get(System.getProperty("user.home"), "Downloads");
+		String url = Downloads.toString()+"\\";
+		
+		try (PdfWriter pdfw = new PdfWriter(new File(url+p.getCode()+".pdf"))){
+			
+			PdfDocument pdfdoc = new PdfDocument(pdfw);
+			Document doc = new Document(pdfdoc);
+			
+			Paragraph line = new Paragraph("Wasaaa!!!");
+			
+			doc.add(line);
+			
+			doc.close();
+			pdfdoc.close();
+			
+		}catch (Exception e){
+			
+			JOptionPane.showMessageDialog(null, "Error: "+e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			
+		}
+		
     }
 
     public static int getArchive(String wd) {
