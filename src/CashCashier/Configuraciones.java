@@ -75,7 +75,7 @@ public class Configuraciones extends JPanel{
 		setOpaque(false);
 		
 		Title = cp.Label(Mecanics.getTitle(true), cp.setBounds((this.getWidth()/2)-200, 130, 400, 30), SwingConstants.CENTER, new Font("Clarendon Blk BT", Font.BOLD, 20));
-		Logo = cp.Label("", cp.setBounds((this.getWidth()/2)-50, 10, 100, 100), "Icono", 100, 100, SwingConstants.CENTER, SwingConstants.CENTER, SwingConstants.CENTER, 0);
+		Logo = cp.Label("", cp.setBounds((this.getWidth()/2)-50, 10, 100, 100), "Logo", 100, 100, SwingConstants.CENTER, SwingConstants.CENTER, SwingConstants.CENTER, 0);
 		Address = cp.Label(Mecanics.getAddress(true), cp.setBounds((this.getWidth()/2)-200, 165, 400, 30), SwingConstants.CENTER, new Font("Clarendon Blk BT", Font.BOLD, 15));
 		TextPanelTitle = cp.TextPanel("", cp.setBounds((this.getWidth()/2)-200, 130, 400, 30), SwingConstants.CENTER, new Font("Clarendon Blk BT", Font.BOLD, 20), Color.BLUE, Color.BLUE, true, false);
 		TextPanelAddress = cp.TextPanel("", cp.setBounds((this.getWidth()/2)-200, 165, 400, 30), SwingConstants.CENTER, new Font("Clarendon Blk BT", Font.BOLD, 15), Color.BLUE, Color.BLUE, true, false);

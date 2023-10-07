@@ -14,7 +14,6 @@ public class MainRunnable {
                 Mecanics.getClient(true);
                 Mecanics.getReceipt(true);
                 Mecanics.getEmploye(true);
-				//Mecanics.main(null);
 
                 try {
 
@@ -24,7 +23,7 @@ public class MainRunnable {
 
                     e.printStackTrace();
 
-                }//*/
+                }
 
             }
 

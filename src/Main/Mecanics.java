@@ -6,12 +6,28 @@ import Objects.Cliente;
 import Objects.Trabajador;
 import Objects.Archivo;
 
+import com.itextpdf.kernel.font.PdfFont;
+import com.itextpdf.kernel.font.PdfFontFactory;
+import com.itextpdf.kernel.colors.Color;
+import com.itextpdf.kernel.colors.DeviceRgb;
+import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.kernel.pdf.canvas.PdfCanvas;
 import com.itextpdf.layout.Document;
+import com.itextpdf.layout.borders.Border;
+import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Text;
+import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.property.UnitValue;
+import com.itextpdf.layout.property.TextAlignment;
+import com.itextpdf.layout.property.HorizontalAlignment;
+import com.itextpdf.layout.property.VerticalAlignment;
+import com.itextpdf.io.image.ImageDataFactory;
+import com.itextpdf.io.font.PdfEncodings;
 
-import javax.swing.SwingUtilities;
+/*import javax.swing.SwingUtilities;
 import javax.swing.SwingConstants;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -21,7 +37,7 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Image;
+import java.awt.Image;//*/
 import javax.swing.JOptionPane;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -36,6 +52,7 @@ import java.nio.file.Paths;
 import java.io.IOException;
 import java.awt.AWTException;
 import java.awt.Rectangle;
+import java.awt.Desktop;
 import java.awt.Robot;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
@@ -412,48 +429,195 @@ public class Mecanics {
         return Code;
 
     }
-	
-	public static void main(String[] abc){
-		
-		Conexion cn = new Conexion();
-		
-		Factura p = cn.getFactura(1);
-		
-		Facturar(p);
-		
-		cn.Close();
-		
-		/*byte edad = 18;
-		
-		Factura p = new Factura("FTRA-23091020",150000,18000.00,132000.00,Conexion.getSerieMatrix("CP1;Masa de Cerdo;2.0;21200.0$;42400.0$;CP2;Lomo de Cerdo;4.0;22400.0$;89600.0$"),
-		"10/09/2023 - 22:27:43",new Trabajador("2220080008","1043641881","Felipe","May Salguedo","3016184993",
-		"felipemaysalguedo@gmail.com","Trv 54 #80-26 Urb Portales de Alicante C2 B3 Apto 306Trv 54 #80-26 Urb Portales de Alicante C2 B3 Apto 306",'M',edad,true),
-		new Cliente("Felipe","May Salguedo","1043641881","3016184993",
-		"felipemaysalguedo@gmail.com","Trv 54 #80-26 Urb Portales de Alicante C2 B3 Apto 306Trv 54 #80-26 Urb Portales de Alicante C2 B3 Apto 306"));//*/
-		
-	}
 
     public static void Facturar(Factura p) {
 
-        int m = getMode(true);
         int l = getLanguage(true);
 		
-		Path Downloads = Paths.get(System.getProperty("user.home"), "Downloads");
-		String url = Downloads.toString()+"\\";
+		Archivo q = null;
+		int indice = 0;
+		String[] ClientTexto = {"Cliente: ", "Client: "};
+		String[] EmployeTexto = {"Empleado: ", "Employee: "};
+		String[] ProductTexto = {"Producto", "Product"};
+		String[] AmountTexto = {"Cantidad", "Amount"};
+		String[] PriceTexto = {"Precio", "Price"};
+		String[] PayTexto = {"Pago: ", "Pay: "};
+		String[] ChangeTexto = {"Vuelto: ", "Change: "};
+		String[] TotalTexto = {"Total a Pagar: ", "Total Pay: "};
 		
-		try (PdfWriter pdfw = new PdfWriter(new File(url+p.getCode()+".pdf"))){
+		Path Downloads = Paths.get(System.getProperty("user.home"), "Downloads");
+		String url = Downloads.toString()+"\\"+p.getCode()+".pdf";
+		
+		try (PdfWriter pdfw = new PdfWriter(new File(url))){
 			
 			PdfDocument pdfdoc = new PdfDocument(pdfw);
+			pdfdoc.setDefaultPageSize(PageSize.LETTER);
 			Document doc = new Document(pdfdoc);
 			
-			Paragraph line = new Paragraph("Wasaaa!!!");
+			Paragraph Date = new Paragraph(p.getDate());
+			Date.setFontSize(13);
+            Date.setBold();
+            Date.setTextAlignment(TextAlignment.LEFT);
+            Date.setVerticalAlignment(VerticalAlignment.TOP);
+			Date.setFixedPosition(36, 750, 200);
 			
-			doc.add(line);
+			Paragraph Code = new Paragraph(p.getCode());
+			Code.setFontSize(13);
+            Code.setBold();
+            Code.setTextAlignment(TextAlignment.LEFT);
+            Code.setVerticalAlignment(VerticalAlignment.TOP);
+			Code.setFixedPosition(500, 750, 200);
+			
+            Image Logo = new Image(ImageDataFactory.create("./src/ResourcePackCaja/Logo.png"));
+            Logo.setAutoScale(false);
+			Logo.scaleToFit(200, 200);
+            Logo.setHorizontalAlignment(HorizontalAlignment.CENTER);
+			
+			Paragraph Title = new Paragraph(getTitle(true));
+			Title.setFontSize(20);
+            Title.setBold();
+            //Title.setFont(fuente);
+            Title.setTextAlignment(TextAlignment.CENTER);
+            Title.setVerticalAlignment(VerticalAlignment.MIDDLE);
+			
+			Paragraph Address = new Paragraph(getAddress(true));
+			Address.setFontSize(16);
+            Address.setBold();
+            Address.setTextAlignment(TextAlignment.CENTER);
+            Address.setVerticalAlignment(VerticalAlignment.MIDDLE);
+			
+			Text BoldClient = new Text(ClientTexto[l]);
+			BoldClient.setFontSize(13);
+			BoldClient.setBold();
+			
+			Text NormalClient = new Text(p.getClient().getName()+" "+p.getClient().getLastName());
+			NormalClient.setFontSize(13);
+			
+			Paragraph Client = new Paragraph("\n");
+			Client.add(BoldClient);
+			Client.add(NormalClient);
+            Client.setTextAlignment(TextAlignment.LEFT);
+			
+			Text BoldEmploye = new Text(EmployeTexto[l]);
+			BoldEmploye.setFontSize(13);
+			BoldEmploye.setBold();
+			
+			Text NormalEmploye = new Text(p.getEmploye().getName()+" "+p.getEmploye().getLastName());
+			NormalEmploye.setFontSize(13);
+			
+			Paragraph Employe = new Paragraph("\n");
+			Employe.add(BoldEmploye);
+			Employe.add(NormalEmploye);
+            Employe.setTextAlignment(TextAlignment.RIGHT);
+			
+			Table Info = new Table(2);
+            Info.setWidth(UnitValue.createPercentValue(100));
+			Info.addCell(Client);
+			Info.addCell(Employe);
+			Info.getCell(0, 0).setBorder(Border.NO_BORDER);
+			Info.getCell(0, 1).setBorder(Border.NO_BORDER);
+			
+			Table Buyout = new Table(4);
+			Buyout.setWidth(UnitValue.createPercentValue(100));
+			Buyout.addCell(new Paragraph(ProductTexto[l]));
+			Buyout.addCell(new Paragraph(AmountTexto[l]));
+			Buyout.addCell(new Paragraph(PriceTexto[l]));
+			Buyout.addCell(new Paragraph("Total"));
+			Buyout.getCell(0, 0).setBorder(Border.NO_BORDER).setBold().setFontSize(14).setTextAlignment(TextAlignment.CENTER);
+			Buyout.getCell(0, 1).setBorder(Border.NO_BORDER).setBold().setFontSize(14).setTextAlignment(TextAlignment.CENTER);
+			Buyout.getCell(0, 2).setBorder(Border.NO_BORDER).setBold().setFontSize(14).setTextAlignment(TextAlignment.CENTER);
+			Buyout.getCell(0, 3).setBorder(Border.NO_BORDER).setBold().setFontSize(14).setTextAlignment(TextAlignment.CENTER);
+			
+			for (int i=0; i<p.getBuyout().length; i++){
+				
+				indice = getArchive(p.getBuyout()[i][0].toString());
+				
+				if (indice!=-1){
+					
+					q = Archive.get(i);
+					
+					Buyout.addCell(new Paragraph(p.getBuyout()[i][1].toString()+" - "+q.getBrand()));
+					Buyout.addCell(new Paragraph(p.getBuyout()[i][2].toString()+" "+q.getUnid()));
+					
+				}else{
+					
+					Buyout.addCell(new Paragraph(p.getBuyout()[i][1].toString()));
+					Buyout.addCell(new Paragraph(p.getBuyout()[i][2].toString()));
+					
+				}
+				
+				Buyout.addCell(new Paragraph(p.getBuyout()[i][3].toString()));
+				Buyout.addCell(new Paragraph(p.getBuyout()[i][4].toString()));
+				
+				Buyout.getCell(i+1, 0).setBorder(Border.NO_BORDER).setFontSize(13).setTextAlignment(TextAlignment.CENTER);
+				Buyout.getCell(i+1, 1).setBorder(Border.NO_BORDER).setFontSize(13).setTextAlignment(TextAlignment.CENTER);
+				Buyout.getCell(i+1, 2).setBorder(Border.NO_BORDER).setFontSize(13).setTextAlignment(TextAlignment.CENTER);
+				Buyout.getCell(i+1, 3).setBorder(Border.NO_BORDER).setFontSize(13).setTextAlignment(TextAlignment.CENTER);
+				
+			}
+			
+			Text BoldPay = new Text(PayTexto[l]);
+			BoldPay.setFontSize(13);
+			BoldPay.setBold();
+			
+			Text NormalPay = new Text(p.getPay()+"$");
+			NormalPay.setFontSize(13);
+			
+			Paragraph Pay = new Paragraph();
+			Pay.add(BoldPay);
+			Pay.add(NormalPay);
+            Pay.setTextAlignment(TextAlignment.LEFT);
+			
+			Text BoldChange = new Text(ChangeTexto[l]);
+			BoldChange.setFontSize(13);
+			BoldChange.setBold();
+			
+			Text NormalChange = new Text(p.getChange()+"$");
+			NormalChange.setFontSize(13);
+			
+			Paragraph Change = new Paragraph();
+			Change.add(BoldChange);
+			Change.add(NormalChange);
+            Change.setTextAlignment(TextAlignment.RIGHT);
+			
+			Text BoldTotal = new Text(TotalTexto[l]);
+			BoldTotal.setFontSize(13);
+			BoldTotal.setBold();
+			
+			Text NormalTotal = new Text(p.getTotal()+"$");
+			NormalChange.setFontSize(13);
+			
+			Paragraph Total = new Paragraph();
+			Total.add(BoldTotal);
+			Total.add(NormalTotal);
+            Total.setTextAlignment(TextAlignment.RIGHT);
+			
+			Table Info2 = new Table(3);
+            Info2.setWidth(UnitValue.createPercentValue(100));
+			Info2.addCell(Pay);
+			Info2.addCell(Change);
+			Info2.addCell(Total);
+			Info2.getCell(0, 0).setBorder(Border.NO_BORDER);
+			Info2.getCell(0, 1).setBorder(Border.NO_BORDER);
+			Info2.getCell(0, 2).setBorder(Border.NO_BORDER);
+			
+			doc.add(Date);
+			doc.add(Code);
+			doc.add(Logo);
+			doc.add(Title);
+			doc.add(Address);
+			doc.add(Info);
+			doc.add(new Paragraph("\n\n"));
+			doc.add(Buyout);
+			doc.add(new Paragraph("\n\n"));
+			doc.add(Info2);
 			
 			doc.close();
 			pdfdoc.close();
 			
-		}catch (Exception e){
+			Desktop.getDesktop().open(new File(url));
+			
+		}catch (IOException e){
 			
 			JOptionPane.showMessageDialog(null, "Error: "+e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 			
