@@ -427,7 +427,7 @@ public class Conexion{
 		try{
 		
 			Statement clear = cn.createStatement();
-            clear.executeUpdate("DELETE FROM Archivo");
+            clear.executeUpdate("DELETE FROM Inventario");
 			
 		}catch(SQLException e){
 			
