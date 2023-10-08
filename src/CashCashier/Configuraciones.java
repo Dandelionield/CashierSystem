@@ -174,6 +174,7 @@ public class Configuraciones extends JPanel{
 				Dashboard.contentPane.add(Dashboard.Window4th, Integer.valueOf(5));
 				Dashboard.contentPane.add(Dashboard.WindowSelected, Integer.valueOf(6));
 
+				Inventory.Inventario.moder=Mecanics.getMode(true);
 				repaint();
 
 			}
@@ -212,6 +213,7 @@ public class Configuraciones extends JPanel{
 				Dashboard.contentPane.add(Dashboard.Window4th, Integer.valueOf(5));
 				Dashboard.contentPane.add(Dashboard.WindowSelected, Integer.valueOf(6));
 
+				Inventory.Inventario.lengu=Mecanics.getLanguage(true);
 				repaint();
 
 			}

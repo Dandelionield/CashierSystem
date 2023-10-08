@@ -2,7 +2,6 @@ package Inventory;
 import java.awt.EventQueue;
 import Objects.*;
 
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -37,12 +36,15 @@ import javax.swing.JButton;
 import javax.swing.table.DefaultTableModel;
 
 import Main.Login;
+import Main.Mecanics;
 import Main.Runner;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 
 public class Inventario extends JFrame {
@@ -56,7 +58,8 @@ public class Inventario extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Inventario frame = new Inventario();
+					Inventario frame = new Inventario(0,0);
+					frame.setLocationRelativeTo(null);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -75,13 +78,14 @@ public class Inventario extends JFrame {
 	private JTextField codigo, producto, precio, existencias, marca;
 	private JScrollPane scrolldescripcion;
 	private String ruta="";
+	public static int moder=0,lengu=0;
 	
 	private JTable table;	
 	private DefaultTableModel modelo;
     
 	
 	private ImageIcon regi;
-    static String [] len={"Informacion de producto:","Productos Disponibles:","Codigo:", "Producto:", "Precio:", "Existencias:","Unidad:","Marca:","Descripcion:","Seleccionar Imagen","Guardar","Eliminar","(ESP)"};
+    static String [] len={"Informacion de producto:","Productos Disponibles:","Codigo:", "Producto:", "Precio:", "Existencias:","Unidad:","Marca:","Descripcion:","Seleccionar Imagen","Guardar","Eliminar","(ESP)","Editar"};
 	private JComboBox<String> unidad;
 	private JLabel foto;
 	private JTextArea descripcion;;
@@ -94,12 +98,43 @@ public class Inventario extends JFrame {
 
 	private final Components cp = new Components("./src/ResourcePackCaja/", null, 0);
 	
-	public Inventario() {
+	public Inventario(int theme,int leng) {
+		
+		moder=theme;
+		lengu=leng;
+		
+			
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				
+				int scp=JOptionPane.showConfirmDialog(null, "Desea abandonar?","Salir",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
+				
+				if(scp==JOptionPane.YES_OPTION) {
+					
+					Runner.contentPane.removeAll();
+					
+					Runner.Inicio = new Login();
+					
+					Runner.contentPane.add(Runner.Inicio, Integer.valueOf(0));
+					
+					Runner lg = new Runner();
+
+					lg.setVisible(true);
+					
+					dispose();
+					
+					repaint();
+				}
+				
+			}
+		});
 		
 		
 		setResizable(false);
 		setTitle("Inventario");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setLocationRelativeTo(null);
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 1013, 609);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -121,7 +156,7 @@ public class Inventario extends JFrame {
         contentPane.add(fondo);
 		
 		foto = new JLabel("");
-		foto.setBounds(25, 98, 204, 176);
+		foto.setBounds(25, 72, 204, 176);
 		ImageIcon pfoto = new ImageIcon(new ImageIcon("./src/ResourcePackCaja/image-not-found.png").getImage().getScaledInstance(foto.getWidth(), foto.getHeight(), Image.SCALE_DEFAULT));
         foto.setIcon(pfoto);
 		foto.setBorder(new LineBorder(new Color(0, 0, 0)));
@@ -202,10 +237,6 @@ public class Inventario extends JFrame {
 		panel.add(txtcodigo);
 		
 		codigo = cp.TextPanel("", cp.setBounds(321, 65, 86, 20), SwingConstants.LEFT, new Font("Microsoft JhengHei UI", Font.BOLD, 12), Color.BLUE, Color.BLUE, true, true);
-		/*codigo = new JTextField();
-		codigo.setBounds(321, 65, 86, 20);
-		codigo.setBorder(new MatteBorder(0, 0, 2, 0, Color.BLUE));
-		codigo.setBackground(null);//*/
 		panel.add(codigo);
 		codigo.setColumns(10);
 		
@@ -214,10 +245,7 @@ public class Inventario extends JFrame {
 		txtproductos.setBounds(262, 98, 72, 26);
 		panel.add(txtproductos);
 		
-		producto = new JTextField();
-		producto.setBounds(344, 102, 144, 20);
-		producto.setBorder(new MatteBorder(0, 0, 2, 0, Color.BLUE));
-		producto.setBackground(null);
+		producto = cp.TextPanel("", cp.setBounds(344, 102, 144, 20), SwingConstants.LEFT, new Font("Microsoft JhengHei UI", Font.BOLD, 12), Color.BLUE, Color.BLUE, true, true);
 		panel.add(producto);
 		producto.setColumns(10);
 		
@@ -226,36 +254,27 @@ public class Inventario extends JFrame {
 		txtprecio.setBounds(262, 133, 72, 26);
 		panel.add(txtprecio);
 		
-		precio = new JTextField();
-		precio.setColumns(10);
-		precio.setBorder(new MatteBorder(0, 0, 2, 0, Color.BLUE));
-		precio.setBackground(null);
-		precio.setBounds(344, 137, 144, 20);
+		precio = cp.TextPanel("", cp.setBounds(344, 137, 144, 20), SwingConstants.LEFT, new Font("Microsoft JhengHei UI", Font.BOLD, 12), Color.BLUE, Color.BLUE, true, true);
 		panel.add(precio);
+		precio.setColumns(10);		
 		
 		txtexistencia = new JLabel(len[5]);
 		txtexistencia.setFont(new Font("Microsoft JhengHei UI", Font.BOLD, 12));
 		txtexistencia.setBounds(262, 170, 72, 26);
 		panel.add(txtexistencia);
 		
-		existencias = new JTextField();
-		existencias.setColumns(10);
-		existencias.setBorder(new MatteBorder(0, 0, 2, 0, Color.BLUE));
-		existencias.setBackground(null);
-		existencias.setBounds(344, 174, 144, 20);
+		existencias = cp.TextPanel("", cp.setBounds(344, 174, 144, 20), SwingConstants.LEFT, new Font("Microsoft JhengHei UI", Font.BOLD, 12), Color.BLUE, Color.BLUE, true, true);
 		panel.add(existencias);
+		existencias.setColumns(10);
 		
 		txtmarca = new JLabel(len[7]);
 		txtmarca.setFont(new Font("Microsoft JhengHei UI", Font.BOLD, 12));
 		txtmarca.setBounds(262, 242, 72, 26);
 		panel.add(txtmarca);
 		
-		marca = new JTextField();
-		marca.setColumns(10);
-		marca.setBorder(new MatteBorder(0, 0, 2, 0, Color.BLUE));
-		marca.setBackground(null);
-		marca.setBounds(344, 246, 144, 20);
+		marca = cp.TextPanel("", cp.setBounds(344, 246, 144, 20), SwingConstants.LEFT, new Font("Microsoft JhengHei UI", Font.BOLD, 12), Color.BLUE, Color.BLUE, true, true);
 		panel.add(marca);
+		marca.setColumns(10);
 		
 		txtunidad = new JLabel(len[6]);
 		txtunidad.setFont(new Font("Microsoft JhengHei UI", Font.BOLD, 12));
@@ -302,7 +321,7 @@ public class Inventario extends JFrame {
 				
 			}
 		});
-		btnimage.setBounds(25, 283, 204, 23);
+		btnimage.setBounds(25, 245, 204, 23);
 		panel.add(btnimage);
 		
 		btnguardar = new JButton(len[10]);
@@ -377,14 +396,14 @@ public class Inventario extends JFrame {
 		panel.add(btnEliminar);
 		
 		JLabel candado = new JLabel("");
-		candado.setBounds(843, 0, 50, 50);		
+		candado.setBounds(843, 11, 40, 40);		
 		ImageIcon can = new ImageIcon(new ImageIcon("./src/ResourcePackCaja/CandadoCerrado.png").getImage().getScaledInstance(candado.getWidth(), candado.getHeight(), Image.SCALE_DEFAULT));
         candado.setIcon(can);		
 		panel.add(candado);
 		
 		
 		editar = new JLabel("");
-		editar.setBounds(452, 11, 50, 50);
+		editar.setBounds(452, 11, 40, 40);
 		ImageIcon ed = new ImageIcon(new ImageIcon("./src/ResourcePackCaja/EditarLight.png").getImage().getScaledInstance(editar.getWidth(), editar.getHeight(), Image.SCALE_DEFAULT));
         editar.setIcon(ed);
 
@@ -400,14 +419,14 @@ public class Inventario extends JFrame {
 
 			            regi = new ImageIcon(new ImageIcon("./src/ResourcePackCaja/CandadoAbierto.png").getImage().getScaledInstance(candado.getWidth(), candado.getHeight(), Image.SCALE_DEFAULT));
 			            candado.setIcon(regi);
-			            btnguardar.setText("Editar");
+			            btnguardar.setText(len[13]);
 			        }
 
 			        if (access == false) {
 
 			            regi = new ImageIcon(new ImageIcon("./src/ResourcePackCaja/CandadoCerrado.png").getImage().getScaledInstance(candado.getWidth(), candado.getHeight(), Image.SCALE_DEFAULT));
 			            candado.setIcon(regi);
-			            btnguardar.setText("Guardar");
+			            btnguardar.setText(len[10]);
 
 			        }
 
@@ -419,7 +438,7 @@ public class Inventario extends JFrame {
 		panel.add(editar);
 		
 		volver = new JLabel("");
-		volver.setBounds(25, 21, 50, 50);
+		volver.setBounds(25, 21, 40, 40);
 		ImageIcon imgv = new ImageIcon(new ImageIcon("./src/ResourcePackCaja/CerrarLight.png").getImage().getScaledInstance(volver.getWidth(), volver.getHeight(), Image.SCALE_DEFAULT));
         volver.setIcon(imgv);
 		volver.addMouseListener(new MouseAdapter() {
@@ -449,7 +468,7 @@ public class Inventario extends JFrame {
 		
 		
 		mode = new JLabel("");
-		mode.setBounds(80, 21, 50, 50);
+		mode.setBounds(80, 21, 40, 40);
 		ImageIcon imgmode = new ImageIcon(new ImageIcon("./src/ResourcePackCaja/Dark.png").getImage().getScaledInstance(mode.getWidth(), mode.getHeight(), Image.SCALE_DEFAULT));
         mode.setIcon(imgmode);
 		mode.addMouseListener(new MouseAdapter() {
@@ -457,6 +476,13 @@ public class Inventario extends JFrame {
 			public void mouseClicked(MouseEvent e) {
 				
 				 modi=!modi;
+				 
+				 if(modi==true) {
+					 Mecanics.setMode(true, 0);
+				 }
+				 if(modi==false) {
+					 Mecanics.setMode(true, 1);
+				 }
 				 
 				 modifymode(modi);
 				
@@ -467,7 +493,7 @@ public class Inventario extends JFrame {
 		panel.add(mode);
 		
 		lenguaje = new JLabel("");
-		lenguaje.setBounds(137, 21, 50, 50);
+		lenguaje.setBounds(130, 21, 40, 40);
 		ImageIcon imglen = new ImageIcon(new ImageIcon("./src/ResourcePackCaja/idiomaLight.png").getImage().getScaledInstance(lenguaje.getWidth(), lenguaje.getHeight(), Image.SCALE_DEFAULT));
         lenguaje.setIcon(imglen);
 		lenguaje.addMouseListener(new MouseAdapter() {
@@ -477,15 +503,15 @@ public class Inventario extends JFrame {
 				idioma=!(idioma);
 				
 				if(idioma==true) {
-					String leno[]= {"Informacion de producto:","Productos Disponibles:","Codigo:", "Producto:", "Precio:", "Existencias:","Unidad:","Marca:","Descripcion:","Seleccionar Imagen","Guardar","Eliminar","(ESP)"};
-					len=leno;
+					esp();
+					Mecanics.setLanguage(true, 0);
+								
 				}
 				
 				if(idioma==false) {
-					String leno[]= {"Product information:","Available products:","Code:", "Product:", "Price:", "Stock:","Unit:","Brand:","Description:","Select Image","Save","Delete","(ENG)"};
-					len=leno;
+					ing();
+					Mecanics.setLanguage(true, 1);
 				}
-				
 				
 				modifylen();
 				
@@ -497,18 +523,44 @@ public class Inventario extends JFrame {
 		panel.add(lenguaje);
 		
 		txtidioma = new JLabel(len[12]);
-		txtidioma.setBounds(197, 35, 42, 21);
+		txtidioma.setBounds(180, 30, 42, 21);
 		panel.add(txtidioma);
 		
-
+		boolean aspect=false, idiom=false;
 		
+		if(moder==0) {
+			aspect=true;
+		}
 		
+		if(lengu==1) {
+			
+			ing();	
+			
+			
+		}else {
+		
+			esp();
+			
+		}
+		
+		modifymode(aspect);
+		modifylen();
 	}
 	
 	protected void iArchivo(String ruta)  {
 
 
 		
+	}
+	
+	public void esp() {
+		String leno[]= {"Informacion de producto:","Productos Disponibles:","Codigo:", "Producto:", "Precio:", "Existencias:","Unidad:","Marca:","Descripcion:","Seleccionar Imagen","Guardar","Eliminar","(ESP)","Editar"};
+			len=leno;
+	}
+	
+	public void ing() {
+		String leno[]= {"Product information:","Available products:","Code:", "Product:", "Price:", "Stock:","Unit:","Brand:","Description:","Select Image","Save","Delete","(ENG)","Edit"};
+			len=leno;
 	}
 
 	public void modifylen() {
@@ -526,6 +578,7 @@ public class Inventario extends JFrame {
 		btnguardar.setText(len[10]);
 		btnEliminar.setText(len[11]);
 		txtidioma.setText(len[12]);
+		if(access==true) {btnguardar.setText(len[13]);}
 		String []titulos={len[2], len[3], len[4], len[5], len[7]};
 		modelo = new DefaultTableModel(null,titulos);
 		table.setModel(modelo);
@@ -534,7 +587,7 @@ public class Inventario extends JFrame {
 	
 	public void modifymode(boolean b) {
 		
-		Color colorin=new Color(20, 35, 54),fondo=Color.WHITE;
+		Color colorin= new Color(20, 35, 54),fondo=Color.WHITE;
 		String md="Dark",mdo="Light";
 		
 		if(b==false) {
@@ -555,11 +608,11 @@ public class Inventario extends JFrame {
 		txtmarca.setForeground(colorin);
 		txtdescripcion.setForeground(colorin);
 		txtidioma.setForeground(colorin);	
+		
 		mode.setIcon(new ImageIcon(new ImageIcon("./src/ResourcePackCaja/"+md+".png").getImage().getScaledInstance(mode.getWidth(), mode.getHeight(), Image.SCALE_DEFAULT)));
 		lenguaje.setIcon(new ImageIcon(new ImageIcon("./src/ResourcePackCaja/idioma"+mdo+".png").getImage().getScaledInstance(lenguaje.getWidth(), lenguaje.getHeight(), Image.SCALE_DEFAULT)));
-		editar.setIcon(new ImageIcon(new ImageIcon("./src/ResourcePackCaja/Editar"+mdo+".png").getImage().getScaledInstance(lenguaje.getWidth(), lenguaje.getHeight(), Image.SCALE_DEFAULT)));
-		volver.setIcon(new ImageIcon(new ImageIcon("./src/ResourcePackCaja/cerrar"+mdo+".png").getImage().getScaledInstance(lenguaje.getWidth(), lenguaje.getHeight(), Image.SCALE_DEFAULT)));
-		
+		editar.setIcon(new ImageIcon(new ImageIcon("./src/ResourcePackCaja/Editar"+mdo+".png").getImage().getScaledInstance(editar.getWidth(), editar.getHeight(), Image.SCALE_DEFAULT)));
+		volver.setIcon(new ImageIcon(new ImageIcon("./src/ResourcePackCaja/cerrar"+mdo+".png").getImage().getScaledInstance(volver.getWidth(), volver.getHeight(), Image.SCALE_DEFAULT)));	
 		
 		codigo.setForeground(colorin);
 		precio.setForeground(colorin);
@@ -618,19 +671,38 @@ public class Inventario extends JFrame {
         return prod;
     }
 	
-	public File actionimage() {
-		
-		try {
-            
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-               
-           } catch (Exception e) {}
-               
-           JFileChooser jf=new JFileChooser();
-           jf.showOpenDialog(this);
-           File archivo= jf.getSelectedFile();
-           
-           
-           return archivo;
-    }       
-}
+	 public File actionimage() {
+			
+			String[] arc; 
+			File archivo=new File("./src/ResourcePackCaja/image-not-found.png");
+			
+			try {
+				
+					try {
+			            
+							UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			               
+			           } catch (Exception e) {}
+			               
+			           JFileChooser jf=new JFileChooser();
+			           jf.showOpenDialog(this);
+			           
+			           archivo= jf.getSelectedFile();
+			          
+			           String rut=archivo.getName();
+			           arc= rut.split("\\.");
+			           
+			           if(arc[arc.length-1].equalsIgnoreCase("png")==false && arc[arc.length-1].equalsIgnoreCase("jpeg")==false) {
+			        	   JOptionPane.showMessageDialog(null, "ERROR, Seleccione un archivo con los formatos permitidos. \n\n->PNG\n->JPEG\n");
+			        	   archivo=new File("./src/ResourcePackCaja/image-not-found.png");
+			           }
+			           
+
+		           
+			}catch(Exception e) {
+				JOptionPane.showMessageDialog(null,"Accion Cancelada");
+			}
+	           
+	           return archivo;
+	    }       
+	}

@@ -174,7 +174,7 @@ public class Menu extends JPanel{
 
 			public void actionPerformed(ActionEvent e){
 				
-				Inventario Inv = new Inventario();
+				Inventario Inv = new Inventario(Mecanics.getMode(true),Mecanics.getLanguage(true));
 				Inv.setLocationRelativeTo(null);
 				Inv.setVisible(true);
 				
