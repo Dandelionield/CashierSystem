@@ -23,8 +23,8 @@ import java.awt.Image;
 public class Dashboard extends JFrame{
 	
 	public static CajaRegistradora Caja;
-	public static RegistrarUsuario CRUD = new RegistrarUsuario("");
-	public static Facturas Cuenta = new Facturas();
+	public static RegistrarUsuario CRUD;
+	public static Facturas Cuenta;
 	public static Configuraciones Settings;
 	
 	//public static Factura iniciar = new Factura("","","",0,0,0,{{000,"Prueba",0,0,0}},"",""));
@@ -85,6 +85,8 @@ public class Dashboard extends JFrame{
 		Window3rd.setVisible(true);
 		Window4th.setVisible(true);
 		
+		Cuenta = new Facturas();
+		CRUD = new RegistrarUsuario("");
 		Settings = new Configuraciones(this);
 
 		Actions();

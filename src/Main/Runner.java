@@ -11,6 +11,7 @@ public class Runner extends JFrame{
 	
 	public static Login Inicio = new Login();
 	public static Menu Opciones;
+	public static Configuraciones Setting = new Configuraciones();
 	
 	private int m = Mecanics.getMode(true);
 	private int l = Mecanics.getLanguage(true);

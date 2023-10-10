@@ -36,11 +36,12 @@ public class Menu extends JPanel{
 	private int m = Mecanics.getMode(true);
 	private int l = Mecanics.getLanguage(true);
 	
-	private String User;
-	private String Name;
+	public static String User;
+	public static String Name;
 	
 	public static JFrame LoginFrame;
 	private JButton Leave;
+	private JButton Setting;
 	private JButton Cashier;
 	private JButton Inventory;
 	private JButton newEmploye;
@@ -54,6 +55,7 @@ public class Menu extends JPanel{
 	private String[] LogoutTexto = {"Salir","Logout"};
 	
 	private String[] LoginSalir = {"SalirLight","SalirDark"};
+	private String[] MenuAjustes = {"SettingsLight","SettingsDark"};
 	private String[] ConfiguracionesSalir = {"CerrarLight","CerrarDark"};
 	
 	private final Components cp = new Components("./src/ResourcePackCaja/", Fondo[m], m);
@@ -70,12 +72,14 @@ public class Menu extends JPanel{
 		setOpaque(false);
 		
 		Leave = cp.Button("", cp.setBounds(this.getWidth()-50, 20, 25, 25), LoginSalir[m], 25, 25, true, false);
+		Setting = cp.Button("", cp.setBounds(this.getWidth()/2-10, 20, 25, 25), MenuAjustes[m], 25, 25, true, false);
 		Cashier = cp.Button("", cp.setBounds(this.getWidth()/2-100, this.getHeight()/6, 200, 50), "Icono", 50, 50, JButton.CENTER, JButton.RIGHT, JButton.CENTER, true, false);
 		Inventory = cp.Button("", cp.setBounds(this.getWidth()/2-100, this.getHeight()/2-50, 200, 50), "Inventario", 50, 50, JButton.CENTER, JButton.RIGHT, JButton.CENTER, Mecanics.Employe.get(Mecanics.getEmploye(User)).getAdmin(), false);
 		newEmploye = cp.Button("", cp.setBounds(this.getWidth()/2-100, this.getHeight()-this.getHeight()/3, 200, 50), "Registro", 50, 50, JButton.CENTER, JButton.RIGHT, JButton.CENTER, Mecanics.Employe.get(Mecanics.getEmploye(User)).getAdmin(), false);
 		Logout = cp.Button("", cp.setBounds(30, 20, 130, 25), ConfiguracionesSalir[m], 25, 25, JButton.CENTER, JButton.RIGHT, JButton.LEFT, true, false);
 		
 		add(Leave);
+		add(Setting);
 		add(Cashier);
 		add(Inventory);
 		add(newEmploye);
@@ -83,12 +87,14 @@ public class Menu extends JPanel{
 
 		setLayout(null);
 		setComponentZOrder(Leave, z);	z++;
+		setComponentZOrder(Setting, z);	z++;
 		setComponentZOrder(Cashier, z);	z++;
 		setComponentZOrder(Inventory, z);	z++;
 		setComponentZOrder(newEmploye, z);	z++;
 		setComponentZOrder(Logout, z);	z++;
 		
 		Leave.setVisible(true);
+		Setting.setVisible(true);
 		Cashier.setVisible(true);
 		Inventory.setVisible(true);
 		newEmploye.setVisible(true);
@@ -131,6 +137,20 @@ public class Menu extends JPanel{
 				}
 				
 				System.exit(0);
+				
+				repaint();
+
+			}
+
+		});
+		
+		Setting.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e){
+				
+				Runner.contentPane.removeAll();
+				
+				Runner.contentPane.add(Runner.Setting, Integer.valueOf(0));
 				
 				repaint();
 
@@ -223,6 +243,44 @@ public class Menu extends JPanel{
 			public void mouseReleased(MouseEvent e) {
 
 				Leave.setSize(25,25);
+
+				repaint();
+
+			}
+
+			public void mouseExited(MouseEvent e) {
+
+				repaint();
+
+			}
+
+		});
+		
+		Setting.addMouseListener(new MouseAdapter() {
+
+			public void mouseEntered(MouseEvent e) {
+				
+				repaint();
+
+			}
+
+			public void mouseClicked(MouseEvent e) {
+
+				repaint();
+
+			}
+
+			public void mousePressed(MouseEvent e){
+
+				Setting.setSize(35,35);
+
+				repaint();
+
+			}
+
+			public void mouseReleased(MouseEvent e) {
+
+				Setting.setSize(25,25);
 
 				repaint();
 

@@ -47,18 +47,12 @@ public class Configuraciones extends JPanel{
 	private JLabel Address;
 	private JTextField TextPanelTitle;
 	private JTextField TextPanelAddress;
-	private JButton Mode;
-	private JButton Language;
 	private JButton Edit;
 	private JButton Save;
 	private JButton Logout;
 	
-	private String[][] ModoTexto = {{"Modo Oscuro","Modo Claro"},{"Dark Mode","Light Mode"}};
-	private String[] IdiomaTexto = {"English","Español"};
 	private String[] LogoutTexto = {"Salir","Logout"};
 	
-	private String[] ConfiguracionesModo = {"Dark","Light"};
-	private String[] ConfiguracionesIdioma = {"idiomaLight","idiomaDark"};
 	private String[] ConfiguracionesEditar = {"EditarLight","EditarDark"};
 	private String[] ConfiguracionesGuardar = {"GuardarLight","GuardarDark"};
 	private String[] ConfiguracionesSalir = {"CerrarLight","CerrarDark"};
@@ -79,8 +73,6 @@ public class Configuraciones extends JPanel{
 		Address = cp.Label(Mecanics.getAddress(true), cp.setBounds((this.getWidth()/2)-200, 165, 400, 30), SwingConstants.CENTER, new Font("Clarendon Blk BT", Font.BOLD, 15));
 		TextPanelTitle = cp.TextPanel("", cp.setBounds((this.getWidth()/2)-200, 130, 400, 30), SwingConstants.CENTER, new Font("Clarendon Blk BT", Font.BOLD, 20), Color.BLUE, Color.BLUE, true, false);
 		TextPanelAddress = cp.TextPanel("", cp.setBounds((this.getWidth()/2)-200, 165, 400, 30), SwingConstants.CENTER, new Font("Clarendon Blk BT", Font.BOLD, 15), Color.BLUE, Color.BLUE, true, false);
-		Mode = cp.Button("", cp.setBounds(20, 30, 130, 25), ConfiguracionesModo[m], 25, 25, JButton.CENTER, JButton.RIGHT, JButton.LEFT, true, false);
-		Language = cp.Button("", cp.setBounds(20, 70, 130, 25), ConfiguracionesIdioma[m], 25, 25, JButton.CENTER, JButton.RIGHT, JButton.LEFT, true, false);
 		Logout = cp.Button("", cp.setBounds(this.getWidth()-170, 10, 130, 25), ConfiguracionesSalir[m], 25, 25, JButton.CENTER, JButton.LEFT, JButton.RIGHT, true, false);
 		Edit = cp.Button("", cp.setBounds(410, 200, 25, 25), ConfiguracionesEditar[m], 25, 25, true, false);
 		Save = cp.Button("", cp.setBounds(520, 200, 25, 25), ConfiguracionesGuardar[m], 25, 25, false, false);
@@ -90,8 +82,6 @@ public class Configuraciones extends JPanel{
 		add(Address);
 		add(TextPanelTitle);
 		add(TextPanelAddress);
-		add(Mode);
-		add(Language);
 		add(Logout);
 		add(Edit);
 		add(Save);
@@ -102,8 +92,6 @@ public class Configuraciones extends JPanel{
 		setComponentZOrder(Address, z);z++;
 		setComponentZOrder(TextPanelTitle, z);	z++;
 		setComponentZOrder(TextPanelAddress, z);z++;
-		setComponentZOrder(Mode, z);z++;
-		setComponentZOrder(Language, z);z++;
 		setComponentZOrder(Logout, z);z++;
 		setComponentZOrder(Edit, z);	z++;
 		setComponentZOrder(Save, z);	z++;
@@ -113,8 +101,6 @@ public class Configuraciones extends JPanel{
 		Address.setVisible(true);
 		TextPanelTitle.setVisible(false);
 		TextPanelAddress.setVisible(false);
-		Mode.setVisible(true);
-		Language.setVisible(true);
 		Logout.setVisible(true);
 		Edit.setVisible(true);
 		Save.setVisible(true);
@@ -141,84 +127,6 @@ public class Configuraciones extends JPanel{
     }
 	
 	private void Actions(){
-		
-		Mode.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent e){
-				
-				if (m==0){
-					
-					Mecanics.setMode(true,1);
-					
-				}else{
-					
-					Mecanics.setMode(true,0);
-					
-				}
-				
-				Dashboard.contentPane.removeAll();
-				
-				Dashboard.Caja = new CajaRegistradora(true,new Factura("",0,0,0,Dashboard.datos,"",Mecanics.Employe.get(Mecanics.getEmploye(Dashboard.User)), new Cliente(" "," "," "," "," "," ")));
-				Dashboard.CRUD = new RegistrarUsuario("");
-				Dashboard.Cuenta = new Facturas();
-				Dashboard.Settings = new Configuraciones(DashboardFrame);
-				
-				Dashboard.WindowSelected = Dashboard.VentanaSeleccionada(Fondo[Math.abs(m-1)]);
-				Dashboard.WindowSelected.setBounds(720, 21, 225, 50);
-				
-				Dashboard.contentPane.add(Dashboard.Background, Integer.valueOf(0));
-				Dashboard.contentPane.add(Dashboard.Settings, Integer.valueOf(1));
-				Dashboard.contentPane.add(Dashboard.Window1st, Integer.valueOf(2));
-				Dashboard.contentPane.add(Dashboard.Window2nd, Integer.valueOf(3));
-				Dashboard.contentPane.add(Dashboard.Window3rd, Integer.valueOf(4));
-				Dashboard.contentPane.add(Dashboard.Window4th, Integer.valueOf(5));
-				Dashboard.contentPane.add(Dashboard.WindowSelected, Integer.valueOf(6));
-
-				Inventory.Inventario.moder=Mecanics.getMode(true);
-				repaint();
-
-			}
-
-		});
-		
-		Language.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent e){
-				
-				if (l==0){
-					
-					Mecanics.setLanguage(true,1);
-					
-				}else{
-					
-					Mecanics.setLanguage(true,0);
-					
-				}
-				
-				Dashboard.contentPane.removeAll();
-				
-				Dashboard.Caja = new CajaRegistradora(true,new Factura("",0,0,0,Dashboard.datos,"",Mecanics.Employe.get(Mecanics.getEmploye(Dashboard.User)), new Cliente(" "," "," "," "," "," ")));
-				Dashboard.CRUD = new RegistrarUsuario("");
-				Dashboard.Cuenta = new Facturas();
-				Dashboard.Settings = new Configuraciones(DashboardFrame);
-				
-				Dashboard.WindowSelected = Dashboard.VentanaSeleccionada(Fondo[m]);
-				Dashboard.WindowSelected.setBounds(720, 21, 225, 50);
-				
-				Dashboard.contentPane.add(Dashboard.Background, Integer.valueOf(0));
-				Dashboard.contentPane.add(Dashboard.Settings, Integer.valueOf(1));
-				Dashboard.contentPane.add(Dashboard.Window1st, Integer.valueOf(2));
-				Dashboard.contentPane.add(Dashboard.Window2nd, Integer.valueOf(3));
-				Dashboard.contentPane.add(Dashboard.Window3rd, Integer.valueOf(4));
-				Dashboard.contentPane.add(Dashboard.Window4th, Integer.valueOf(5));
-				Dashboard.contentPane.add(Dashboard.WindowSelected, Integer.valueOf(6));
-
-				Inventory.Inventario.lengu=Mecanics.getLanguage(true);
-				repaint();
-
-			}
-
-		});
 		
 		Edit.addActionListener(new ActionListener() {
 
@@ -268,6 +176,8 @@ public class Configuraciones extends JPanel{
 		Logout.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e){
+				
+				DashboardFrame.removeAll();
 				
 				Runner.contentPane.removeAll();
 				
@@ -418,98 +328,6 @@ public class Configuraciones extends JPanel{
             }
 
         });
-		
-		Mode.addMouseListener(new MouseAdapter() {
-
-			public void mouseEntered(MouseEvent e) {
-
-				Mode.setText(ModoTexto[l][m]);
-
-				repaint();
-
-			}
-
-			public void mouseClicked(MouseEvent e) {
-
-				repaint();
-
-			}
-
-			public void mousePressed(MouseEvent e){
-
-				Mode.setText("");
-
-				Mode.setSize(140, 35);
-
-				repaint();
-
-			}
-
-			public void mouseReleased(MouseEvent e) {
-
-				Mode.setText(ModoTexto[l][m]);
-
-				Mode.setSize(130, 25);
-
-				repaint();
-
-			}
-
-			public void mouseExited(MouseEvent e) {
-
-				Mode.setText("");
-
-				repaint();
-
-			}
-
-		});
-		
-		Language.addMouseListener(new MouseAdapter() {
-
-			public void mouseEntered(MouseEvent e) {
-
-				Language.setText(IdiomaTexto[l]);
-
-				repaint();
-
-			}
-
-			public void mouseClicked(MouseEvent e) {
-
-				repaint();
-
-			}
-
-			public void mousePressed(MouseEvent e){
-
-				Language.setText("");
-
-				Language.setSize(140, 35);
-
-				repaint();
-
-			}
-
-			public void mouseReleased(MouseEvent e) {
-
-				Language.setText(IdiomaTexto[l]);
-
-				Language.setSize(130, 25);
-
-				repaint();
-
-			}
-
-			public void mouseExited(MouseEvent e) {
-
-				Language.setText("");
-
-				repaint();
-
-			}
-
-		});
 		
 		Logout.addMouseListener(new MouseAdapter() {
 
