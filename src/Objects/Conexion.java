@@ -133,8 +133,8 @@ public class Conexion{
 		
 		try{
 			
-			PreparedStatement Script = cn.prepareStatement("INSERT INTO Inventario (Code, Product, Brand, Description, Amount, Price, Unid, Image) VALUES "
-			+"('"+p.getCode()+"', '"+p.getProduct()+"', '"+p.getBrand()+"', '"+p.getDescription()+"', "+p.getAmount()+", "+p.getPrice()
+			PreparedStatement Script = cn.prepareStatement("INSERT INTO Inventario (Code, Product, Brand, Description, Amount, Sold, Price, Unid, Image) VALUES "
+			+"('"+p.getCode()+"', '"+p.getProduct()+"', '"+p.getBrand()+"', '"+p.getDescription()+"', "+p.getAmount()+", "+p.getSold()+", "+p.getPrice()
 			+", '"+p.getUnid()+"', '"+p.getImage()+"');");
 			
 			Script.execute();
@@ -161,7 +161,7 @@ public class Conexion{
 				
 				if (indice==n){
 					
-					p = new Archivo(Script.getString("Code"), Script.getString("Product"), Script.getString("Brand"), Script.getString("Description"), Script.getFloat("Amount"), Script.getFloat("Price"), Script.getString("Unid"), Script.getString("Image"));
+					p = new Archivo(Script.getString("Code"), Script.getString("Product"), Script.getString("Brand"), Script.getString("Description"), Script.getFloat("Amount"), Script.getFloat("Sold"), Script.getFloat("Price"), Script.getString("Unid"), Script.getString("Image"));
 					
 				}
 				

@@ -336,10 +336,10 @@ public class Inventario extends JFrame {
 		        			
 		            try {
 
-		                Archivo prod = new Archivo(codigo.getText(), producto.getText(), marca.getText(), descripcion.getText(), Float.parseFloat(existencias.getText()), Float.parseFloat(precio.getText()), unidad.getSelectedItem().toString(), ruta);
+		                Archivo prod = new Archivo(codigo.getText(), producto.getText(), marca.getText(), descripcion.getText(), Float.parseFloat(existencias.getText()), 0, Float.parseFloat(precio.getText()), unidad.getSelectedItem().toString(), ruta);
 
 		                a.sentence("INSERT INTO `Inventario` (`Code`, `Product`, `Brand`, `Description`, `Amount`,`Price`,`Unid`,`Image`) "
-		                        + "VALUES ('" + prod.getCode().toUpperCase() + "', '" + prod.getProduct() + "', '" + prod.getBrand() + "', '" + prod.getDescription() + "', '" + prod.getAmount() + "', '" + prod.getPrice() + "', '" + prod.getUnid() + "', '" + prod.getImage() + "');");
+		                        + "VALUES ('" + prod.getCode().toUpperCase() + "', '" + prod.getProduct() + "', '" + prod.getBrand() + "', '" + prod.getDescription() + "', '" + prod.getAmount() + "', 0, '" + prod.getPrice() + "', '" + prod.getUnid() + "', '" + prod.getImage() + "');");
 
 		            } catch (Exception b) {
 		                JOptionPane.showMessageDialog(null, "Verifique los datos\nError: " + b.toString());
@@ -659,7 +659,7 @@ public class Inventario extends JFrame {
             Conexion a = new Conexion();
             ResultSet res=a.consulta( "SELECT * FROM inventario WHERE `Code`='"+cod+"'");
 
-                prod=new Archivo(res.getString("Code"),res.getString("Product"),res.getString("Brand"),res.getString("Description"),Float.parseFloat(res.getString("Amount")),Float.parseFloat(res.getString("Price")),res.getString("Unid"),res.getString("Image"));
+                prod=new Archivo(res.getString("Code"),res.getString("Product"),res.getString("Brand"),res.getString("Description"),Float.parseFloat(res.getString("Amount")), 0,Float.parseFloat(res.getString("Price")),res.getString("Unid"),res.getString("Image"));
 
             res.close();
                 

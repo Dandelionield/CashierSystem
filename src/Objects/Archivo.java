@@ -7,11 +7,12 @@ public class Archivo{
 	private String Marca;
 	private String Descripcion;
 	private float Cantidad;
+	private float Vendido;
 	private float Precio;
 	private String Unidad;
 	private String Imagen;
 	
-	public Archivo(String Codigo, String Producto, String Marca, String Descripcion, float Cantidad, float Precio, String Unidad, String Imagen){
+	public Archivo(String Codigo, String Producto, String Marca, String Descripcion, float Cantidad, float Vendido, float Precio, String Unidad, String Imagen){
 		
 		this.Codigo = Codigo;
 		this.Producto = Producto;
@@ -80,7 +81,21 @@ public class Archivo{
 
 	public void setAmount(float Cantidad){
 		
+		Vendido+=this.Cantidad-Cantidad;		
+		
 		this.Cantidad = Cantidad;
+		
+	}
+	
+	public float getSold(){
+		
+		return Vendido;
+		
+	}
+	
+	public void setSold(float Vendido){
+		
+		this.Vendido = Vendido;
 		
 	}
 	
