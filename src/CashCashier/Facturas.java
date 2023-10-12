@@ -324,7 +324,7 @@ public class Facturas extends JPanel{
 							
 							Archivo q =  Mecanics.Archive.get(indice);
 							
-							q.setAmount(q.getAmount()+Float.parseFloat(p[2].toString()));
+							q.withDraw(-Float.parseFloat(p[2].toString()));
 							
 							Mecanics.Archive.remove(indice);
 							Mecanics.Archive.add(indice,q);

@@ -877,7 +877,7 @@ public class CajaRegistradora extends JPanel{
 									
 									d = Mecanics.Archive.get(indice);
 									
-									d.setAmount(d.getAmount()-Float.parseFloat(Tablitita.getValueAt(i, 2).toString()));
+									d.withDraw(Float.parseFloat(Tablitita.getValueAt(i, 2).toString()));
 									
 									Mecanics.Archive.remove(indice);
 									Mecanics.Archive.add(indice,d);
@@ -946,7 +946,7 @@ public class CajaRegistradora extends JPanel{
 												
 												d = Mecanics.Archive.get(indice);
 												
-												d.setAmount(d.getAmount()-(Float.parseFloat(b[2].toString())-Float.parseFloat(q[2].toString())));
+												d.withDraw(Float.parseFloat(b[2].toString())-Float.parseFloat(q[2].toString()));
 												
 												Mecanics.Archive.remove(indice);
 												Mecanics.Archive.add(indice,d);
@@ -986,7 +986,7 @@ public class CajaRegistradora extends JPanel{
 												
 													d = Mecanics.Archive.get(indice);
 													
-													d.setAmount(d.getAmount()+Float.parseFloat(b[2].toString()));
+													d.withDraw(-Float.parseFloat(b[2].toString()));
 													
 													Mecanics.Archive.remove(indice);
 													Mecanics.Archive.add(indice,d);

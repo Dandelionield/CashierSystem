@@ -79,9 +79,7 @@ public class Archivo{
 		
 	}
 
-	public void setAmount(float Cantidad){
-		
-		Vendido+=this.Cantidad-Cantidad;		
+	public void setAmount(float Cantidad){	
 		
 		this.Cantidad = Cantidad;
 		
@@ -132,6 +130,13 @@ public class Archivo{
 	public void setImage(String Imagen){
 		
 		this.Imagen = Imagen;
+		
+	}
+	
+	public void withDraw(float wd){
+		
+		Cantidad-= wd;
+		Vendido+= wd;
 		
 	}
 	
