@@ -19,6 +19,7 @@ public class Archivo{
 		this.Marca = Marca;
 		this.Descripcion = Descripcion;
 		this.Cantidad = Cantidad;
+		this.Vendido = Vendido;
 		this.Precio = Precio;
 		this.Unidad = Unidad;
 		this.Imagen = Imagen;
