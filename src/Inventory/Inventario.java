@@ -60,7 +60,7 @@ public class Inventario extends JFrame {
 			public void run() {
 				try {
 					
-					Inventario frame = new Inventario(0,1);
+					Inventario frame = new Inventario(0,0);
 					frame.setLocationRelativeTo(null);
 					frame.setVisible(true);
 					
@@ -89,7 +89,7 @@ public class Inventario extends JFrame {
     
 	
 	private ImageIcon regi;
-    static String [] len={"Informacion de producto:","Productos Disponibles:","Codigo:", "Producto:", "Precio:", "Existencias:","Unidad:","Marca:","Descripcion:","Seleccionar Imagen","Guardar","Eliminar","(ESP)","Editar","Vendido:"};
+    static String [] len={"Informacion de producto:","Productos Disponibles:","Codigo:", "Producto:", "Precio:", "Existencias:","Unidad:","Marca:","Descripcion:","Seleccionar Imagen","Guardar","Eliminar","(ESP)","Editar","Vendido:","Mas popular:","Menos popular:"};
 	private JComboBox<String> unidad;
 	private JLabel foto;
 	private JTextArea descripcion;;
@@ -545,12 +545,12 @@ public class Inventario extends JFrame {
 	}
 	
 	public void esp() {
-		String leno[]= {"Informacion de producto:","Productos Disponibles:","Codigo:", "Producto:", "Precio:", "Existencias:","Unidad:","Marca:","Descripcion:","Seleccionar Imagen","Guardar","Eliminar","(ESP)","Editar","Vendido:"};
+		String leno[]= {"Informacion de producto:","Productos Disponibles:","Codigo:", "Producto:", "Precio:", "Existencias:","Unidad:","Marca:","Descripcion:","Seleccionar Imagen","Guardar","Eliminar","(ESP)","Editar","Vendido:","Mas popular:","Menos popular:"};
 			len=leno;
 	}
 	
 	public void ing() {
-		String leno[]= {"Product information:","Available products:","Code:", "Product:", "Price:", "Stock:","Unit:","Brand:","Description:","Select Image","Save","Delete","(ENG)","Edit","Sold:"};
+		String leno[]= {"Product information:","Available products:","Code:", "Product:", "Price:", "Stock:","Unit:","Brand:","Description:","Select Image","Save","Delete","(ENG)","Edit","Sold:","Most popular:","Least popular:"};
 			len=leno;
 	}
 
@@ -571,6 +571,8 @@ public class Inventario extends JFrame {
 		txtidioma.setText(len[12]);
 		if(access==true) {btnguardar.setText(len[13]);}
 		txtsold.setText(len[14]);
+		txtpopular.setText(len[15]);
+		txtunpopular.setText(len[16]);
 		String []titulos={len[2], len[3], len[4], len[5], len[7]};
 		modelo = new DefaultTableModel(null,titulos);
 		table.setModel(modelo);
