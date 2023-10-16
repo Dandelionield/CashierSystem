@@ -164,13 +164,13 @@ public class Inventario extends JFrame {
 		
 		JLabel fondo=new JLabel("");
 		fondo.setBounds(0, 0, 1013, 609);
-		ImageIcon imgfondo = new ImageIcon(new ImageIcon("./src/ResourcePackCaja/Fondo.JPG").getImage().getScaledInstance(fondo.getWidth(), fondo.getHeight(), Image.SCALE_DEFAULT));
+		ImageIcon imgfondo = new ImageIcon(new ImageIcon("./src/ResourcePackCaja/Fondo.JPG").getImage().getScaledInstance(fondo.getWidth(), fondo.getHeight(), Image.SCALE_SMOOTH));
         fondo.setIcon(imgfondo);
         contentPane.add(fondo);
 		
 		foto = new JLabel("");
 		foto.setBounds(25, 25, 204, 176);
-		ImageIcon pfoto = new ImageIcon(new ImageIcon("./src/ResourcePackCaja/image-not-found.png").getImage().getScaledInstance(foto.getWidth(), foto.getHeight(), Image.SCALE_DEFAULT));
+		ImageIcon pfoto = new ImageIcon(new ImageIcon("./src/ResourcePackCaja/image-not-found.png").getImage().getScaledInstance(foto.getWidth(), foto.getHeight(), Image.SCALE_SMOOTH));
         foto.setIcon(pfoto);
 		foto.setBorder(new LineBorder(new Color(0, 0, 0)));
 		panel.add(foto);
@@ -208,7 +208,12 @@ public class Inventario extends JFrame {
 			           
 			           ruta=miu.getImage();
 			           
-			           ImageIcon ima = new ImageIcon(new ImageIcon(ruta).getImage().getScaledInstance(foto.getWidth(), foto.getHeight(), Image.SCALE_DEFAULT));
+			           if(new File(miu.getImage()).exists()==false) {
+			        	   
+			        	   ruta="./src/ResourcePackCaja/image-not-found.png";
+			           }
+			           
+			           ImageIcon ima = new ImageIcon(new ImageIcon(ruta).getImage().getScaledInstance(foto.getWidth(), foto.getHeight(), Image.SCALE_AREA_AVERAGING));
 			            foto.setIcon(ima);
 			            foto.repaint();
 			            
@@ -328,23 +333,24 @@ public class Inventario extends JFrame {
 		               System.out.println(ruta);
 		               
 		               
-		            ImageIcon ima = new ImageIcon(new ImageIcon(ruta).getImage().getScaledInstance(foto.getWidth(), foto.getHeight(), Image.SCALE_DEFAULT));
+		            ImageIcon ima = new ImageIcon(new ImageIcon(ruta).getImage().getScaledInstance(foto.getWidth(), foto.getHeight(), Image.SCALE_SMOOTH));
 		               foto.setIcon(ima);
 		               foto.repaint();
 		           }
 				
 			}
 		});
-		btnimage.setBounds(25, 196, 204, 23);
+		btnimage.setBounds(25, 200, 204, 23);
 		panel.add(btnimage);
 		
 		btnguardar = new JButton(len[10]);
 		btnguardar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-		
 
 		        if (access == false) {
+		        	
+		        	
 		        	
 		       	Conexion a = new Conexion();
 		        			
@@ -354,8 +360,7 @@ public class Inventario extends JFrame {
 
 		                a.sentence("INSERT INTO `Inventario` (`Code`, `Product`, `Brand`, `Description`, `Amount`, `Sold`,`Price`,`Unid`,`Image`) "
 		                        + "VALUES ('" + prod.getCode().toUpperCase() + "', '" + prod.getProduct() + "', '" + prod.getBrand() + "', '" + prod.getDescription() + "', '" + prod.getAmount() + "', 0, '" + prod.getPrice() + "', '" + prod.getUnid() + "', '" + prod.getImage() + "');");
-		                
-		                
+		                 
 		                Mecanics.iArchivo(ruta,"./src/Inventory/productPhoto",codigo.getText());
 		                
 		            } catch (Exception b) {
@@ -363,21 +368,29 @@ public class Inventario extends JFrame {
 		                repaint();
 		            }
 		            
+		            
 		        }
 
 		        if (access == true) {
 		        		
+		        	
+		        	
 		           	Conexion a = new Conexion();
 		        	
 		            try {
 		            	
 		                a.sentence("UPDATE `Inventario` SET  `Product`='"+producto.getText()+"', `Brand`='"+marca.getText()+"', `Description`='"+descripcion.getText()+"', `Amount`='"+Float.parseFloat(existencias.getText())+"',`Price`='"+Float.parseFloat(precio.getText())+"',`Unid`='"+unidad.getSelectedItem().toString()+"',`Image`='"+("./src/Inventory/productPhoto/"+codigo.getText()+"."+Mecanics.getExtension(new File(ruta)))+"'  WHERE `Code`='" + codigo.getText().toUpperCase() + "';");
-		                
 		                Mecanics.iArchivo(ruta,"./src/Inventory/productPhoto",codigo.getText());
+		                
 		            } catch (Exception b) {
 		                JOptionPane.showMessageDialog(null, "Verifique los datos\nError: " + b.toString());
+
 		                repaint();
 		            }
+		            
+
+		            	
+		            
 
 		        }
 
@@ -417,14 +430,14 @@ public class Inventario extends JFrame {
 		
 		JLabel candado = new JLabel("");
 		candado.setBounds(843, 11, 35, 35);		
-		ImageIcon can = new ImageIcon(new ImageIcon("./src/ResourcePackCaja/CandadoCerrado.png").getImage().getScaledInstance(candado.getWidth(), candado.getHeight(), Image.SCALE_DEFAULT));
+		ImageIcon can = new ImageIcon(new ImageIcon("./src/ResourcePackCaja/CandadoCerrado.png").getImage().getScaledInstance(candado.getWidth(), candado.getHeight(), Image.SCALE_AREA_AVERAGING));
         candado.setIcon(can);		
 		panel.add(candado);
 		
 		
 		editar = new JLabel("");
 		editar.setBounds(452, 11, 35, 35);
-		ImageIcon ed = new ImageIcon(new ImageIcon("./src/ResourcePackCaja/EditarLight.png").getImage().getScaledInstance(editar.getWidth(), editar.getHeight(), Image.SCALE_DEFAULT));
+		ImageIcon ed = new ImageIcon(new ImageIcon("./src/ResourcePackCaja/EditarLight.png").getImage().getScaledInstance(editar.getWidth(), editar.getHeight(), Image.SCALE_AREA_AVERAGING));
         editar.setIcon(ed);
 
 		
@@ -437,14 +450,14 @@ public class Inventario extends JFrame {
 
 			        if (access == true) {
 
-			            regi = new ImageIcon(new ImageIcon("./src/ResourcePackCaja/CandadoAbierto.png").getImage().getScaledInstance(candado.getWidth(), candado.getHeight(), Image.SCALE_DEFAULT));
+			            regi = new ImageIcon(new ImageIcon("./src/ResourcePackCaja/CandadoAbierto.png").getImage().getScaledInstance(candado.getWidth(), candado.getHeight(), Image.SCALE_AREA_AVERAGING));
 			            candado.setIcon(regi);
 			            btnguardar.setText(len[13]);
 			        }
 
 			        if (access == false) {
 
-			            regi = new ImageIcon(new ImageIcon("./src/ResourcePackCaja/CandadoCerrado.png").getImage().getScaledInstance(candado.getWidth(), candado.getHeight(), Image.SCALE_DEFAULT));
+			            regi = new ImageIcon(new ImageIcon("./src/ResourcePackCaja/CandadoCerrado.png").getImage().getScaledInstance(candado.getWidth(), candado.getHeight(), Image.SCALE_AREA_AVERAGING));
 			            candado.setIcon(regi);
 			            btnguardar.setText(len[10]);
 
@@ -504,12 +517,10 @@ public class Inventario extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				
-				
+				reporte();
 				
 			}
-			@Override
-			public void mousePressed(MouseEvent e) {
-			}
+			
 		});
 		
 		propiedades.add(imprimir);
@@ -527,7 +538,7 @@ public class Inventario extends JFrame {
 		
 	}
 	
-	protected void reporte() {
+	public void reporte() {
 		
 
 		
@@ -699,7 +710,7 @@ public class Inventario extends JFrame {
 			          
 			           String arc= Mecanics.getExtension(archivo);
 			           
-			           if(arc.equalsIgnoreCase("png")==false && arc.equalsIgnoreCase("jpeg")==false) {
+			           if(arc.equalsIgnoreCase("png")==false && arc.equalsIgnoreCase("jpg")==false) {
 			        	   JOptionPane.showMessageDialog(null, "ERROR, Seleccione un archivo con los formatos permitidos. \n\n->PNG\n->JPEG\n");
 			        	   archivo=new File("./src/ResourcePackCaja/image-not-found.png");
 			           }
