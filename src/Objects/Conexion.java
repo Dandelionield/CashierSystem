@@ -361,18 +361,14 @@ public class Conexion{
 		
 	}
 	
-	public void sentence(String query){
+	public void sentence(String query) throws SQLException{
         
-        try {
+       
             
             PreparedStatement snt=cn.prepareStatement(query);
             snt.execute();
             
            
-        } catch (SQLException e) {
-            
-            JOptionPane.showMessageDialog(null, "Ejecucion fallida: "+e.toString());
-        }
         
     }
     
