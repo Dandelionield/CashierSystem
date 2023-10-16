@@ -30,15 +30,14 @@ import javax.swing.JTextPane;
 import javax.swing.UIManager;
 import javax.swing.JTextArea;
 import java.awt.ScrollPane;
+import java.awt.Toolkit;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.table.DefaultTableModel;
 
-import Main.Login;
-import Main.Mecanics;
-import Main.Runner;
+import Main.*;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -47,6 +46,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 
 public class Inventario extends JFrame {
 
@@ -60,7 +62,7 @@ public class Inventario extends JFrame {
 			public void run() {
 				try {
 					
-					Inventario frame = new Inventario(0,0);
+					Inventario frame = new Inventario(1,0);
 					frame.setLocationRelativeTo(null);
 					frame.setVisible(true);
 					
@@ -113,6 +115,7 @@ public class Inventario extends JFrame {
 		moder=theme;
 		lengu=leng;
 		
+		setIconImage(Toolkit.getDefaultToolkit().getImage("./src/ResourcePackCaja/Inventario.png"));
 			
 		addWindowListener(new WindowAdapter() {
 			@Override
@@ -292,7 +295,7 @@ public class Inventario extends JFrame {
 		txtunidad.setBounds(262, 207, 72, 26);
 		panel.add(txtunidad);
 		
-		DefaultComboBoxModel<String> modl = new DefaultComboBoxModel<>(new String[] {"u", "Kg", "g", "L"});
+		DefaultComboBoxModel<String> modl = new DefaultComboBoxModel<>(new String[] {"U", "Kg", "g", "L"});
 		unidad = new JComboBox<>(modl);
 		unidad.setBounds(344, 213, 60, 22);
 		panel.add(unidad);
@@ -323,7 +326,7 @@ public class Inventario extends JFrame {
 		               
 		               ruta= archivo.getAbsolutePath();
 		               System.out.println(ruta);
-		               iArchivo("./src/");
+		               
 		               
 		            ImageIcon ima = new ImageIcon(new ImageIcon(ruta).getImage().getScaledInstance(foto.getWidth(), foto.getHeight(), Image.SCALE_DEFAULT));
 		               foto.setIcon(ima);
@@ -347,15 +350,19 @@ public class Inventario extends JFrame {
 		        			
 		            try {
 
-		                Archivo prod = new Archivo(codigo.getText(), producto.getText(), marca.getText(), descripcion.getText(), Float.parseFloat(existencias.getText()), 0, Float.parseFloat(precio.getText()), unidad.getSelectedItem().toString(), ruta);
+		                Archivo prod = new Archivo(codigo.getText(), producto.getText(), marca.getText(), descripcion.getText(), Float.parseFloat(existencias.getText()), 0, Float.parseFloat(precio.getText()), unidad.getSelectedItem().toString(), "./src/Inventory/productPhoto/"+codigo.getText()+"."+Mecanics.getExtension(new File(ruta)));
 
 		                a.sentence("INSERT INTO `Inventario` (`Code`, `Product`, `Brand`, `Description`, `Amount`, `Sold`,`Price`,`Unid`,`Image`) "
 		                        + "VALUES ('" + prod.getCode().toUpperCase() + "', '" + prod.getProduct() + "', '" + prod.getBrand() + "', '" + prod.getDescription() + "', '" + prod.getAmount() + "', 0, '" + prod.getPrice() + "', '" + prod.getUnid() + "', '" + prod.getImage() + "');");
-
+		                
+		                
+		                Mecanics.iArchivo(ruta,"./src/Inventory/productPhoto",codigo.getText());
+		                
 		            } catch (Exception b) {
 		                JOptionPane.showMessageDialog(null, "Verifique los datos\nError: " + b.toString());
 		                repaint();
 		            }
+		            
 		        }
 
 		        if (access == true) {
@@ -363,8 +370,10 @@ public class Inventario extends JFrame {
 		           	Conexion a = new Conexion();
 		        	
 		            try {
-		                a.sentence("UPDATE `Inventario` SET  `Product`='"+producto.getText()+"', `Brand`='"+marca.getText()+"', `Description`='"+descripcion.getText()+"', `Amount`='"+Float.parseFloat(existencias.getText())+"',`Price`='"+Float.parseFloat(precio.getText())+"',`Unid`='"+unidad.getSelectedItem().toString()+"',`Image`='"+ruta+"'  WHERE `Code`='" + codigo.getText().toUpperCase() + "';");
-
+		            	
+		                a.sentence("UPDATE `Inventario` SET  `Product`='"+producto.getText()+"', `Brand`='"+marca.getText()+"', `Description`='"+descripcion.getText()+"', `Amount`='"+Float.parseFloat(existencias.getText())+"',`Price`='"+Float.parseFloat(precio.getText())+"',`Unid`='"+unidad.getSelectedItem().toString()+"',`Image`='"+("./src/Inventory/productPhoto/"+codigo.getText()+"."+Mecanics.getExtension(new File(ruta)))+"'  WHERE `Code`='" + codigo.getText().toUpperCase() + "';");
+		                
+		                Mecanics.iArchivo(ruta,"./src/Inventory/productPhoto",codigo.getText());
 		            } catch (Exception b) {
 		                JOptionPane.showMessageDialog(null, "Verifique los datos\nError: " + b.toString());
 		                repaint();
@@ -508,23 +517,14 @@ public class Inventario extends JFrame {
 		
 		boolean aspect=false, idiom=false;
 		
-		if(moder==0) {
-			aspect=true;
-		}
-		
-		if(lengu==1) {
+		if(moder==0) {aspect=true;}
+		if(lengu==1) { ing(); }
+		else {	esp(); }
 			
-			ing();	
-			
-			
-		}else {
-		
-			esp();
-			
-		}
-		
 		modifymode(aspect);
 		modifylen();
+		
+		
 	}
 	
 	protected void reporte() {
@@ -538,12 +538,8 @@ public class Inventario extends JFrame {
 		
 	}
 
-	protected void iArchivo(String ruta)  {
-
-
-		
-	}
 	
+
 	public void esp() {
 		String leno[]= {"Informacion de producto:","Productos Disponibles:","Codigo:", "Producto:", "Precio:", "Existencias:","Unidad:","Marca:","Descripcion:","Seleccionar Imagen","Guardar","Eliminar","(ESP)","Editar","Vendido:","Mas popular:","Menos popular:"};
 			len=leno;
@@ -554,6 +550,7 @@ public class Inventario extends JFrame {
 			len=leno;
 	}
 
+	
 	public void modifylen() {
 
 		txtInformacion.setText(len[0]);		
@@ -656,6 +653,8 @@ public class Inventario extends JFrame {
     }
 	
 	
+	
+	
 	 public Archivo muestra(String cod){
 	        
          
@@ -678,9 +677,11 @@ public class Inventario extends JFrame {
         return prod;
     }
 	
+	 
+	 
 	 public File actionimage() {
 			
-			String[] arc; 
+			
 			File archivo=new File("./src/ResourcePackCaja/image-not-found.png");
 			
 			try {
@@ -696,10 +697,9 @@ public class Inventario extends JFrame {
 			           
 			           archivo= jf.getSelectedFile();
 			          
-			           String rut=archivo.getName();
-			           arc= rut.split("\\.");
+			           String arc= Mecanics.getExtension(archivo);
 			           
-			           if(arc[arc.length-1].equalsIgnoreCase("png")==false && arc[arc.length-1].equalsIgnoreCase("jpeg")==false) {
+			           if(arc.equalsIgnoreCase("png")==false && arc.equalsIgnoreCase("jpeg")==false) {
 			        	   JOptionPane.showMessageDialog(null, "ERROR, Seleccione un archivo con los formatos permitidos. \n\n->PNG\n->JPEG\n");
 			        	   archivo=new File("./src/ResourcePackCaja/image-not-found.png");
 			           }
@@ -712,6 +712,8 @@ public class Inventario extends JFrame {
 	           
 	           return archivo;
 	    }       
+	 
+	 
 	 
 	 public Archivo mayor() {
 		 
@@ -740,6 +742,7 @@ public class Inventario extends JFrame {
 		 
 		 return prod;
 	 }
+	 
 	 
 	public Archivo menor() {
 			 
