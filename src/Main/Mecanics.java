@@ -836,4 +836,35 @@ public class Mecanics {
 
     }
 
+ public static void iArchivo(String a, String b, String nom)  {
+		
+		 try {
+	            
+	            Path origen = Path.of(a);
+	            Path destino = Path.of(b, nom + "." + getExtension(new File(a)));
+
+	            
+	            Files.copy(origen, destino, StandardCopyOption.REPLACE_EXISTING);
+
+	            
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            System.err.println("Error al copiar la imagen.");
+	        }
+		
+		
+		
+		
+	}
+	
+
+	public static String getExtension(File rut) {
+		
+		
+		 String [] arc= rut.getName().split("\\.");
+
+		
+		return arc[1];
+	}
+
 }
