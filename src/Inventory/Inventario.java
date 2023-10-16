@@ -14,6 +14,9 @@ import javax.swing.SwingConstants;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Desktop;
+
+import java.io.*; 
 
 import javax.swing.JTable;
 import javax.swing.JLabel;
@@ -37,6 +40,26 @@ import java.sql.SQLException;
 import javax.swing.JButton;
 import javax.swing.table.DefaultTableModel;
 
+import com.itextpdf.kernel.font.PdfFont;
+import com.itextpdf.kernel.font.PdfFontFactory;
+import com.itextpdf.kernel.colors.DeviceRgb;
+import com.itextpdf.kernel.geom.PageSize;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.kernel.pdf.canvas.PdfCanvas;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.*;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Text;
+import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.property.UnitValue;
+import com.itextpdf.layout.property.TextAlignment;
+import com.itextpdf.layout.property.HorizontalAlignment;
+import com.itextpdf.layout.property.VerticalAlignment;
+import com.itextpdf.io.image.ImageDataFactory;
+import com.itextpdf.io.font.PdfEncodings;
+//import com.itextpdf.layout.element.Image;
+
 import Main.*;
 
 import java.awt.event.ActionListener;
@@ -46,8 +69,10 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
 public class Inventario extends JFrame {
@@ -329,9 +354,7 @@ public class Inventario extends JFrame {
 		        
 		        if(archivo !=null){
 		               
-		               ruta= archivo.getAbsolutePath();
-		               System.out.println(ruta);
-		               
+		               ruta= archivo.getAbsolutePath();   
 		               
 		            ImageIcon ima = new ImageIcon(new ImageIcon(ruta).getImage().getScaledInstance(foto.getWidth(), foto.getHeight(), Image.SCALE_SMOOTH));
 		               foto.setIcon(ima);
@@ -540,10 +563,93 @@ public class Inventario extends JFrame {
 	
 	public void reporte() {
 		
+		 
+			//ImageDataFactory.create("./src/ResourcePackCaja/Inventario.png")
+			Archivo q = null;
+		
 
+		Path Downloads = Paths.get(System.getProperty("user.home"), "Downloads");
+		String url = Downloads.toString()+"\\Report.pdf";
 		
-		
-		
+		try (PdfWriter pdfw = new PdfWriter(new File(url))){
+			
+			PdfDocument pdfdoc = new PdfDocument(pdfw);
+			pdfdoc.setDefaultPageSize(PageSize.LETTER);
+			Document doc = new Document(pdfdoc);
+			
+			
+			
+			//Image Logo = new Image(ImageDataFactory.create("./src/ResourcePackCaja/Inventario.png"));
+            //Logo.setAutoScale(false);
+			//Logo.scaleToFit(200, 200);
+            //Logo.setHorizontalAlignment(HorizontalAlignment.CENTER);*/
+			
+			
+			
+			Paragraph Title = new Paragraph("Inventario");
+			Title.setFontSize(20);
+            Title.setBold();
+            Title.setTextAlignment(TextAlignment.CENTER);
+            Title.setVerticalAlignment(VerticalAlignment.MIDDLE);
+			
+            Conexion a = new Conexion();
+
+            Table tableta = new Table(6);
+			tableta.setWidth(UnitValue.createPercentValue(100));
+			tableta.addCell(new Paragraph(len[2]));
+			tableta.addCell(new Paragraph(len[3]));
+			tableta.addCell(new Paragraph(len[4]));
+			tableta.addCell(new Paragraph(len[5]));
+			tableta.addCell(new Paragraph(len[6]));
+			tableta.addCell(new Paragraph(len[7]));
+			
+			for (int j = 0; j <= 5; j++) {
+				
+				tableta.getCell(0, j).setBorder(null).setBold().setFontSize(14).setTextAlignment(TextAlignment.CENTER);
+			}
+			
+			
+            try {
+
+                ResultSet res = a.consulta("SELECT * FROM Inventario");
+                int i=0;
+                
+                while (res.next()) {
+
+                    Archivo p = muestra(res.getString("Code"));
+                    
+                    tableta.addCell(new Paragraph(p.getCode()));
+                    tableta.addCell(new Paragraph(p.getProduct()));
+                    tableta.addCell(new Paragraph(p.getPrice()+"$"));
+                    tableta.addCell(new Paragraph(p.getAmount()+""));
+                    tableta.addCell(new Paragraph(p.getUnid()));
+                    tableta.addCell(new Paragraph(p.getBrand()));
+                   
+                    
+                    for (int j = 0; j <= 5; j++) {
+						
+						tableta.getCell(i+1, j).setBorder(null).setFontSize(13).setTextAlignment(TextAlignment.CENTER);
+					}
+
+    				 i++;
+                }
+
+            } catch (Exception e) {
+            }
+            
+            doc.add(Title);
+			doc.add(tableta);
+			
+			doc.close();
+			pdfdoc.close();
+			
+			Desktop.getDesktop().open(new File(url));
+			
+		}catch (IOException e){
+			
+			JOptionPane.showMessageDialog(null, "Error: "+e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			
+		}
 		
 		
 		
