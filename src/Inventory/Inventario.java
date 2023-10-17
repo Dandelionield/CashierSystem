@@ -58,7 +58,7 @@ import com.itextpdf.layout.property.HorizontalAlignment;
 import com.itextpdf.layout.property.VerticalAlignment;
 import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.io.font.PdfEncodings;
-//import com.itextpdf.layout.element.Image;
+
 
 import Main.*;
 
@@ -87,7 +87,7 @@ public class Inventario extends JFrame {
 			public void run() {
 				try {
 					
-					Inventario frame = new Inventario(1,0);
+					Inventario frame = new Inventario(1,1);
 					frame.setLocationRelativeTo(null);
 					frame.setVisible(true);
 					
@@ -116,8 +116,8 @@ public class Inventario extends JFrame {
     
 	
 	private ImageIcon regi;
-    static String [] len={"Informacion de producto:","Productos Disponibles:","Codigo:", "Producto:", "Precio:", "Existencias:","Unidad:","Marca:","Descripcion:","Seleccionar Imagen","Guardar","Eliminar","(ESP)","Editar","Vendido:","Mas popular:","Menos popular:"};
-	private JComboBox<String> unidad;
+    static String [] len=new String[20];
+    private JComboBox<String> unidad;
 	private JLabel foto;
 	private JTextArea descripcion;;
 	static boolean access=false, idioma=true, modi=false;
@@ -133,6 +133,8 @@ public class Inventario extends JFrame {
 	private JButton imprimir;
 	private JLabel txtunpopular;
 	private JLabel unpopular;
+	private Archivo mayor;
+	private Archivo menor;
 
 	
 	public Inventario(int theme,int leng) {
@@ -170,7 +172,7 @@ public class Inventario extends JFrame {
 		
 		
 		setResizable(false);
-		setTitle("Inventario");
+		setTitle(len[19]);
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 1013, 609);
@@ -335,7 +337,6 @@ public class Inventario extends JFrame {
 		txtdescripcion.setBounds(262, 280, 72, 26);
 		panel.add(txtdescripcion);
 		
-		
 		descripcion = new JTextArea();
 		descripcion.setBounds(262, 317, 226, 176);
 		descripcion.setLineWrap(true);
@@ -394,6 +395,7 @@ public class Inventario extends JFrame {
 		            
 		        }
 
+		        
 		        if (access == true) {
 		        		
 		        	
@@ -402,7 +404,15 @@ public class Inventario extends JFrame {
 		        	
 		            try {
 		            	
-		                a.sentence("UPDATE `Inventario` SET  `Product`='"+producto.getText()+"', `Brand`='"+marca.getText()+"', `Description`='"+descripcion.getText()+"', `Amount`='"+Float.parseFloat(existencias.getText())+"',`Price`='"+Float.parseFloat(precio.getText())+"',`Unid`='"+unidad.getSelectedItem().toString()+"',`Image`='"+("./src/Inventory/productPhoto/"+codigo.getText()+"."+Mecanics.getExtension(new File(ruta)))+"'  WHERE `Code`='" + codigo.getText().toUpperCase() + "';");
+		            	String imgurl="./src/Inventory/productPhoto/"+codigo.getText()+"."+Mecanics.getExtension(new File(ruta));
+		            	
+		                a.sentence("UPDATE `Inventario` SET  `Product`='"+producto.getText()+
+		                		"', `Brand`='"+marca.getText()+
+		                		"', `Description`='"+descripcion.getText()+"', `Amount`='"+Float.parseFloat(existencias.getText())+
+		                		"',`Price`='"+Float.parseFloat(precio.getText())+
+		                		"',`Unid`='"+unidad.getSelectedItem().toString()+"',`Image`='"+imgurl+
+		                		"'  WHERE `Code`='" + codigo.getText().toUpperCase() + "';");
+		                
 		                Mecanics.iArchivo(ruta,"./src/Inventory/productPhoto",codigo.getText());
 		                
 		            } catch (Exception b) {
@@ -511,16 +521,16 @@ public class Inventario extends JFrame {
 		sold.setBounds(69, 11, 58, 24);
 		propiedades.add(sold);
 		
-		Archivo ab= mayor(), bc=menor();
-		String mayor= ab.getCode()+" - "+ab.getProduct();
-		String menor= bc.getCode()+" - "+bc.getProduct();
+		mayor= mayor();menor=menor();
+		String may= mayor.getCode()+" - "+mayor.getProduct();
+		String men= menor.getCode()+" - "+menor.getProduct();
 		
 		txtpopular = new JLabel("Mas popular: ");
 		txtpopular.setFont(new Font("Agency FB", Font.BOLD, 13));
 		txtpopular.setBounds(10, 48, 117, 14);
 		propiedades.add(txtpopular);
 		
-		popular = new JLabel(mayor);
+		popular = new JLabel(may);
 		popular.setFont(new Font("Agency FB", Font.BOLD, 13));
 		popular.setBounds(10, 73, 172, 14);
 		propiedades.add(popular);
@@ -530,12 +540,12 @@ public class Inventario extends JFrame {
 		txtunpopular.setBounds(10, 98, 117, 14);
 		propiedades.add(txtunpopular);
 		
-		unpopular = new JLabel(menor);
+		unpopular = new JLabel(men);
 		unpopular.setFont(new Font("Agency FB", Font.BOLD, 13));
 		unpopular.setBounds(10, 123, 172, 14);
 		propiedades.add(unpopular);
 		
-		imprimir = cp.Button("", cp.setBounds(143, 11, 53, 53), "ImprimirLight", 53, 53, JButton.CENTER, JButton.RIGHT, JButton.LEFT, true, true);	
+		imprimir = cp.Button("", cp.setBounds(143, 11, 53, 53), "pdfLight", 53, 53, JButton.CENTER, JButton.RIGHT, JButton.LEFT, true, true);	
 		imprimir.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -549,11 +559,11 @@ public class Inventario extends JFrame {
 		propiedades.add(imprimir);
 		
 		
-		boolean aspect=false, idiom=false;
+		boolean aspect=false;
 		
 		if(moder==0) {aspect=true;}
-		if(lengu==1) { ing(); }
-		else {	esp(); }
+		if(lengu==1) { ing(); setTitle(len[19]);}
+		else {	esp(); setTitle(len[19]); }
 			
 		modifymode(aspect);
 		modifylen();
@@ -563,11 +573,6 @@ public class Inventario extends JFrame {
 	
 	public void reporte() {
 		
-		 
-			//ImageDataFactory.create("./src/ResourcePackCaja/Inventario.png")
-			Archivo q = null;
-		
-
 		Path Downloads = Paths.get(System.getProperty("user.home"), "Downloads");
 		String url = Downloads.toString()+"\\Report.pdf";
 		
@@ -577,16 +582,12 @@ public class Inventario extends JFrame {
 			pdfdoc.setDefaultPageSize(PageSize.LETTER);
 			Document doc = new Document(pdfdoc);
 			
+			com.itextpdf.layout.element.Image Logo = new com.itextpdf.layout.element.Image(ImageDataFactory.create("./src/ResourcePackCaja/Inventario.png"));
+            Logo.setAutoScale(false);
+			Logo.scaleToFit(180, 180);
+            Logo.setHorizontalAlignment(HorizontalAlignment.CENTER);			
 			
-			
-			//Image Logo = new Image(ImageDataFactory.create("./src/ResourcePackCaja/Inventario.png"));
-            //Logo.setAutoScale(false);
-			//Logo.scaleToFit(200, 200);
-            //Logo.setHorizontalAlignment(HorizontalAlignment.CENTER);*/
-			
-			
-			
-			Paragraph Title = new Paragraph("Inventario");
+			Paragraph Title = new Paragraph(len[19]);
 			Title.setFontSize(20);
             Title.setBold();
             Title.setTextAlignment(TextAlignment.CENTER);
@@ -594,7 +595,7 @@ public class Inventario extends JFrame {
 			
             Conexion a = new Conexion();
 
-            Table tableta = new Table(6);
+            Table tableta = new Table(7);
 			tableta.setWidth(UnitValue.createPercentValue(100));
 			tableta.addCell(new Paragraph(len[2]));
 			tableta.addCell(new Paragraph(len[3]));
@@ -602,8 +603,9 @@ public class Inventario extends JFrame {
 			tableta.addCell(new Paragraph(len[5]));
 			tableta.addCell(new Paragraph(len[6]));
 			tableta.addCell(new Paragraph(len[7]));
+			tableta.addCell(new Paragraph(len[14]));
 			
-			for (int j = 0; j <= 5; j++) {
+			for (int j = 0; j <= 6; j++) {
 				
 				tableta.getCell(0, j).setBorder(null).setBold().setFontSize(14).setTextAlignment(TextAlignment.CENTER);
 			}
@@ -624,21 +626,37 @@ public class Inventario extends JFrame {
                     tableta.addCell(new Paragraph(p.getAmount()+""));
                     tableta.addCell(new Paragraph(p.getUnid()));
                     tableta.addCell(new Paragraph(p.getBrand()));
-                   
+                    tableta.addCell(new Paragraph(p.getSold()+""));
                     
-                    for (int j = 0; j <= 5; j++) {
+                    for (int j = 0; j <= 6; j++) {
 						
 						tableta.getCell(i+1, j).setBorder(null).setFontSize(13).setTextAlignment(TextAlignment.CENTER);
 					}
 
     				 i++;
                 }
-
+                
             } catch (Exception e) {
             }
             
+            
+            Paragraph may= new Paragraph("\n"+len[17]+mayor.getCode()+": "+mayor.getProduct());
+			Title.setFontSize(20);
+            Title.setBold();
+            Title.setTextAlignment(TextAlignment.CENTER);
+            Title.setVerticalAlignment(VerticalAlignment.MIDDLE);
+            
+            Paragraph men= new Paragraph(len[18]+menor.getCode()+": "+menor.getProduct());
+			Title.setFontSize(20);
+            Title.setBold();
+            Title.setTextAlignment(TextAlignment.CENTER);
+            Title.setVerticalAlignment(VerticalAlignment.MIDDLE);
+            
             doc.add(Title);
+            doc.add(Logo);
 			doc.add(tableta);
+			doc.add(may);
+			doc.add(men);
 			
 			doc.close();
 			pdfdoc.close();
@@ -646,24 +664,20 @@ public class Inventario extends JFrame {
 			Desktop.getDesktop().open(new File(url));
 			
 		}catch (IOException e){
-			
 			JOptionPane.showMessageDialog(null, "Error: "+e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-			
 		}
-		
-		
 		
 	}
 
 	
 
 	public void esp() {
-		String leno[]= {"Informacion de producto:","Productos Disponibles:","Codigo:", "Producto:", "Precio:", "Existencias:","Unidad:","Marca:","Descripcion:","Seleccionar Imagen","Guardar","Eliminar","(ESP)","Editar","Vendido:","Mas popular:","Menos popular:"};
+		String leno[]= {"Informacion de producto:","Productos Disponibles:","Codigo:", "Producto:", "Precio:", "Existencias:","Unidad:","Marca:","Descripcion:","Seleccionar Imagen","Guardar","Eliminar","(ESP)","Editar","Vendido:","Mas popular:","Menos popular:","Producto mas vendido: ","Producto menos vendido: ","Inventario"};
 			len=leno;
 	}
 	
 	public void ing() {
-		String leno[]= {"Product information:","Available products:","Code:", "Product:", "Price:", "Stock:","Unit:","Brand:","Description:","Select Image","Save","Delete","(ENG)","Edit","Sold:","Most popular:","Least popular:"};
+		String leno[]= {"Product information:","Available products:","Code:", "Product:", "Price:", "Stock:","Unit:","Brand:","Description:","Select Image","Save","Delete","(ENG)","Edit","Sold:","Most popular:","Least popular:","Best selling product: ","Least selling product: ","Inventory"};
 			len=leno;
 	}
 
@@ -687,6 +701,7 @@ public class Inventario extends JFrame {
 		txtsold.setText(len[14]);
 		txtpopular.setText(len[15]);
 		txtunpopular.setText(len[16]);
+		
 		String []titulos={len[2], len[3], len[4], len[5], len[7]};
 		modelo = new DefaultTableModel(null,titulos);
 		table.setModel(modelo);
@@ -724,8 +739,6 @@ public class Inventario extends JFrame {
 		producto.setForeground(colorin);
 		existencias.setForeground(colorin);
 		marca.setForeground(colorin);
-		
-		
 		
 	}
 	
@@ -768,8 +781,6 @@ public class Inventario extends JFrame {
         }
 
     }
-	
-	
 	
 	
 	 public Archivo muestra(String cod){
@@ -820,8 +831,6 @@ public class Inventario extends JFrame {
 			        	   JOptionPane.showMessageDialog(null, "ERROR, Seleccione un archivo con los formatos permitidos. \n\n->PNG\n->JPEG\n");
 			        	   archivo=new File("./src/ResourcePackCaja/image-not-found.png");
 			           }
-			           
-
 		           
 			}catch(Exception e) {
 				JOptionPane.showMessageDialog(null,"Accion Cancelada");
@@ -829,7 +838,6 @@ public class Inventario extends JFrame {
 	           
 	           return archivo;
 	    }       
-	 
 	 
 	 
 	 public Archivo mayor() {
@@ -856,7 +864,6 @@ public class Inventario extends JFrame {
 	        } catch (Exception e) {
 	        }
 	     
-		 
 		 return prod;
 	 }
 	 
@@ -883,12 +890,11 @@ public class Inventario extends JFrame {
 		            }
 	
 		        } catch (Exception e) {
+		        	
 		        }
 		     
 			 
 			 return prod;
 		 }
-	 
-	 
 	 
 	}
