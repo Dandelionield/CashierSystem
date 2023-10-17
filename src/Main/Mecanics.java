@@ -836,12 +836,12 @@ public class Mecanics {
 
     }
 
- public static void iArchivo(String a, String b, String nom)  {
+ public static void iArchivo(String archivo, String carpeta, String nom)  {
 		
 		 try {
 	            
-	            Path origen = Path.of(a);
-	            Path destino = Path.of(b, nom + "." + getExtension(new File(a)));
+	            Path origen = Path.of(archivo);
+	            Path destino = Path.of(carpeta, nom + "." + getExtension(new File(archivo)));
 
 	            
 	            Files.copy(origen, destino, StandardCopyOption.REPLACE_EXISTING);
