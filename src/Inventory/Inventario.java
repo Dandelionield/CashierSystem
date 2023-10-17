@@ -17,6 +17,7 @@ import java.awt.Container;
 import java.awt.Desktop;
 
 import java.io.*; 
+import java.time.LocalDate;
 
 import javax.swing.JTable;
 import javax.swing.JLabel;
@@ -34,8 +35,10 @@ import javax.swing.UIManager;
 import javax.swing.JTextArea;
 import java.awt.ScrollPane;
 import java.awt.Toolkit;
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 
 import javax.swing.JButton;
 import javax.swing.table.DefaultTableModel;
@@ -77,8 +80,6 @@ import java.nio.file.StandardCopyOption;
 
 public class Inventario extends JFrame {
 
-
-
 	/**
 	 * Launch the application.
 	 */
@@ -91,7 +92,6 @@ public class Inventario extends JFrame {
 					frame.setLocationRelativeTo(null);
 					frame.setVisible(true);
 					
-
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -114,7 +114,6 @@ public class Inventario extends JFrame {
 	private JTable table;	
 	private DefaultTableModel modelo;
     
-	
 	private ImageIcon regi;
     static String [] len=new String[20];
     private JComboBox<String> unidad;
@@ -254,9 +253,6 @@ public class Inventario extends JFrame {
 					repaint();
 				}
 				 
-			       
-				
-				
 			}
 		});
 		JScrollPane scrolltabla = new JScrollPane();
@@ -391,8 +387,6 @@ public class Inventario extends JFrame {
 		                JOptionPane.showMessageDialog(null, "Verifique los datos\nError: " + b.toString());
 		                repaint();
 		            }
-		            
-		            
 		        }
 
 		        
@@ -420,10 +414,6 @@ public class Inventario extends JFrame {
 
 		                repaint();
 		            }
-		            
-
-		            	
-		            
 
 		        }
 
@@ -573,8 +563,19 @@ public class Inventario extends JFrame {
 	
 	public void reporte() {
 		
+
 		Path Downloads = Paths.get(System.getProperty("user.home"), "Downloads");
-		String url = Downloads.toString()+"\\Report.pdf";
+		String url = Downloads.toString()+"\\INV- "+LocalDate.now()+".pdf";
+		
+		if(new File(url).exists()) {
+			int i=1;
+			while(new File(url).exists()) {
+				
+				url= Downloads.toString()+"\\INV- "+LocalDate.now()+"("+i+").pdf";
+				i++;
+			}
+		}
+		
 		
 		try (PdfWriter pdfw = new PdfWriter(new File(url))){
 			
@@ -669,7 +670,6 @@ public class Inventario extends JFrame {
 		
 	}
 
-	
 
 	public void esp() {
 		String leno[]= {"Informacion de producto:","Productos Disponibles:","Codigo:", "Producto:", "Precio:", "Existencias:","Unidad:","Marca:","Descripcion:","Seleccionar Imagen","Guardar","Eliminar","(ESP)","Editar","Vendido:","Mas popular:","Menos popular:","Producto mas vendido: ","Producto menos vendido: ","Inventario"};
