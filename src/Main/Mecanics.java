@@ -774,4 +774,38 @@ public class Mecanics {
 		
 	}
 
+
+		 public static File actionimage(JPanel panel) {
+			
+			
+			File archivo=new File("./src/ResourcePackCaja/image-not-found.png");
+			
+			try {
+				
+					try {
+			            
+							UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			               
+			           } catch (Exception e) {}
+			               
+			           JFileChooser jf=new JFileChooser();
+			           jf.setDialogTitle("");
+			           jf.showSaveDialog(panel);
+			           
+			           archivo= jf.getSelectedFile();
+			          
+			           String arc= Mecanics.getExtension(archivo);
+			           
+			           if(arc.equalsIgnoreCase("png")==false && arc.equalsIgnoreCase("jpg")==false) {
+			        	   JOptionPane.showMessageDialog(null, "ERROR, Seleccione un archivo con los formatos permitidos. \n\n->PNG\n->JPEG\n");
+			        	   archivo=new File("./src/ResourcePackCaja/image-not-found.png");
+			           }
+		           
+			}catch(Exception e) {
+				JOptionPane.showMessageDialog(null,"Accion Cancelada");
+			}
+	           
+	           return archivo;
+	    }  
+
 }
