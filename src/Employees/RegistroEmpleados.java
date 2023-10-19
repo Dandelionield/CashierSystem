@@ -1,3 +1,7 @@
+//package Employees;
+
+//import Main.Runner;
+
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Font;
@@ -111,11 +115,11 @@ public class RegistroEmpleados {
     private static DefaultTableModel modelo;
     private static JTable jtaEmpleados = new JTable();
 
-    public RegistroEmpleados() {
-        main();
+    public static void main(String[] abc){
+        RegistroEmpleados p = new RegistroEmpleados();
     }
 
-    public static void main() {
+    public RegistroEmpleados(){
         float ini = System.currentTimeMillis()*1000;
         /*          DECLARACION DE LOS OBJETOS          */
         ChangeMode();

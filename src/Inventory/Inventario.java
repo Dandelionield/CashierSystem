@@ -88,7 +88,7 @@ public class Inventario extends JFrame {
 			public void run() {
 				try {
 					
-					Inventario frame = new Inventario(1,1);
+					Inventario frame = new Inventario("","Beta Tester");
 					frame.setLocationRelativeTo(null);
 					frame.setVisible(true);
 					
@@ -135,11 +135,11 @@ public class Inventario extends JFrame {
 	private Archivo mayor;
 	private Archivo menor;
 
-	
-	public Inventario(int theme,int leng) {
+	//iArchivo
+	public Inventario(String User, String UserName) {
 		
-		moder=theme;
-		lengu=leng;
+		moder = Mecanics.getMode(true);
+		lengu=Mecanics.getLanguage(true);
 		
 		setIconImage(Toolkit.getDefaultToolkit().getImage("./src/ResourcePackCaja/Inventario.png"));
 			
@@ -150,14 +150,14 @@ public class Inventario extends JFrame {
 				int scp=JOptionPane.showConfirmDialog(null, "Desea abandonar?","Salir",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
 				
 				if(scp==JOptionPane.YES_OPTION) {
-					
-					Runner.contentPane.removeAll();
-					
-					Runner.Inicio = new Login();
-					
-					Runner.contentPane.add(Runner.Inicio, Integer.valueOf(0));
-					
+				
 					Runner lg = new Runner();
+					
+					lg.contentPane.removeAll();
+					
+					lg.Opciones = new Menu(lg, User, UserName);
+					
+					lg.contentPane.add(lg.Opciones, Integer.valueOf(0));
 
 					lg.setVisible(true);
 					
@@ -171,7 +171,7 @@ public class Inventario extends JFrame {
 		
 		
 		setResizable(false);
-		setTitle(len[19]);
+		setTitle(len[19]+" - "+UserName);
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 1013, 609);
@@ -805,39 +805,39 @@ public class Inventario extends JFrame {
         return prod;
     }
 	
-	 
-	 
-	 public File actionimage() {
-			
-			
-			File archivo=new File("./src/ResourcePackCaja/image-not-found.png");
+	public File actionimage() {
+		
+		File archivo=new File("./src/ResourcePackCaja/image-not-found.png");
+
+		try {
 			
 			try {
 				
-					try {
-			            
-							UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			               
-			           } catch (Exception e) {}
-			               
-			           JFileChooser jf=new JFileChooser();
-			           jf.showOpenDialog(this);
-			           
-			           archivo= jf.getSelectedFile();
-			          
-			           String arc= Mecanics.getExtension(archivo);
-			           
-			           if(arc.equalsIgnoreCase("png")==false && arc.equalsIgnoreCase("jpg")==false) {
-			        	   JOptionPane.showMessageDialog(null, "ERROR, Seleccione un archivo con los formatos permitidos. \n\n->PNG\n->JPEG\n");
-			        	   archivo=new File("./src/ResourcePackCaja/image-not-found.png");
-			           }
-		           
-			}catch(Exception e) {
-				JOptionPane.showMessageDialog(null,"Accion Cancelada");
+				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+
+			} catch (Exception e) {}
+			
+			JFileChooser jf=new JFileChooser();
+			jf.showOpenDialog(this);
+			archivo= jf.getSelectedFile();
+
+			String arc= Mecanics.getExtension(archivo);
+
+			if(arc.equalsIgnoreCase("png")==false && arc.equalsIgnoreCase("jpg")==false){
+				
+				JOptionPane.showMessageDialog(null, "ERROR, Seleccione un archivo con los formatos permitidos. \n\n->PNG\n->JPEG\n", "Error", JOptionPane.ERROR_MESSAGE);
+				archivo=new File("./src/ResourcePackCaja/image-not-found.png");
+
 			}
-	           
-	           return archivo;
-	    }       
+
+		}catch(Exception e) {
+			
+			JOptionPane.showMessageDialog(null, "Error de Selección: "+e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+		
+		}
+
+	    return archivo;
+	}       
 	 
 	 
 	 public Archivo mayor() {

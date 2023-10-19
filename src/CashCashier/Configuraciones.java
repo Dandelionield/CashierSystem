@@ -2,7 +2,7 @@ package CashCashier;
 
 import Main.Mecanics;
 import Main.Runner;
-import Main.Login;
+import Main.Menu;;
 import Objects.Components;
 import Objects.Factura;
 import Objects.Cliente;
@@ -43,10 +43,10 @@ public class Configuraciones extends JPanel{
 	private Color[] Fondo = {new Color(238, 248, 254), new Color(20, 35, 54)};
 	
 	private JLabel Title;
-	private JLabel Logo;
 	private JLabel Address;
 	private JTextField TextPanelTitle;
 	private JTextField TextPanelAddress;
+	private JButton Logo;
 	private JButton Edit;
 	private JButton Save;
 	private JButton Logout;
@@ -65,16 +65,18 @@ public class Configuraciones extends JPanel{
 		
 		int z = 0;
 		
+		Trabajador p = Mecanics.Employe.get(Mecanics.getEmploye(Dashboard.User));
+		
 		setBounds(20, 45, 960, 415);
 		setOpaque(false);
 		
 		Title = cp.Label(Mecanics.getTitle(true), cp.setBounds((this.getWidth()/2)-200, 130, 400, 30), SwingConstants.CENTER, new Font("Clarendon Blk BT", Font.BOLD, 20));
-		Logo = cp.Label("", cp.setBounds((this.getWidth()/2)-50, 10, 100, 100), "Logo", 100, 100, SwingConstants.CENTER, SwingConstants.CENTER, SwingConstants.CENTER, 0);
 		Address = cp.Label(Mecanics.getAddress(true), cp.setBounds((this.getWidth()/2)-200, 165, 400, 30), SwingConstants.CENTER, new Font("Clarendon Blk BT", Font.BOLD, 15));
 		TextPanelTitle = cp.TextPanel("", cp.setBounds((this.getWidth()/2)-200, 130, 400, 30), SwingConstants.CENTER, new Font("Clarendon Blk BT", Font.BOLD, 20), Color.BLUE, Color.BLUE, true, false);
 		TextPanelAddress = cp.TextPanel("", cp.setBounds((this.getWidth()/2)-200, 165, 400, 30), SwingConstants.CENTER, new Font("Clarendon Blk BT", Font.BOLD, 15), Color.BLUE, Color.BLUE, true, false);
+		Logo = cp.Button("", cp.setBounds((this.getWidth()/2)-50, 10, 100, 100), "Logo", 100, 100, true, true);
 		Logout = cp.Button("", cp.setBounds(this.getWidth()-170, 10, 130, 25), ConfiguracionesSalir[m], 25, 25, JButton.CENTER, JButton.LEFT, JButton.RIGHT, true, false);
-		Edit = cp.Button("", cp.setBounds(410, 200, 25, 25), ConfiguracionesEditar[m], 25, 25, true, false);
+		Edit = cp.Button("", cp.setBounds(410, 200, 25, 25), ConfiguracionesEditar[m], 25, 25, p.getAdmin(), false);
 		Save = cp.Button("", cp.setBounds(520, 200, 25, 25), ConfiguracionesGuardar[m], 25, 25, false, false);
 		
 		add(Title);
@@ -128,6 +130,22 @@ public class Configuraciones extends JPanel{
 	
 	private void Actions(){
 		
+		Logo.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e){
+				
+				if (Save.isEnabled()){
+					
+					//Mecanics.iArchivo(ruta,"./src/ResourcePackCaja","Logo");
+					
+				}
+				
+				repaint();
+
+			}
+
+		});
+		
 		Edit.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e){
@@ -177,15 +195,17 @@ public class Configuraciones extends JPanel{
 
 			public void actionPerformed(ActionEvent e){
 				
+				Trabajador p = Mecanics.Employe.get(Mecanics.getEmploye(Dashboard.User));
+				
 				DashboardFrame.removeAll();
 				
-				Runner.contentPane.removeAll();
-				
-				Runner.Inicio = new Login();
-				
-				Runner.contentPane.add(Runner.Inicio, Integer.valueOf(0));
-				
 				Runner lg = new Runner();
+				
+				lg.contentPane.removeAll();
+				
+				lg.Opciones = new Menu(lg, Dashboard.User, p.getName()+" "+p.getLastName());
+				
+				lg.contentPane.add(lg.Opciones, Integer.valueOf(0));
 
 				lg.setVisible(true);
 				

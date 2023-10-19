@@ -536,7 +536,7 @@ public class Mecanics {
 				
 				if (indice!=-1){
 					
-					q = Archive.get(i);
+					q = Archive.get(indice);
 					
 					Buyout.addCell(new Paragraph(p.getBuyout()[i][1].toString()+" - "+q.getBrand()));
 					Buyout.addCell(new Paragraph(p.getBuyout()[i][2].toString()+" "+q.getUnid()));
@@ -733,140 +733,45 @@ public class Mecanics {
 
     }
 
-    public static boolean Allowed(String ca) {//Recibe un String y verifica que sea un número, si no lo es ==false, sino ==true
+    public static boolean Allowed(String wd) {//Recibe un String y verifica que sea un número, si no lo es ==false, sino ==true
 
-        String bank[] = {"-", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "."};
-        boolean b = false;
-        int p = 0, v = 0, m = 0;
-
-        for (int c = 0; c < ca.length(); c++) {
-
-            for (int f = 0; f < bank.length; f++) {
-
-                if (bank[f].equalsIgnoreCase(ca.charAt(c) + "") == true) {
-
-                    v += 1;
-
-                }
-
-            }
-
-        }
-
-        if (v == ca.length()) {
-
-            for (int c = 0; c < ca.length(); c++) {
-
-                for (int f = 0; f < bank.length; f++) {
-
-                    if (bank[bank.length - 1].equalsIgnoreCase(ca.charAt(c) + "") == true && c == ca.length() - 1) {
-
-                        b = false;
-                        break;
-
-                    } else {
-
-                        b = true;
-
-                    }
-
-                }
-
-                if (b == false) {
-                    break;
-                }
-
-            }
-
-            for (int c = 0; c < ca.length(); c++) {
-
-                for (int f = 0; f < bank.length; f++) {
-
-                    if (bank[0].equalsIgnoreCase(ca.charAt(c) + "") == true && c != 0) {
-
-                        b = false;
-                        break;
-
-                    } else {
-
-                        b = true;
-
-                    }
-
-                }
-
-                if (b == false) {
-                    break;
-                }
-
-            }
-
-            for (int c = 0; c < ca.length(); c++) {
-
-                if (bank[0].equalsIgnoreCase(ca.charAt(c) + "") == true) {
-                    m += 1;
-                }
-
-            }
-
-            for (int c = 0; c < ca.length(); c++) {
-
-                if (bank[bank.length - 1].equalsIgnoreCase(ca.charAt(c) + "") == true) {
-                    p += 1;
-                }
-
-            }
-
-            if (p > 1) {
-                b = false;
-            }
-            if (m > 1) {
-                b = false;
-            }
-            if (ca.length() == 1 && bank[bank.length - 1].equalsIgnoreCase(ca.charAt(0) + "") == true) {
-                b = false;
-            }
-            if (ca.length() == 1 && bank[0].equalsIgnoreCase(ca.charAt(0) + "") == true) {
-                b = false;
-            }
-
-        } else {
-            b = false;
-        }
-
-        return b;
+		try{
+			
+			Double.parseDouble(wd);
+			
+			return true;
+			
+		}catch(Exception e){
+			
+			return false;
+			
+		}
 
     }
 
- public static void iArchivo(String archivo, String carpeta, String nom)  {
-		
-		 try {
-	            
-	            Path origen = Path.of(archivo);
-	            Path destino = Path.of(carpeta, nom + "." + getExtension(new File(archivo)));
+	public static void iArchivo(String archivo, String carpeta, String nom)  {
+	
+		try{
+	      
+	        Path origen = Path.of(archivo);
+	        Path destino = Path.of(carpeta, nom + "." + getExtension(new File(archivo)));
 
-	            
-	            Files.copy(origen, destino, StandardCopyOption.REPLACE_EXISTING);
-
-	            
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	            System.err.println("Error al copiar la imagen.");
-	        }
-		
-		
-		
+	        Files.copy(origen, destino, StandardCopyOption.REPLACE_EXISTING);
+			
+	    }catch (Exception e){
+			
+			JOptionPane.showMessageDialog(null, "Error de copiado de imagen: "+e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			
+	    }
 		
 	}
 	
-
 	public static String getExtension(File rut) {
 		
-		
-		 String [] arc= rut.getName().split("\\.");
-
+		String [] arc= rut.getName().split("\\.");
 		
 		return arc[1];
+		
 	}
 
 }
