@@ -136,7 +136,22 @@ public class Configuraciones extends JPanel{
 				
 				if (Save.isEnabled()){
 					
-					//Mecanics.iArchivo(ruta,"./src/ResourcePackCaja","Logo");
+					String url = Mecanics.actionimage(Dashboard.Settings).getAbsolutePath();
+					
+					Mecanics.iArchivo(url,"./src/ResourcePackCaja","Logo");
+					
+					Save.doClick();
+					
+					Dashboard.contentPane.removeAll();
+					
+					Dashboard.Settings = new Configuraciones(DashboardFrame);
+					Dashboard.contentPane.add(Dashboard.Background, Integer.valueOf(0));
+					Dashboard.contentPane.add(Dashboard.Settings, Integer.valueOf(1));
+					Dashboard.contentPane.add(Dashboard.Window1st, Integer.valueOf(2));
+					Dashboard.contentPane.add(Dashboard.Window2nd, Integer.valueOf(3));
+					Dashboard.contentPane.add(Dashboard.Window3rd, Integer.valueOf(4));
+					Dashboard.contentPane.add(Dashboard.Window4th, Integer.valueOf(5));
+					Dashboard.contentPane.add(Dashboard.WindowSelected, Integer.valueOf(6));
 					
 				}
 				

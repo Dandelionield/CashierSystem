@@ -27,17 +27,9 @@ import com.itextpdf.layout.property.VerticalAlignment;
 import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.io.font.PdfEncodings;
 
-/*import javax.swing.SwingUtilities;
-import javax.swing.SwingConstants;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JLabel;
-import java.awt.Dimension;
-import java.awt.Toolkit;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Image;//*/
+import javax.swing.JFileChooser;
+import javax.swing.UIManager;
 import javax.swing.JOptionPane;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -341,31 +333,22 @@ public class Mecanics {
 
     public static void getEmploye(boolean b) {
 
-        String[] parts;
+        long n = 0;
 
         if (b == true) {
 
-            Mecanics.Employe.clear();
+            Conexion cn = new Conexion();
+            Trabajador p = cn.getTrabajador(n);
 
-            try (BufferedReader nbr = new BufferedReader(new FileReader("Trabajadores.txt"));) {
+            while (p != null) {
 
-                String nlinea = nbr.readLine();
-
-                while (nlinea != null) {
-
-                    parts = nlinea.split(",");
-
-                    Mecanics.Employe.add(new Trabajador(parts[0].trim(), parts[1].trim(), parts[2], parts[3], parts[4], parts[5], parts[6], parts[7].charAt(0), Byte.parseByte(parts[8]), Boolean.parseBoolean(parts[9])));
-
-                    nlinea = nbr.readLine();
-
-                }
-
-            } catch (IOException e) {
-
-                JOptionPane.showMessageDialog(null, "Error: " + e, "Error", JOptionPane.ERROR_MESSAGE);
+                Mecanics.Employe.add(p);
+                n++;
+                p = cn.getTrabajador(n);
 
             }
+
+            cn.Close();
 
         }
 
@@ -375,22 +358,21 @@ public class Mecanics {
 
         if (b == true) {
 
-            try (BufferedWriter nbw = new BufferedWriter(new FileWriter("Trabajadores.txt", false))) {
+            Conexion cn = new Conexion();
 
-                nbw.write("");
+            cn.clearTrabajador();
+
+            if (Mecanics.Employe.size() != 0) {
 
                 for (Trabajador p : Mecanics.Employe) {
 
-                    nbw.write(p.getCode() + "," + p.getID() + "," + p.getName() + "," + p.getLastName() + "," + p.getPhone() + "," + p.getEmail() + "," + p.getAddress() + "," + p.getGender() + "," + p.getAge() + "," + p.getAdmin());
-                    nbw.newLine();
+                    cn.setTrabajador(p);
 
                 }
 
-            } catch (IOException e) {
-
-                JOptionPane.showMessageDialog(null, "Error: " + e, "Error", JOptionPane.ERROR_MESSAGE);
-
             }
+
+            cn.Close();
 
         }
 
@@ -775,37 +757,39 @@ public class Mecanics {
 	}
 
 
-		 public static File actionimage(JPanel panel) {
-			
-			
-			File archivo=new File("./src/ResourcePackCaja/image-not-found.png");
-			
+	public static File actionimage(JPanel panel) {
+		
+		File archivo=new File("./src/ResourcePackCaja/image-not-found.png");
+		
+		try {
+		
 			try {
+			  
+				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+
+			} catch (Exception e) {}
+
+			JFileChooser jf=new JFileChooser();
+			jf.setDialogTitle("Searcher");
+			jf.showSaveDialog(panel);
+			
+			archivo= jf.getSelectedFile();
+			String arc= Mecanics.getExtension(archivo);
+			
+			if(arc.equalsIgnoreCase("png")==false && arc.equalsIgnoreCase("jpg")==false) {
 				
-					try {
-			            
-							UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			               
-			           } catch (Exception e) {}
-			               
-			           JFileChooser jf=new JFileChooser();
-			           jf.setDialogTitle("");
-			           jf.showSaveDialog(panel);
-			           
-			           archivo= jf.getSelectedFile();
-			          
-			           String arc= Mecanics.getExtension(archivo);
-			           
-			           if(arc.equalsIgnoreCase("png")==false && arc.equalsIgnoreCase("jpg")==false) {
-			        	   JOptionPane.showMessageDialog(null, "ERROR, Seleccione un archivo con los formatos permitidos. \n\n->PNG\n->JPEG\n");
-			        	   archivo=new File("./src/ResourcePackCaja/image-not-found.png");
-			           }
-		           
-			}catch(Exception e) {
-				JOptionPane.showMessageDialog(null,"Accion Cancelada");
+			    JOptionPane.showMessageDialog(null, "ERROR, Seleccione un archivo con los formatos permitidos. \n\n->PNG\n->JPEG\n", "Error", JOptionPane.ERROR_MESSAGE);
+			    archivo=new File("./src/ResourcePackCaja/image-not-found.png");
+				
 			}
-	           
-	           return archivo;
-	    }  
+
+		}catch(Exception e) {
+			
+			JOptionPane.showMessageDialog(null, "Error de busqueda: "+e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			
+		}
+
+		return archivo;
+	}  
 
 }

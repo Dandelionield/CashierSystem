@@ -181,6 +181,58 @@ public class Conexion{
 		
 	}
 	
+	public void setTrabajador(Trabajador p){
+		
+		try{
+			
+			PreparedStatement Script = cn.prepareStatement("INSERT INTO Trabajador (Code, ID, Name, LastName, Phone, Email, Address, Gender, Age, Admin) VALUES "
+			+"('"+p.getCode()+"', '"+p.getID()+"','"+p.getName()+"', '"+p.getLastName()+"', '"+p.getPhone()+"', '"+p.getEmail()+"', '"+p.getAddress()+"', '"+p.getGender()
+			+"', "+p.getAge()+", "+Parse(p.getAdmin())+");");
+			
+			Script.execute();
+			
+		}catch(SQLException e){
+			
+			JOptionPane.showMessageDialog(null,"Error de Inserción:  "+e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+			
+		}
+		
+	}
+	
+	public Trabajador getTrabajador(long indice){
+		
+		long n = 0;
+		Trabajador p = null;
+		
+		try{
+			
+			PreparedStatement list = cn.prepareStatement("SELECT * FROM Trabajador;");
+			ResultSet Script = list.executeQuery();
+			
+			while (Script.next()){
+				
+				if (indice==n){
+					
+					p = new Trabajador(Script.getString("Code"), Script.getString("ID"), Script.getString("Name"), Script.getString("LastName"), Script.getString("Phone"), Script.getString("Email"), Script.getString("Address"), Script.getString("Gender").charAt(0), Script.getByte("Age"), Parse(Script.getInt("Admin")));
+					
+				}
+				
+				n++;
+				
+			}
+			
+			
+		}catch(SQLException e){
+			
+			JOptionPane.showMessageDialog(null,"Error de Inserción:  "+e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+			return null;
+			
+		}
+		
+		return p;
+		
+	}
+
 	public void setMode(int p){
 		
 		try{
@@ -433,6 +485,21 @@ public class Conexion{
 		
 	}
 	
+	public void clearTrabajador(){
+		
+		try{
+		
+			Statement clear = cn.createStatement();
+            clear.executeUpdate("DELETE FROM Trabajador");
+			
+		}catch(SQLException e){
+			
+			JOptionPane.showMessageDialog(null,"Error de Inserción:  "+e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+			
+		}
+		
+	}
+	
 	public void Close(){
 		
 		try{
@@ -512,6 +579,34 @@ public class Conexion{
 	private static String setSerieCliente(Cliente p){
 		
 		return p.getName()+","+p.getLastName()+","+p.getID()+","+p.getPhone()+","+p.getEmail()+","+p.getAddress();
+		
+	}
+	
+	private boolean Parse(int n){
+		
+		if (n==1){
+			
+			return true;
+			
+		}else{
+			
+			return false;
+			
+		}
+		
+	}
+	
+	private int Parse(boolean bl){
+		
+		if (bl==true){
+			
+			return 1;
+			
+		}else{
+			
+			return 0;
+			
+		}
 		
 	}
 
