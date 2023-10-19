@@ -88,7 +88,7 @@ public class Inventario extends JFrame {
 			public void run() {
 				try {
 					
-					Inventario frame = new Inventario(1,1);
+					Inventario frame = new Inventario("","Beta Tester");
 					frame.setLocationRelativeTo(null);
 					frame.setVisible(true);
 					
@@ -136,10 +136,10 @@ public class Inventario extends JFrame {
 	private Archivo menor;
 
 	
-	public Inventario(int theme,int leng) {
+	public Inventario(String User, String UserName) {
 		
-		moder=theme;
-		lengu=leng;
+		moder = Mecanics.getMode(true);
+		lengu=Mecanics.getLanguage(true);
 		
 		setIconImage(Toolkit.getDefaultToolkit().getImage("./src/ResourcePackCaja/Inventario.png"));
 			
@@ -151,14 +151,14 @@ public class Inventario extends JFrame {
 				
 				if(scp==JOptionPane.YES_OPTION) {
 					
+					Runner lg = new Runner();
+					
 					Runner.contentPane.removeAll();
 					
-					Runner.Inicio = new Login();
+					Runner.Opciones = new Menu(lg, User, UserName);
 					
-					Runner.contentPane.add(Runner.Inicio, Integer.valueOf(0));
+					Runner.contentPane.add(Runner.Opciones, Integer.valueOf(0));
 					
-					Runner lg = new Runner();
-
 					lg.setVisible(true);
 					
 					dispose();
