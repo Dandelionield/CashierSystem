@@ -27,10 +27,18 @@ import com.itextpdf.layout.property.VerticalAlignment;
 import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.io.font.PdfEncodings;
 
+import javax.swing.JFileChooser;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingConstants;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JFileChooser;
 import javax.swing.UIManager;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.UIManager;
+
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -50,7 +58,6 @@ import java.awt.Desktop;
 import java.awt.Robot;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
-
 public class Mecanics {
 
     public static ArrayList<Archivo> Archive = new ArrayList<>();
