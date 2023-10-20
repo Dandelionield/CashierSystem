@@ -12,8 +12,9 @@ public class Trabajador{
 	private char Genero;
 	private byte Edad;
 	private boolean Admin;
+	private String Imagen;
 
-    public Trabajador(String Codigo, String ID, String Nombre, String Apellido, String Telefono, String Email, String Direccion, char Genero, byte Edad, boolean Admin){
+    public Trabajador(String Codigo, String ID, String Nombre, String Apellido, String Telefono, String Email, String Direccion, char Genero, byte Edad, boolean Admin, String Imagen){
 		
         this.Codigo = Codigo;
         this.ID = ID;
@@ -25,6 +26,7 @@ public class Trabajador{
 		this.Genero = Genero;
 		this.Edad = Edad;
 		this.Admin = Admin;
+		this.Imagen = Imagen;
 		
     }
 	
@@ -145,6 +147,18 @@ public class Trabajador{
 	public void setAdmin(boolean Admin){
 		
 		this.Admin = Admin;
+		
+	}
+	
+	public String getImage(){
+		
+		return Imagen;
+		
+	}
+	
+	public void setImage(String Imagen){
+		
+		this.Imagen = Imagen;
 		
 	}
 	

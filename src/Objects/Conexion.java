@@ -82,8 +82,8 @@ public class Conexion{
 		try{
 			
 			PreparedStatement Script = cn.prepareStatement("INSERT INTO Factura (Code, Pay, Change, Total, Buyout, Date, Employe, Client) VALUES "
-			+"('"+p.getCode()+"', "+p.getPay()+", "+p.getChange()+", "+p.getTotal()+", '"+Conexion.setSerieMatrix(p.getBuyout())
-			+"', '"+p.getDate()+"', '"+Conexion.setSerieTrabajador(p.getEmploye())+"', '"+Conexion.setSerieCliente(p.getClient())+"');");
+			+"('"+p.getCode()+"', "+p.getPay()+", "+p.getChange()+", "+p.getTotal()+", '"+setSerieMatrix(p.getBuyout())
+			+"', '"+p.getDate()+"', '"+setSerieTrabajador(p.getEmploye())+"', '"+setSerieCliente(p.getClient())+"');");
 			
 			Script.execute();
 			
@@ -109,7 +109,7 @@ public class Conexion{
 				
 				if (indice==n){
 					
-					p = new Factura(Script.getString("Code"), Script.getLong("Pay"), Script.getDouble("Change"), Script.getDouble("Total"), Conexion.getSerieMatrix(Script.getString("Buyout")), Script.getString("Date"), Conexion.getSerieTrabajador(Script.getString("Employe")), Conexion.getSerieCliente(Script.getString("Client")));
+					p = new Factura(Script.getString("Code"), Script.getLong("Pay"), Script.getDouble("Change"), Script.getDouble("Total"), getSerieMatrix(Script.getString("Buyout")), Script.getString("Date"), getSerieTrabajador(Script.getString("Employe")), getSerieCliente(Script.getString("Client")));
 					
 				}
 				
@@ -185,9 +185,9 @@ public class Conexion{
 		
 		try{
 			
-			PreparedStatement Script = cn.prepareStatement("INSERT INTO Trabajador (Code, ID, Name, LastName, Phone, Email, Address, Gender, Age, Admin) VALUES "
+			PreparedStatement Script = cn.prepareStatement("INSERT INTO Trabajador (Code, ID, Name, LastName, Phone, Email, Address, Gender, Age, Admin, Image) VALUES "
 			+"('"+p.getCode()+"', '"+p.getID()+"','"+p.getName()+"', '"+p.getLastName()+"', '"+p.getPhone()+"', '"+p.getEmail()+"', '"+p.getAddress()+"', '"+p.getGender()
-			+"', "+p.getAge()+", "+Parse(p.getAdmin())+");");
+			+"', "+p.getAge()+", "+Parse(p.getAdmin())+", '"+p.getImage()+"');");
 			
 			Script.execute();
 			
@@ -213,7 +213,7 @@ public class Conexion{
 				
 				if (indice==n){
 					
-					p = new Trabajador(Script.getString("Code"), Script.getString("ID"), Script.getString("Name"), Script.getString("LastName"), Script.getString("Phone"), Script.getString("Email"), Script.getString("Address"), Script.getString("Gender").charAt(0), Script.getByte("Age"), Parse(Script.getInt("Admin")));
+					p = new Trabajador(Script.getString("Code"), Script.getString("ID"), Script.getString("Name"), Script.getString("LastName"), Script.getString("Phone"), Script.getString("Email"), Script.getString("Address"), Script.getString("Gender").charAt(0), Script.getByte("Age"), Parse(Script.getInt("Admin")), Script.getString("Image"));
 					
 				}
 				
@@ -514,7 +514,7 @@ public class Conexion{
 		
 	}
 	
-	private static Object[][] getSerieMatrix (String serializedMatrix) {
+	private Object[][] getSerieMatrix (String serializedMatrix) {
 		
         String[] parts = serializedMatrix.split(";");
 		int c = 0;
@@ -534,7 +534,7 @@ public class Conexion{
         return Matrix;
     }
 	
-	private static String setSerieMatrix (Object[][] Matrix){
+	private String setSerieMatrix (Object[][] Matrix){
 		
         StringBuilder sb = new StringBuilder();
 		
@@ -554,21 +554,21 @@ public class Conexion{
 		
     }
 	
-	private static Trabajador getSerieTrabajador(String serializedEmploye){
+	private Trabajador getSerieTrabajador(String serializedEmploye){
 		
 		String[] parts = serializedEmploye.split(",");
 		
-		return new Trabajador(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5], parts[6], parts[7].charAt(0), Byte.parseByte(parts[8]), Boolean.parseBoolean(parts[9]));
+		return new Trabajador(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5], parts[6], parts[7].charAt(0), Byte.parseByte(parts[8]), Boolean.parseBoolean(parts[9]), parts[10]);
 		
 	}
 	
-	private static String setSerieTrabajador(Trabajador p){
+	private String setSerieTrabajador(Trabajador p){
 		
-		return p.getCode()+","+p.getID()+","+p.getName()+","+p.getLastName()+","+p.getPhone()+","+p.getEmail()+","+p.getAddress()+","+p.getGender()+","+p.getAge()+","+p.getAdmin();
+		return p.getCode()+","+p.getID()+","+p.getName()+","+p.getLastName()+","+p.getPhone()+","+p.getEmail()+","+p.getAddress()+","+p.getGender()+","+p.getAge()+","+Parse(p.getAdmin())+","+p.getImage();
 		
 	}
 	
-	private static Cliente getSerieCliente(String serializedClient){
+	private Cliente getSerieCliente(String serializedClient){
 		
 		String[] parts = serializedClient.split(",");
 		
@@ -576,7 +576,7 @@ public class Conexion{
 		
 	}
 	
-	private static String setSerieCliente(Cliente p){
+	private String setSerieCliente(Cliente p){
 		
 		return p.getName()+","+p.getLastName()+","+p.getID()+","+p.getPhone()+","+p.getEmail()+","+p.getAddress();
 		
