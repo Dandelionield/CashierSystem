@@ -738,20 +738,20 @@ public class Mecanics {
 
     }
 
-	public static void iArchivo(String archivo, String carpeta, String nom)  {
-	
-		try{
-	      
-	        Path origen = Path.of(archivo);
-	        Path destino = Path.of(carpeta, nom + "." + getExtension(new File(archivo)));
-
-	        Files.copy(origen, destino, StandardCopyOption.REPLACE_EXISTING);
+	public static void iArchivo(String archivo, String carpeta, String nom){
+		
+		try {
 			
-	    }catch (Exception e){
+			File origenFile = new File(archivo);
+			File destinoFile = new File(carpeta, nom + "." + getExtension(origenFile));
 			
-			JOptionPane.showMessageDialog(null, "Error de copiado de imagen: "+e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			Files.copy(origenFile.toPath(), destinoFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 			
-	    }
+		} catch (Exception e){
+			
+			JOptionPane.showMessageDialog(null, "Error de copiado de imagen: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			
+		}
 		
 	}
 	
