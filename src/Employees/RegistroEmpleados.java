@@ -1,6 +1,4 @@
-//package Employees;
-
-//import Main.Runner;
+package Employees;
 
 import java.awt.Color;
 import java.awt.Cursor;
@@ -37,17 +35,21 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 
+import Inventory.Inventario;
+import Main.Login;
+import Main.Runner;
+import Main.Mecanics; 
+import Objects.Conexion;
+
 public class RegistroEmpleados {
-    private static String url = "./imagenes/";
+    private static String url = "./src/ResourcePackCaja/";
     private static Boolean edit = true;
     private static JFrame screen = new JFrame("Ventana");
     private static JPanel mainPanel = new JPanel();
     private static JPanel userPanel = new JPanel();
 
-    //private static byte theme = Mecanics.getMode(true);
-    //private static byte language = Mecanics.getLanguage(true);
-    private static byte language = 0;
-    private static byte mode = 0;
+    private int mode = Mecanics.getMode(true);
+    private int language = Mecanics.getLanguage(true);
 
     private static Color color1, color2, colorField;
     private static String[] CedulaI = {"Cedula", "Cedula"};
@@ -73,12 +75,12 @@ public class RegistroEmpleados {
     private static JLabel jlGenero = new JLabel();
     private static JLabel jlPermisos = new JLabel();
 
-    private static JTextField jtCedula = new JTextField("", 15);
-    private static JTextField jtNombre = new JTextField("", 15);
-    private static JTextField jtApellido = new JTextField("", 30);
-    private static JTextField jtContacto = new JTextField("", 30);
-    private static JTextField jtEmail = new JTextField("", 30);
-    private static JTextField jtDireccion = new JTextField("", 30);
+    private static JTextField jtCedula = new JTextField();
+    private static JTextField jtNombre = new JTextField();
+    private static JTextField jtApellido = new JTextField();
+    private static JTextField jtContacto = new JTextField();
+    private static JTextField jtEmail = new JTextField();
+    private static JTextField jtDireccion = new JTextField();
 
     private static JLabel jlUserCedula = new JLabel();
     private static JLabel jlUserNombre = new JLabel("", SwingConstants.CENTER);
@@ -98,6 +100,8 @@ public class RegistroEmpleados {
     private static Image imgLanguage;
     private static Image imgMode;
     private static Image imgPdf;
+    private static Image imgUnlock = new ImageIcon(url + "CandadoAbierto.png").getImage();
+    private static Image imgLock = new ImageIcon(url + "CandadoCerrado.png").getImage();
 
     private static JLabel jlExit = new JLabel();
     private static JLabel jlEdit = new JLabel();
@@ -108,31 +112,34 @@ public class RegistroEmpleados {
     private static JLabel jlMode = new JLabel();
     private static JLabel jlPdf = new JLabel();
     private static JLabel jlImg = new JLabel();
+    private static JLabel jlLock = new JLabel(new ImageIcon(imgLock.getScaledInstance(40,40,Image.SCALE_SMOOTH)));
+    private static JLabel jlImgSelect = new JLabel(new ImageIcon(url + "vacio.png"));
 
     private static JRadioButton g1 = new JRadioButton(), g2 = new JRadioButton(), g3 = new JRadioButton();
     private static JRadioButton p1 = new JRadioButton(), p2 = new JRadioButton();
     private static JSpinner jsEdad = new JSpinner(new SpinnerNumberModel(18, 18, 100, 1));
     private static DefaultTableModel modelo;
     private static JTable jtaEmpleados = new JTable();
+    private static JScrollPane jscEmpleados = new JScrollPane();
 
-    public static void main(String[] abc){
-        RegistroEmpleados p = new RegistroEmpleados();
+    private static DocumentListener user;
+    private static ChangeListener edadListener;
+    private static ActionListener generoListener;
+    private static ActionListener permisoListener;
+
+    public RegistroEmpleados() {
+        main();
     }
 
-    public RegistroEmpleados(){
-        float ini = System.currentTimeMillis()*1000;
+    private void main() {
         /*          DECLARACION DE LOS OBJETOS          */
         ChangeMode();
         ChangeLanguage();
 
-        Image imgLock = new ImageIcon(url + "CandadoCerrado.png").getImage();
-        Image imgUnlock = new ImageIcon(url + "CandadoAbierto.png").getImage();
-        JLabel jlLock = new JLabel(new ImageIcon(imgLock.getScaledInstance(40,40,Image.SCALE_SMOOTH)));
-        JLabel jlImgSelect = new JLabel(new ImageIcon(url + "vacio.png"));
         jlMode.setIcon(new ImageIcon(imgMode.getScaledInstance(40,40,Image.SCALE_SMOOTH)));
         
         jtaEmpleados.setModel(modelo);
-        JScrollPane jscEmpleados = new JScrollPane(jtaEmpleados);
+        jscEmpleados.setViewportView(jtaEmpleados);
         ButtonGroup bgGenero = new ButtonGroup();
         ButtonGroup bgPermisos = new ButtonGroup();
 
@@ -221,168 +228,12 @@ public class RegistroEmpleados {
         jlImg.setBounds(55,10,200,200);
         jlImgSelect.setBounds(55,10,200,200);
 
-        jlExit.addMouseListener(new MouseAdapter() {
-            @Override public void mouseExited(MouseEvent e) { screen.setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); }
-            @Override public void mouseEntered(MouseEvent e) { screen.setCursor(new Cursor(Cursor.HAND_CURSOR)); }
-
-            @Override public void mousePressed(MouseEvent e) {
-                
-            }
-        });
-
-        jlCancel.addMouseListener(new MouseAdapter() {
-            @Override public void mouseExited(MouseEvent e) { screen.setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); }
-            @Override public void mouseEntered(MouseEvent e) { screen.setCursor(new Cursor(Cursor.HAND_CURSOR)); }
-
-            @Override public void mousePressed(MouseEvent e) {
-                jlCancel.setBounds(586, 255, 30, 30);
-                jlCancel.setIcon(new ImageIcon(imgCancel.getScaledInstance(30,30,Image.SCALE_SMOOTH)));
-            }
-
-            @Override public void mouseReleased(MouseEvent e) {
-                jlCancel.setBounds(581, 250, 40, 40);
-                jlCancel.setIcon(new ImageIcon(imgCancel.getScaledInstance(40,40,Image.SCALE_SMOOTH)));
-            }
-        });
-
-        jlAccept.addMouseListener(new MouseAdapter() {
-            @Override public void mouseExited(MouseEvent e) { screen.setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); }
-            @Override public void mouseEntered(MouseEvent e) { screen.setCursor(new Cursor(Cursor.HAND_CURSOR)); }
-
-            @Override public void mousePressed(MouseEvent e) {
-                jlAccept.setBounds(537, 255, 30, 30);
-                jlAccept.setIcon(new ImageIcon(imgAccept.getScaledInstance(30,30,Image.SCALE_SMOOTH)));
-            }
-
-            @Override public void mouseReleased(MouseEvent e) {
-                jlAccept.setBounds(532, 250, 40, 40);
-                jlAccept.setIcon(new ImageIcon(imgAccept.getScaledInstance(40,40,Image.SCALE_SMOOTH)));
-            }
-        });
-
-        jlEdit.addMouseListener(new MouseAdapter() {
-            @Override public void mouseExited(MouseEvent e) { screen.setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); }
-            @Override public void mouseEntered(MouseEvent e) { screen.setCursor(new Cursor(Cursor.HAND_CURSOR)); }
-
-            @Override public void mousePressed(MouseEvent e) {
-                edit = !edit;
-
-                jlEdit.setBounds(21, 255, 30, 30);
-                jlEdit.setIcon(new ImageIcon(imgEdit.getScaledInstance(30,30,Image.SCALE_SMOOTH)));
-                jlLock.setIcon(new ImageIcon((edit ? imgLock : imgUnlock).getScaledInstance(40,40,Image.SCALE_SMOOTH)));
-            }
-
-            @Override public void mouseReleased(MouseEvent e) {
-                jlEdit.setBounds(16, 250, 40, 40);
-                jlEdit.setIcon(new ImageIcon(imgEdit.getScaledInstance(40,40,Image.SCALE_SMOOTH)));
-            }
-        });
-
-        jlDelete.addMouseListener(new MouseAdapter() {
-            @Override public void mouseExited(MouseEvent e) { screen.setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); }
-            @Override public void mouseEntered(MouseEvent e) { if (!edit) screen.setCursor(new Cursor(Cursor.HAND_CURSOR)); }
-
-            @Override public void mousePressed(MouseEvent e) {
-                if (!edit) {
-                    jlDelete.setBounds(487, 255, 30, 30);
-                    jlDelete.setIcon(new ImageIcon(imgDelete.getScaledInstance(30,30,Image.SCALE_SMOOTH)));
-                }
-            }
-
-            @Override public void mouseReleased(MouseEvent e) {
-                jlDelete.setBounds(482, 250, 40, 40);
-                jlDelete.setIcon(new ImageIcon(imgDelete.getScaledInstance(40,40,Image.SCALE_SMOOTH)));
-            }
-        });
-
-        jlLanguage.addMouseListener(new MouseAdapter() {
-            @Override public void mouseExited(MouseEvent e) { screen.setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); }
-            @Override public void mouseEntered(MouseEvent e) { screen.setCursor(new Cursor(Cursor.HAND_CURSOR)); }
-
-            @Override public void mousePressed(MouseEvent e) {
-                jlLanguage.setBounds(586, 10, 30, 30);
-                jlLanguage.setIcon(new ImageIcon(imgLanguage.getScaledInstance(30,30,Image.SCALE_SMOOTH)));
-
-                //Cambiar lenguaje
-                language = (byte) ((language == 0) ? 1 : 0);
-                ChangeLanguage();
-            }
-
-            @Override public void mouseReleased(MouseEvent e) {
-                jlLanguage.setBounds(581, 5, 40, 40);
-                jlLanguage.setIcon(new ImageIcon(imgLanguage.getScaledInstance(40,40,Image.SCALE_SMOOTH)));
-            }
-        });
-
-        jlMode.addMouseListener(new MouseAdapter() {
-            @Override public void mouseExited(MouseEvent e) { screen.setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); }
-            @Override public void mouseEntered(MouseEvent e) { screen.setCursor(new Cursor(Cursor.HAND_CURSOR)); }
-
-            @Override public void mousePressed(MouseEvent e) {
-                jlMode.setBounds(537, 10, 30, 30);
-
-                //Cambiar modo
-                mode = (byte) ((mode == 0) ? 1 : 0);
-                ChangeMode();
-            }
-
-            @Override public void mouseReleased(MouseEvent e) {
-                jlMode.setBounds(532, 5, 40, 40);
-                jlMode.setIcon(new ImageIcon(imgMode.getScaledInstance(40,40,Image.SCALE_SMOOTH)));
-            }
-        });
-
-        jlPdf.addMouseListener(new MouseAdapter() {
-            @Override public void mouseExited(MouseEvent e) { screen.setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); }
-            @Override public void mouseEntered(MouseEvent e) { screen.setCursor(new Cursor(Cursor.HAND_CURSOR)); }
-
-            @Override public void mousePressed(MouseEvent e) {
-                jlPdf.setBounds(487, 10, 30, 30);
-                jlPdf.setIcon(new ImageIcon(imgPdf.getScaledInstance(30,30,Image.SCALE_SMOOTH)));
-            }
-
-            @Override public void mouseReleased(MouseEvent e) {
-                jlPdf.setBounds(482, 5, 40, 40);
-                jlPdf.setIcon(new ImageIcon(imgPdf.getScaledInstance(40,40,Image.SCALE_SMOOTH)));
-            }
-        });
-
-        jlImgSelect.addMouseListener(new MouseAdapter() {
-            @Override public void mouseExited(MouseEvent e) {
-                jlImgSelect.setIcon(new ImageIcon(url + "vacio.png"));
-                screen.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-            }
-
-            @Override public void mouseEntered(MouseEvent e) {
-                jlImgSelect.setIcon(new ImageIcon(url + "camera_icon.png"));
-                screen.setCursor(new Cursor(Cursor.HAND_CURSOR));
-            }
-
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                try { UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());} 
-                catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e1) {}
-
-                JFileChooser j = new JFileChooser("C:/Users/" + System.getProperty("user.name"));
-                j.showOpenDialog(null);
-
-                if (j.getSelectedFile() != null) {
-                    Image img = new ImageIcon(j.getSelectedFile()+"").getImage().getScaledInstance(200,200,Image.SCALE_SMOOTH);
-                    jlImg.setIcon(new ImageIcon(img));
-                }
-            }
-        });
-        
-        //FocusListener
-        jtCedula.addFocusListener(FocusText(jtCedula));
-        jtNombre.addFocusListener(FocusText(jtNombre));
-        jtApellido.addFocusListener(FocusText(jtApellido));
-        jtContacto.addFocusListener(FocusText(jtContacto));
-        jtEmail.addFocusListener(FocusText(jtEmail));
-        jtDireccion.addFocusListener(FocusText(jtDireccion));
+        if (jlExit.getMouseListeners().length == 0) {
+            Listener();
+        }
 
         //DocumentListener
-        DocumentListener userName = new DocumentListener() {
+        user = new DocumentListener() {
             @Override public void insertUpdate(DocumentEvent e) { updateFieldState(); }
             @Override public void removeUpdate(DocumentEvent e) { updateFieldState(); }
             @Override public void changedUpdate(DocumentEvent e) { updateFieldState(); }
@@ -395,29 +246,28 @@ public class RegistroEmpleados {
                     jlUserNombre.setText(jtNombre.getText() + " " + jtApellido.getText());
                     jlUserNombre.setForeground(colorField);
                 }
+
+                jlUserCedula.setText(CedulaI[language] + ": " + ((jtCedula.getText().isEmpty()) ? "123456789" : jtCedula.getText()));
+                jlUserContacto.setText(ContactoI[language] + ": " + ((jtContacto.getText().isEmpty()) ? "0123456789" : jtContacto.getText()));
+                jlUserEmail.setText(EmailI[language] + ": " + ((jtEmail.getText().isEmpty()) ? "User@gmail.com" : jtEmail.getText()));
+                jlUserDireccion.setText(DireccionI[language] + ": " + ((jtDireccion.getText().isEmpty()) ? "" : jtDireccion.getText()));
             }
         };
 
-        jtNombre.getDocument().addDocumentListener(userName);
-        jtApellido.getDocument().addDocumentListener(userName);
-        jtCedula.getDocument().addDocumentListener(DocumentL(jtCedula, jlUserCedula, CedulaI, ""));
-        jtContacto.getDocument().addDocumentListener(DocumentL(jtContacto, jlUserContacto, ContactoI, "0123456789"));
-        jtEmail.getDocument().addDocumentListener(DocumentL(jtEmail, jlUserEmail, EmailI, "User@gmail.com"));
-        jtDireccion.getDocument().addDocumentListener(DocumentL(jtDireccion, jlUserDireccion, DireccionI, ""));
-        jsEdad.addChangeListener(new ChangeListener() {
+        edadListener = new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
                 jlUserEdad.setText(EdadI[language] + ": " + jsEdad.getValue());
             }
-        });
-
-        //KeyListener
-        jtCedula.addKeyListener(Tecla(jtNombre, null));
-        jtNombre.addKeyListener(Tecla(jtApellido, jtCedula));
-        jtApellido.addKeyListener(Tecla(jtContacto, jtNombre));
-        jtContacto.addKeyListener(Tecla(jtEmail, jtApellido));
-        jtEmail.addKeyListener(Tecla(jtDireccion, jtContacto));
-        jtDireccion.addKeyListener(Tecla(null, jtEmail));
+        };
+        
+        jtNombre.getDocument().addDocumentListener(user);
+        jtApellido.getDocument().addDocumentListener(user);
+        jtCedula.getDocument().addDocumentListener(user);
+        jtContacto.getDocument().addDocumentListener(user);
+        jtEmail.getDocument().addDocumentListener(user);
+        jtDireccion.getDocument().addDocumentListener(user);
+        jsEdad.addChangeListener(edadListener);
 
         /*          RadioButton          */
         bgGenero.add(g1);
@@ -427,13 +277,30 @@ public class RegistroEmpleados {
         bgPermisos.add(p1);
         bgPermisos.add(p2);
 
-        g1.addActionListener(RButton(g1, jlUserGenero, GeneroI, ElegirGI[0]));
-        g2.addActionListener(RButton(g2, jlUserGenero, GeneroI, ElegirGI[1]));
-        g3.addActionListener(RButton(g3, jlUserGenero, GeneroI, ElegirGI[2]));
+        generoListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(g1.isSelected()) jlUserGenero.setText(GeneroI[language] + ": " + ElegirGI[0][language]);
+                if(g2.isSelected()) jlUserGenero.setText(GeneroI[language] + ": " + ElegirGI[1][language]);
+                if(g3.isSelected()) jlUserGenero.setText(GeneroI[language] + ": " + ElegirGI[2][language]);
+            }
+        };
 
-        p1.addActionListener(RButton(p1, jlUserPermisos, PermisosI, ElegirPI[0]));
-        p2.addActionListener(RButton(p2, jlUserPermisos, PermisosI, ElegirPI[1]));
+        permisoListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(p1.isSelected()) jlUserPermisos.setText(PermisosI[language] + ": " + ElegirPI[0][language]);
+                if(p2.isSelected()) jlUserPermisos.setText(PermisosI[language] + ": " + ElegirPI[1][language]);
+            }
+        };
 
+        g1.addActionListener(generoListener);
+        g2.addActionListener(generoListener);
+        g3.addActionListener(generoListener);
+
+        p1.addActionListener(permisoListener);
+        p2.addActionListener(permisoListener);
+        
         /*          JPANEL PRINCIPAL            */
         mainPanel.add(jlCedula);
         mainPanel.add(jtCedula);
@@ -503,10 +370,165 @@ public class RegistroEmpleados {
         screen.setLocationRelativeTo(null);
         screen.setVisible(true);
         screen.setIconImage(new ImageIcon(url + "Icono.png").getImage());
-        System.out.println(System.currentTimeMillis()*1000-ini);
     }
 
-    private static void ChangeLanguage() {
+    private void Listener() {
+        jlExit.addMouseListener(new MouseAdapter() {
+            @Override public void mouseExited(MouseEvent e) { screen.setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); }
+            @Override public void mouseEntered(MouseEvent e) { screen.setCursor(new Cursor(Cursor.HAND_CURSOR)); }
+
+            @Override public void mousePressed(MouseEvent e) {
+                Runner.contentPane.removeAll();
+                Runner.Inicio = new Login();
+                
+                Runner.contentPane.add(Runner.Inicio, Integer.valueOf(0));
+                Runner lg = new Runner(); 
+                lg.setVisible(true);
+
+                jtNombre.getDocument().removeDocumentListener(user);
+                jtApellido.getDocument().removeDocumentListener(user);
+                jtCedula.getDocument().removeDocumentListener(user);
+                jtContacto.getDocument().removeDocumentListener(user);
+                jtEmail.getDocument().removeDocumentListener(user);
+                jtDireccion.getDocument().removeDocumentListener(user);
+                jsEdad.removeChangeListener(edadListener);
+                g1.removeActionListener(generoListener);
+                g2.removeActionListener(generoListener);
+                g3.removeActionListener(generoListener);
+
+                p1.removeActionListener(permisoListener);
+                p2.removeActionListener(permisoListener);
+
+                screen.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                screen.dispose();
+            }
+        });
+
+        jlCancel.addMouseListener(new MouseAdapter() {
+            @Override public void mouseExited(MouseEvent e) { screen.setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); }
+            @Override public void mouseEntered(MouseEvent e) { screen.setCursor(new Cursor(Cursor.HAND_CURSOR)); }
+
+            @Override public void mousePressed(MouseEvent e) {
+                jlCancel.setBounds(586, 255, 30, 30);
+                jlCancel.setIcon(new ImageIcon(imgCancel.getScaledInstance(30,30,Image.SCALE_SMOOTH)));
+            }
+
+            @Override public void mouseReleased(MouseEvent e) {
+                jlCancel.setBounds(581, 250, 40, 40);
+                jlCancel.setIcon(new ImageIcon(imgCancel.getScaledInstance(40,40,Image.SCALE_SMOOTH)));
+            }
+        });
+
+        jlAccept.addMouseListener(new MouseAdapter() {
+            @Override public void mouseExited(MouseEvent e) { screen.setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); }
+            @Override public void mouseEntered(MouseEvent e) { screen.setCursor(new Cursor(Cursor.HAND_CURSOR)); }
+
+            @Override public void mousePressed(MouseEvent e) {
+                jlAccept.setBounds(537, 255, 30, 30);
+                jlAccept.setIcon(new ImageIcon(imgAccept.getScaledInstance(30,30,Image.SCALE_SMOOTH)));
+            }
+
+            @Override public void mouseReleased(MouseEvent e) {
+                jlAccept.setBounds(532, 250, 40, 40);
+                jlAccept.setIcon(new ImageIcon(imgAccept.getScaledInstance(40,40,Image.SCALE_SMOOTH)));
+            }
+        });
+
+        jlEdit.addMouseListener(new MouseAdapter() {
+            @Override public void mouseExited(MouseEvent e) { screen.setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); }
+            @Override public void mouseEntered(MouseEvent e) { screen.setCursor(new Cursor(Cursor.HAND_CURSOR)); }
+
+            @Override public void mousePressed(MouseEvent e) {
+                edit = !edit;
+                System.out.println(edit);
+
+                jlEdit.setBounds(21, 255, 30, 30);
+                jlEdit.setIcon(new ImageIcon(imgEdit.getScaledInstance(30,30,Image.SCALE_SMOOTH)));
+                jlLock.setIcon(new ImageIcon((edit ? imgLock : imgUnlock).getScaledInstance(40,40,Image.SCALE_SMOOTH)));
+            }
+
+            @Override public void mouseReleased(MouseEvent e) {
+                jlEdit.setBounds(16, 250, 40, 40);
+                jlEdit.setIcon(new ImageIcon(imgEdit.getScaledInstance(40,40,Image.SCALE_SMOOTH)));
+            }
+        });
+
+        jlDelete.addMouseListener(new MouseAdapter() {
+            @Override public void mouseExited(MouseEvent e) { screen.setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); }
+            @Override public void mouseEntered(MouseEvent e) { if (!edit) screen.setCursor(new Cursor(Cursor.HAND_CURSOR)); }
+
+            @Override public void mousePressed(MouseEvent e) {
+                if (!edit) {
+                    jlDelete.setBounds(487, 255, 30, 30);
+                    jlDelete.setIcon(new ImageIcon(imgDelete.getScaledInstance(30,30,Image.SCALE_SMOOTH)));
+                }
+            }
+
+            @Override public void mouseReleased(MouseEvent e) {
+                jlDelete.setBounds(482, 250, 40, 40);
+                jlDelete.setIcon(new ImageIcon(imgDelete.getScaledInstance(40,40,Image.SCALE_SMOOTH)));
+            }
+        });
+
+        jlPdf.addMouseListener(new MouseAdapter() {
+            @Override public void mouseExited(MouseEvent e) { screen.setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); }
+            @Override public void mouseEntered(MouseEvent e) { screen.setCursor(new Cursor(Cursor.HAND_CURSOR)); }
+
+            @Override public void mousePressed(MouseEvent e) {
+                jlPdf.setBounds(587, 10, 30, 30);
+                jlPdf.setIcon(new ImageIcon(imgPdf.getScaledInstance(30,30,Image.SCALE_SMOOTH)));
+            }
+
+            @Override public void mouseReleased(MouseEvent e) {
+                jlPdf.setBounds(582, 5, 40, 40);
+                jlPdf.setIcon(new ImageIcon(imgPdf.getScaledInstance(40,40,Image.SCALE_SMOOTH)));
+            }
+        });
+
+        jlImgSelect.addMouseListener(new MouseAdapter() {
+            @Override public void mouseExited(MouseEvent e) {
+                jlImgSelect.setIcon(new ImageIcon(url + "vacio.png"));
+                screen.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            }
+
+            @Override public void mouseEntered(MouseEvent e) {
+                jlImgSelect.setIcon(new ImageIcon(url + "camera_icon.png"));
+                screen.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            }
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                try { UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());} 
+                catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e1) {}
+
+                JFileChooser j = new JFileChooser("C:/Users/" + System.getProperty("user.name"));
+                j.showOpenDialog(null);
+
+                if (j.getSelectedFile() != null) {
+                    Image img = new ImageIcon(j.getSelectedFile()+"").getImage().getScaledInstance(200,200,Image.SCALE_SMOOTH);
+                    jlImg.setIcon(new ImageIcon(img));
+                }
+            }
+        });
+        
+        //FocusListener
+        jtCedula.addFocusListener(FocusText(jtCedula));
+        jtNombre.addFocusListener(FocusText(jtNombre));
+        jtApellido.addFocusListener(FocusText(jtApellido));
+        jtContacto.addFocusListener(FocusText(jtContacto));
+        jtEmail.addFocusListener(FocusText(jtEmail));
+        jtDireccion.addFocusListener(FocusText(jtDireccion));
+
+        //KeyListener
+        jtCedula.addKeyListener(Tecla(jtNombre, null));
+        jtNombre.addKeyListener(Tecla(jtApellido, jtCedula));
+        jtApellido.addKeyListener(Tecla(jtContacto, jtNombre));
+        jtContacto.addKeyListener(Tecla(jtEmail, jtApellido));
+        jtEmail.addKeyListener(Tecla(jtDireccion, jtContacto));
+        jtDireccion.addKeyListener(Tecla(null, jtEmail));
+    }
+
+    private void ChangeLanguage() {
         jlCedula.setText(PedirI[language] + CedulaI[language] + ":");
         jlNombre.setText(PedirI[language] + NombreI[language] + ":");
         jlApellido.setText(PedirI[language] + ApellidoI[language] + ":");
@@ -573,7 +595,7 @@ public class RegistroEmpleados {
         
     }
 
-    private static void ChangeMode() {
+    private void ChangeMode() {
         if (mode == 0) {
             color1 = new Color(238, 248, 254);
             color2 = new Color(175, 186, 199);
@@ -658,27 +680,6 @@ public class RegistroEmpleados {
         return new FocusListener() {
             @Override public void focusGained(FocusEvent evt) { jtext.setBorder(new MatteBorder(0, 0, 2, 0, Color.BLUE)); }
             @Override public void focusLost(FocusEvent evt) { jtext.setBorder(new MatteBorder(0, 0, 2, 0, Color.GRAY)); }
-        };
-    }
-
-    private static DocumentListener DocumentL(JTextField jtext, JLabel jLabel, String[] msg, String msg2) {
-        return new DocumentListener() {
-            @Override public void insertUpdate(DocumentEvent e) { updateFieldState(); }
-            @Override public void removeUpdate(DocumentEvent e) { updateFieldState(); }
-            @Override public void changedUpdate(DocumentEvent e) { updateFieldState(); }
-
-            public void updateFieldState() {
-                jLabel.setText(msg[language] + ": " + ((jtext.getText().isEmpty()) ? msg2 : jtext.getText()));
-            }
-        };
-    }
-
-    private static ActionListener RButton(JRadioButton button, JLabel jlabel, String[] txt, String[] txt2) {
-        return new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(button.isSelected()) jlabel.setText(txt[language] + ": " + txt2[language]);
-            }
         };
     }
 
