@@ -214,6 +214,8 @@ public class Inventario extends JFrame {
 		table = cp.getJTable();
 		JScrollPane scrolltabla = cp.getJScrollPane();
 		
+		table.setBackground(Fondo[moder]);
+		
 		table.addMouseListener(new MouseAdapter() {
 			//@Override
 			public void mouseClicked(MouseEvent evt) {
@@ -736,7 +738,7 @@ public class Inventario extends JFrame {
 		txtunidad.setForeground(colorin);
 		txtmarca.setForeground(colorin);
 		txtdescripcion.setForeground(colorin);
-		txtidioma.setForeground(colorin);	
+		txtidioma.setForeground(colorin);
 		
 		editar.setIcon(new ImageIcon(new ImageIcon("./src/ResourcePackCaja/Editar"+mdo+".png").getImage().getScaledInstance(editar.getWidth(), editar.getHeight(), Image.SCALE_DEFAULT)));
 		
