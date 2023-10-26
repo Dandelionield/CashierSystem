@@ -1,7 +1,7 @@
 package CashCashier;
 
 import Main.Mecanics;
-import Objects.Components;
+import Objects.ComponentBuilder;
 import Objects.Cliente;
 
 import java.awt.event.ActionListener;
@@ -80,18 +80,21 @@ public class RegistrarUsuario extends JPanel{
 	
 	private String[][] ColumnaNombre = {{"ID","Nombre/s","Apellido/s","Número Telefónico","Email","Dirección"},{"ID","Name/s","Last Name/s","Phone Number","Email","Address"}};
 	
-	private final String url = "./src/ResourcePackCaja/";
+	private final String url = "./src/ResourcePackCaja";
 	private String[] CajaBorrar = {"BorrarLight","BorrarDark"};
 	private String[] CajaAceptar = {"AceptarLight","AceptarDark"};
 	private String[] CajaCancelar = {"CancelarLight","CancelarDark"};
 	private String[] CajaEditar = {"EditarLight","EditarDark"};
 	private String[] CajaCandado = {"CandadoAbierto","CandadoCerrado"};
 	
-	private final Components cp = new Components(url, Fondo[m], m);
+	private final ComponentBuilder cp = new ComponentBuilder(url, Fondo[m]);
 
 	public RegistrarUsuario(String id){
 		
+		if (m==1){cp.setForeground(Color.WHITE);}
+		
 		int z = 0;
+		Font Format = new Font("Clarendon Blk BT", Font.BOLD, 12);
 		
 		bupid = id;
 		
@@ -114,11 +117,11 @@ public class RegistrarUsuario extends JPanel{
 
 			}
 			
-			cp.Table(Column, Data, cp.setBounds(325, 30, 600, 300));
+			cp.buildTable(Column, Data, cp.doBounds(325, 30, 600, 300));
 
 		}else{
 			
-			cp.Table(Column, cp.setBounds(325, 30, 600, 300));
+			cp.buildTable(Column, cp.doBounds(325, 30, 600, 300));
 			
 		}
 		
@@ -126,44 +129,24 @@ public class RegistrarUsuario extends JPanel{
 		Tablitita = cp.getJTable();
 		Table = cp.getJScrollPane();
 		
-		ID = cp.Label(IDTexto[l], cp.setBounds(30, 50, 50, 20), SwingConstants.LEFT, 12);
-		Name = cp.Label(NameTexto[l], cp.setBounds(30, 155, 70, 20), SwingConstants.LEFT, 12);
-		LastName = cp.Label(LastNameTexto[l], cp.setBounds(30, 260, 100, 20), SwingConstants.LEFT, 12);
-		Phone = cp.Label(PhoneTexto[l], cp.setBounds(180, 50, 120, 20), SwingConstants.LEFT, 12);
-		Email = cp.Label(EmailTexto[l], cp.setBounds(180, 155, 100, 20), SwingConstants.LEFT, 12);
-		Address = cp.Label(AddressTexto[l], cp.setBounds(180, 260, 100, 20), SwingConstants.LEFT, 12);
-		Lock = cp.Label("", cp.setBounds(260, 20, 22, 22), CajaCandado[0], 22, 22, SwingConstants.CENTER, SwingConstants.CENTER, SwingConstants.CENTER, 0);
-		TextPanelID = cp.TextPanel(bupid, cp.setBounds(30, 95, 100, 20), SwingConstants.LEFT, 15, Color.BLUE, Color.BLUE, true, false);
-		TextPanelName = cp.TextPanel("", cp.setBounds(30, 200, 100, 20), SwingConstants.LEFT, 15, Color.BLUE, Color.BLUE, true, false);
-		TextPanelLastName = cp.TextPanel("", cp.setBounds(30, 305, 100, 20), SwingConstants.LEFT, 15, Color.BLUE, Color.BLUE, true, false);
-		TextPanelPhone = cp.TextPanel("", cp.setBounds(180, 95, 100, 20), SwingConstants.LEFT, 15, Color.BLUE, Color.BLUE, true, false);
-		TextPanelEmail = cp.TextPanel("", cp.setBounds(180, 200, 100, 20), SwingConstants.LEFT, 13, Color.BLUE, Color.BLUE, true, false);
-		TextPanelAddress = cp.TextPanel("", cp.setBounds(180, 305, 100, 20), SwingConstants.LEFT, 13, Color.BLUE, Color.BLUE, true, false);
-		TextPanelShow = cp.TextPanel("", cp.setBounds(370, 340, 480, 30), SwingConstants.CENTER, new Font("Clarendon Blk BT", Font.BOLD, 14), Color.BLUE, Color.BLUE, false, false);
-		Erase = cp.Button("", cp.setBounds(870, 340, 35, 35), CajaBorrar[m], 35, 35, true, false);
-		Accept = cp.Button("", cp.setBounds(60, 340, 35, 35), CajaAceptar[m], 35, 35, true, false);
-		Cancel = cp.Button("", cp.setBounds(210, 340, 35, 35), CajaCancelar[m], 35, 35, true, false);
-		Edit = cp.Button("", cp.setBounds(30, 20, 22, 22), CajaEditar[m], 22, 22, false, false);
-		
-		add(Table);
-		add(ID);
-		add(Name);
-		add(LastName);
-		add(Phone);
-		add(Email);
-		add(Address);
-		add(Lock);
-		add(TextPanelID);
-		add(TextPanelName);
-		add(TextPanelLastName);
-		add(TextPanelPhone);
-		add(TextPanelEmail);
-		add(TextPanelAddress);
-		add(TextPanelShow);
-		add(Erase);
-		add(Accept);
-		add(Cancel);
-		add(Edit);
+		ID = cp.buildLabel(IDTexto[l], cp.doBounds(30, 50, 50, 20), SwingConstants.LEFT, Format);
+		Name = cp.buildLabel(NameTexto[l], cp.doBounds(30, 155, 70, 20), SwingConstants.LEFT, Format);
+		LastName = cp.buildLabel(LastNameTexto[l], cp.doBounds(30, 260, 100, 20), SwingConstants.LEFT, Format);
+		Phone = cp.buildLabel(PhoneTexto[l], cp.doBounds(180, 50, 120, 20), SwingConstants.LEFT, Format);
+		Email = cp.buildLabel(EmailTexto[l], cp.doBounds(180, 155, 100, 20), SwingConstants.LEFT, Format);
+		Address = cp.buildLabel(AddressTexto[l], cp.doBounds(180, 260, 100, 20), SwingConstants.LEFT, Format);
+		Lock = cp.buildLabel("", cp.doBounds(260, 20, 22, 22), CajaCandado[0], 22, 22, SwingConstants.CENTER, SwingConstants.CENTER, SwingConstants.CENTER, null);	Format = new Font("Clarendon Blk BT", Font.PLAIN, 15);
+		TextPanelID = cp.buildTextField(bupid, cp.doBounds(30, 95, 100, 20), SwingConstants.LEFT, Format, Color.BLUE, Color.BLUE, true, false);
+		TextPanelName = cp.buildTextField("", cp.doBounds(30, 200, 100, 20), SwingConstants.LEFT, Format, Color.BLUE, Color.BLUE, true, false);
+		TextPanelLastName = cp.buildTextField("", cp.doBounds(30, 305, 100, 20), SwingConstants.LEFT, Format, Color.BLUE, Color.BLUE, true, false);
+		TextPanelPhone = cp.buildTextField("", cp.doBounds(180, 95, 100, 20), SwingConstants.LEFT, Format, Color.BLUE, Color.BLUE, true, false);
+		TextPanelEmail = cp.buildTextField("", cp.doBounds(180, 200, 100, 20), SwingConstants.LEFT, Format, Color.BLUE, Color.BLUE, true, false);
+		TextPanelAddress = cp.buildTextField("", cp.doBounds(180, 305, 100, 20), SwingConstants.LEFT, Format, Color.BLUE, Color.BLUE, true, false);
+		TextPanelShow = cp.buildTextField("", cp.doBounds(370, 340, 480, 30), SwingConstants.CENTER, new Font("Clarendon Blk BT", Font.BOLD, 14), Color.BLUE, Color.BLUE, false, false);
+		Erase = cp.buildButton(CajaBorrar[m], cp.doBounds(870, 340, 35, 35), true, false);
+		Accept = cp.buildButton(CajaAceptar[m], cp.doBounds(60, 340, 35, 35), true, false);
+		Cancel = cp.buildButton(CajaCancelar[m], cp.doBounds(210, 340, 35, 35), true, false);
+		Edit = cp.buildButton(CajaEditar[m], cp.doBounds(30, 20, 22, 22), false, false);
 		
 		setLayout(null);
 		setComponentZOrder(Table, z);	z++;
@@ -493,7 +476,7 @@ public class RegistrarUsuario extends JPanel{
 				TextPanelShow.setVisible(false);
 				Edit.setEnabled(false);
 				
-				ImageIcon icono = new ImageIcon(url+CajaCandado[0]+".png");
+				ImageIcon icono = new ImageIcon(url+"/"+CajaCandado[0]+".png");
 				Image imagen = icono.getImage();
 				Image imagenRedimensionada = imagen.getScaledInstance(Lock.getWidth(), Lock.getHeight(), Image.SCALE_SMOOTH);
 				Lock.setIcon(new ImageIcon(imagenRedimensionada));
@@ -549,7 +532,7 @@ public class RegistrarUsuario extends JPanel{
 				TextPanelShow.setVisible(false);
 				Edit.setEnabled(false);
 				
-				ImageIcon icono = new ImageIcon(url+CajaCandado[0]+".png");
+				ImageIcon icono = new ImageIcon(url+"/"+CajaCandado[0]+".png");
 				Image imagen = icono.getImage();
 				Image imagenRedimensionada = imagen.getScaledInstance(Lock.getWidth(), Lock.getHeight(), Image.SCALE_SMOOTH);
 				Lock.setIcon(new ImageIcon(imagenRedimensionada));
@@ -832,7 +815,7 @@ public class RegistrarUsuario extends JPanel{
 					TextPanelShow.setVisible(true);
 					Edit.setEnabled(true);
 					
-					ImageIcon icono = new ImageIcon(url+CajaCandado[1]+".png");
+					ImageIcon icono = new ImageIcon(url+"/"+CajaCandado[1]+".png");
 					Image imagen = icono.getImage();
 					Image imagenRedimensionada = imagen.getScaledInstance(Lock.getWidth(), Lock.getHeight(), Image.SCALE_SMOOTH);
 					Lock.setIcon(new ImageIcon(imagenRedimensionada));

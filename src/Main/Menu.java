@@ -1,6 +1,6 @@
 package Main;
 
-import Objects.Components;
+import Objects.ComponentBuilder;
 import CashCashier.Dashboard;
 import Inventory.Inventario;
 
@@ -58,9 +58,11 @@ public class Menu extends JPanel{
 	private String[] MenuAjustes = {"SettingsLight","SettingsDark"};
 	private String[] ConfiguracionesSalir = {"CerrarLight","CerrarDark"};
 	
-	private final Components cp = new Components("./src/ResourcePackCaja/", Fondo[m], m);
+	private final ComponentBuilder cp = new ComponentBuilder("./src/ResourcePackCaja", Fondo[m]);
 	
 	public Menu(JFrame frame, String Usuario, String Nombre){
+		
+		if (m==1){cp.setForeground(Color.WHITE);}
 		
 		int z = 0;
 		
@@ -71,19 +73,12 @@ public class Menu extends JPanel{
 		setBounds(0, 0, 400, 600);
 		setOpaque(false);
 		
-		Leave = cp.Button("", cp.setBounds(this.getWidth()-50, 20, 25, 25), LoginSalir[m], 25, 25, true, false);
-		Setting = cp.Button("", cp.setBounds(this.getWidth()/2-10, 20, 25, 25), MenuAjustes[m], 25, 25, true, false);
-		Cashier = cp.Button("", cp.setBounds(this.getWidth()/2-100, this.getHeight()/6, 200, 50), "Icono", 50, 50, JButton.CENTER, JButton.RIGHT, JButton.CENTER, true, false);
-		Inventory = cp.Button("", cp.setBounds(this.getWidth()/2-100, this.getHeight()/2-50, 200, 50), "Inventario", 50, 50, JButton.CENTER, JButton.RIGHT, JButton.CENTER, Mecanics.Employe.get(Mecanics.getEmploye(User)).getAdmin(), false);
-		newEmploye = cp.Button("", cp.setBounds(this.getWidth()/2-100, this.getHeight()-this.getHeight()/3, 200, 50), "Registro", 50, 50, JButton.CENTER, JButton.RIGHT, JButton.CENTER, Mecanics.Employe.get(Mecanics.getEmploye(User)).getAdmin(), false);
-		Logout = cp.Button("", cp.setBounds(30, 20, 130, 25), ConfiguracionesSalir[m], 25, 25, JButton.CENTER, JButton.RIGHT, JButton.LEFT, true, false);
-		
-		add(Leave);
-		add(Setting);
-		add(Cashier);
-		add(Inventory);
-		add(newEmploye);
-		add(Logout);
+		Leave = cp.buildButton(LoginSalir[m], cp.doBounds(this.getWidth()-50, 20, 25, 25), true, false);
+		Setting = cp.buildButton(MenuAjustes[m], cp.doBounds(this.getWidth()/2-10, 20, 25, 25), true, false);
+		Cashier = cp.buildButton("", cp.doBounds(this.getWidth()/2-100, this.getHeight()/6, 200, 50), "Icono", JButton.CENTER, JButton.RIGHT, JButton.CENTER, true, false);
+		Inventory = cp.buildButton("", cp.doBounds(this.getWidth()/2-100, this.getHeight()/2-50, 200, 50), "Inventario", JButton.CENTER, JButton.RIGHT, JButton.CENTER, Mecanics.Employe.get(Mecanics.getEmploye(User)).getAdmin(), false);
+		newEmploye = cp.buildButton("", cp.doBounds(this.getWidth()/2-100, this.getHeight()-this.getHeight()/3, 200, 50), "Registro", JButton.CENTER, JButton.RIGHT, JButton.CENTER, Mecanics.Employe.get(Mecanics.getEmploye(User)).getAdmin(), false);
+		Logout = cp.buildButton("", cp.doBounds(30, 20, 130, 25), ConfiguracionesSalir[m], JButton.CENTER, JButton.RIGHT, JButton.LEFT, true, false);
 
 		setLayout(null);
 		setComponentZOrder(Leave, z);	z++;

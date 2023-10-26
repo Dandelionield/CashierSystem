@@ -1,6 +1,6 @@
 package Main;
 
-import Objects.Components;
+import Objects.ComponentBuilder;
 import Objects.Trabajador;
 
 import java.awt.event.ActionListener;
@@ -59,39 +59,29 @@ public class Login extends JPanel{
 	private String[] LoginVer = {"VerLight","VerDark"};
 	private String[] LoginSalir = {"SalirLight","SalirDark"};
 	
-	private final Components cp = new Components("./src/ResourcePackCaja/", Fondo[m], m);
+	private final ComponentBuilder cp = new ComponentBuilder("./src/ResourcePackCaja", Fondo[m]);
 	
 	public Login(){
+		
+		if (m==1){cp.setForeground(Color.WHITE);}
 		
 		int z = 0;
 		
 		setBounds(0, 0, 400, 600);
 		setOpaque(false);
 		
-		Logo = cp.Label("", cp.setBounds((this.getWidth()/2)-70, 10, 130, 130), LoginLogo[m], 130, 130, SwingConstants.CENTER, SwingConstants.CENTER, SwingConstants.CENTER, 0);
-		Welcome = cp.Label(WelcomeTexto[l], cp.setBounds((this.getWidth()/2)-100, 160, 200, 30), SwingConstants.CENTER, new Font("Clarendon Blk BT", Font.BOLD, 20));
-		User = cp.Label(UserTexto[l], cp.setBounds(100, 250, 80, 20), SwingConstants.LEFT, new Font("Clarendon Blk BT", Font.BOLD, 14));
-		Password = cp.Label(PasswordTexto[l], cp.setBounds(100, 355, 100, 20), SwingConstants.LEFT, new Font("Clarendon Blk BT", Font.BOLD, 14));
-		UserImage = cp.Label("", cp.setBounds(65, 288, 25, 25), LoginUsuario[m], 25, 25, SwingConstants.CENTER, SwingConstants.CENTER, SwingConstants.CENTER, 0);
-		TextPanelUser = cp.TextPanel("", cp.setBounds(100, 295, 200, 20), SwingConstants.LEFT, 15, Color.BLUE, Color.BLUE, true, false);
-		TextPanelPassword1 = cp.TextPanel("", cp.setBounds(100, 400, 200, 20), SwingConstants.LEFT, 15, Color.BLUE, Color.BLUE, true, false);
+		Logo = cp.buildLabel("", cp.doBounds((this.getWidth()/2)-70, 10, 130, 130), LoginLogo[m], 130, 130, SwingConstants.CENTER, SwingConstants.CENTER, SwingConstants.CENTER, null);
+		Welcome = cp.buildLabel(WelcomeTexto[l], cp.doBounds((this.getWidth()/2)-100, 160, 200, 30), SwingConstants.CENTER, new Font("Clarendon Blk BT", Font.BOLD, 20));
+		User = cp.buildLabel(UserTexto[l], cp.doBounds(100, 250, 80, 20), SwingConstants.LEFT, new Font("Clarendon Blk BT", Font.BOLD, 14));
+		Password = cp.buildLabel(PasswordTexto[l], cp.doBounds(100, 355, 100, 20), SwingConstants.LEFT, new Font("Clarendon Blk BT", Font.BOLD, 14));
+		UserImage = cp.buildLabel("", cp.doBounds(65, 288, 25, 25), LoginUsuario[m], 25, 25, SwingConstants.CENTER, SwingConstants.CENTER, SwingConstants.CENTER, null);
+		TextPanelUser = cp.buildTextField("", cp.doBounds(100, 295, 200, 20), SwingConstants.LEFT, new Font("Clarendon Blk BT", Font.BOLD, 15), Color.BLUE, Color.BLUE, true, false);
+		TextPanelPassword1 = cp.buildTextField("", cp.doBounds(100, 400, 200, 20), SwingConstants.LEFT, new Font("Clarendon Blk BT", Font.BOLD, 15), Color.BLUE, Color.BLUE, true, false);
 		TextPanelPassword2 = PassPanelTexto();
-		Show = cp.Button("", cp.setBounds(64, 393, 25, 25), LoginVer[m], 25, 25, true, false);
+		Show = cp.buildButton(LoginVer[m], cp.doBounds(64, 393, 25, 25), true, false);
 		Login = Entrar();
-		Leave = cp.Button("", cp.setBounds(this.getWidth()-50, 20, 25, 25), LoginSalir[m], 25, 25, true, false);
+		Leave = cp.buildButton(LoginSalir[m], cp.doBounds(this.getWidth()-50, 20, 25, 25), true, false);
 		
-		add(Logo);
-		add(Welcome);
-		add(User);
-		add(Password);
-		add(UserImage);
-		add(TextPanelUser);
-		add(TextPanelPassword1);
-		add(TextPanelPassword2);
-		add(Show);
-		add(Login);
-		add(Leave);
-
 		setLayout(null);
 		setComponentZOrder(Logo, z);	z++;
 		setComponentZOrder(Welcome, z);	z++;

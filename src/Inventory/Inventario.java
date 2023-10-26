@@ -125,7 +125,8 @@ public class Inventario extends JFrame {
 	private JLabel mode;
 	private JLabel editar;
 	private JLabel txtsold;
-	private final Components cp = new Components("./src/ResourcePackCaja/", null, 0);
+	private final Color[] Fondo = {new Color(238, 248, 254), new Color(20, 35, 54)};
+	private final ComponentBuilder cp;
 	private JLabel sold;
 	private JLabel txtpopular;
 	private JLabel popular;
@@ -141,8 +142,12 @@ public class Inventario extends JFrame {
 		moder = Mecanics.getMode(true);
 		lengu=Mecanics.getLanguage(true);
 		
+		cp = new ComponentBuilder("./src/ResourcePackCaja", Fondo[moder]);
+		
+		if (moder==1){cp.setForeground(Color.WHITE);}
+		
 		setIconImage(Toolkit.getDefaultToolkit().getImage("./src/ResourcePackCaja/Inventario.png"));
-			
+		
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
@@ -202,10 +207,13 @@ public class Inventario extends JFrame {
 		panel.add(foto);
 		
 		String[] titulos = {len[2], len[3], len[4], len[5], len[7]};
-        modelo = new DefaultTableModel(null, titulos);
-
-		table = new JTable();
-		JLabel foto = this.foto;
+		
+		cp.buildTable(titulos, cp.doBounds(512, 62, 381, 431));
+		
+        modelo = cp.getDefaultTableModel();
+		table = cp.getJTable();
+		JScrollPane scrolltabla = cp.getJScrollPane();
+		
 		table.addMouseListener(new MouseAdapter() {
 			//@Override
 			public void mouseClicked(MouseEvent evt) {
@@ -255,14 +263,12 @@ public class Inventario extends JFrame {
 				 
 			}
 		});
-		JScrollPane scrolltabla = new JScrollPane();
-		scrolltabla.setBounds(512, 62, 381, 431);
-		scrolltabla.setViewportView(table);
-		table.setBackground(null);
-		panel.add(scrolltabla);	
-        table.setModel(modelo);		
-        mostrar();
-
+		
+		mostrar();
+		
+		panel.add(scrolltabla);
+		
+		JLabel foto = this.foto;
 		txtInformacion = new JLabel(len[0]);
 		txtInformacion.setBounds(262, 21, 191, 26);
 		txtInformacion.setFont(new java.awt.Font("Arial", 3, 14));
@@ -278,7 +284,7 @@ public class Inventario extends JFrame {
 		txtcodigo.setFont(new java.awt.Font("Microsoft JhengHei UI", 1, 12));
 		panel.add(txtcodigo);
 		
-		codigo = cp.TextPanel("", cp.setBounds(344, 65, 86, 20), SwingConstants.LEFT, new Font("Microsoft JhengHei UI", Font.BOLD, 12), Color.BLUE, Color.BLUE, true, true);
+		codigo = cp.buildTextField("", cp.doBounds(344, 65, 86, 20), SwingConstants.LEFT, new Font("Microsoft JhengHei UI", Font.BOLD, 12), Color.BLUE, Color.BLUE, true, true);
 		panel.add(codigo);
 		codigo.setColumns(10);
 		
@@ -287,7 +293,7 @@ public class Inventario extends JFrame {
 		txtproductos.setBounds(262, 98, 72, 26);
 		panel.add(txtproductos);
 		
-		producto = cp.TextPanel("", cp.setBounds(344, 102, 144, 20), SwingConstants.LEFT, new Font("Microsoft JhengHei UI", Font.BOLD, 12), Color.BLUE, Color.BLUE, true, true);
+		producto = cp.buildTextField("", cp.doBounds(344, 102, 144, 20), SwingConstants.LEFT, new Font("Microsoft JhengHei UI", Font.BOLD, 12), Color.BLUE, Color.BLUE, true, true);
 		panel.add(producto);
 		producto.setColumns(10);
 		
@@ -296,7 +302,7 @@ public class Inventario extends JFrame {
 		txtprecio.setBounds(262, 133, 72, 26);
 		panel.add(txtprecio);
 		
-		precio = cp.TextPanel("", cp.setBounds(344, 137, 144, 20), SwingConstants.LEFT, new Font("Microsoft JhengHei UI", Font.BOLD, 12), Color.BLUE, Color.BLUE, true, true);
+		precio = cp.buildTextField("", cp.doBounds(344, 137, 144, 20), SwingConstants.LEFT, new Font("Microsoft JhengHei UI", Font.BOLD, 12), Color.BLUE, Color.BLUE, true, true);
 		panel.add(precio);
 		precio.setColumns(10);		
 		
@@ -305,7 +311,7 @@ public class Inventario extends JFrame {
 		txtexistencia.setBounds(262, 170, 72, 26);
 		panel.add(txtexistencia);
 		
-		existencias = cp.TextPanel("", cp.setBounds(344, 174, 144, 20), SwingConstants.LEFT, new Font("Microsoft JhengHei UI", Font.BOLD, 12), Color.BLUE, Color.BLUE, true, true);
+		existencias = cp.buildTextField("", cp.doBounds(344, 174, 144, 20), SwingConstants.LEFT, new Font("Microsoft JhengHei UI", Font.BOLD, 12), Color.BLUE, Color.BLUE, true, true);
 		panel.add(existencias);
 		existencias.setColumns(10);
 		
@@ -314,7 +320,7 @@ public class Inventario extends JFrame {
 		txtmarca.setBounds(262, 242, 72, 26);
 		panel.add(txtmarca);
 		
-		marca = cp.TextPanel("", cp.setBounds(344, 246, 144, 20), SwingConstants.LEFT, new Font("Microsoft JhengHei UI", Font.BOLD, 12), Color.BLUE, Color.BLUE, true, true);
+		marca = cp.buildTextField("", cp.doBounds(344, 246, 144, 20), SwingConstants.LEFT, new Font("Microsoft JhengHei UI", Font.BOLD, 12), Color.BLUE, Color.BLUE, true, true);
 		panel.add(marca);
 		marca.setColumns(10);
 		
@@ -535,7 +541,7 @@ public class Inventario extends JFrame {
 		unpopular.setBounds(10, 123, 172, 14);
 		propiedades.add(unpopular);
 		
-		imprimir = cp.Button("", cp.setBounds(143, 11, 53, 53), "pdfLight", 53, 53, JButton.CENTER, JButton.RIGHT, JButton.LEFT, true, true);	
+		imprimir = cp.buildButton("", cp.doBounds(143, 11, 53, 53), "pdfLight", JButton.CENTER, JButton.RIGHT, JButton.LEFT, true, true);	
 		imprimir.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {

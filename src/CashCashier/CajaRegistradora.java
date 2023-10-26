@@ -1,7 +1,7 @@
 package CashCashier;
 
 import Main.Mecanics;
-import Objects.Components;
+import Objects.ComponentBuilder;
 import Objects.Factura;
 import Objects.Cliente;
 import Objects.Trabajador;
@@ -123,12 +123,15 @@ public class CajaRegistradora extends JPanel{
 	private String[] CajaFacturar = {"FacturarLight","FacturarDark"};
 	private String[] CajaImprimir = {"ImprimirLight","ImprimirDark"};
 	
-	private final Components cp = new Components("./src/ResourcePackCaja/", Fondo[m], m);
+	private final ComponentBuilder cp = new ComponentBuilder("./src/ResourcePackCaja", Fondo[m]);
 
 	public CajaRegistradora(boolean a, Factura p){
 		
+		if (m==1){cp.setForeground(Color.WHITE);}
+		
 		int z = 0;
 		final Color Money = new Color(60, 133, 100);
+		Font Format = new Font("Clarendon Blk BT", Font.BOLD, 12);
 		
 		FacturaCode = p.getCode();
 		ClientID = p.getClient().getID();
@@ -153,11 +156,11 @@ public class CajaRegistradora extends JPanel{
 
 		if (Allow==true){
 			
-			cp.Table(Column, cp.setBounds(20, 150, 900, 150));
+			cp.buildTable(Column, cp.doBounds(20, 150, 900, 150));
 			
 		}else{
 			
-			cp.Table(Column, Data, cp.setBounds(20, 150, 900, 150));
+			cp.buildTable(Column, Data, cp.doBounds(20, 150, 900, 150));
 			
 		}
 		
@@ -165,64 +168,34 @@ public class CajaRegistradora extends JPanel{
 		Tablitita = cp.getJTable();
 		Table = cp.getJScrollPane();
 		
-		Code = cp.Label(CodeTexto[l], cp.setBounds(30, 60, 50, 20), SwingConstants.LEFT, 12);
-		Name = cp.Label(NameTexto[l], cp.setBounds(210, 60, 70, 20), SwingConstants.LEFT, 12);
-		Amount = cp.Label(AmountTexto[l], cp.setBounds(390, 60, 50, 20), SwingConstants.LEFT, 12);
-		Price = cp.Label(PriceTexto[l], cp.setBounds(565, 60, 50, 20), SwingConstants.LEFT, 12);
-		Total = cp.Label(TotalTexto[l], cp.setBounds(740, 60, 100, 20), SwingConstants.LEFT, 12);
-		TotalPay = cp.Label(TotalPayTexto[l], cp.setBounds(740, 310, 100, 20), SwingConstants.LEFT, 12);
-		Client = cp.Label(ClientTexto[l], cp.setBounds(30, 5, 100, 40), CajaCliente[m], 20, 20, JButton.CENTER, JButton.RIGHT, JButton.LEFT, 12);
-		Pay = cp.Label(PayTexto[l], cp.setBounds(300, 310, 100, 20), SwingConstants.LEFT, 12);
-		Change = cp.Label(ChangeTexto[l], cp.setBounds(500, 310, 100, 20), SwingConstants.LEFT, 12);
-		Unid = cp.Label("", cp.setBounds(490, 105, 30, 20), SwingConstants.CENTER, 12);
-		MessageUnid = cp.Label("", cp.setBounds(390, 125, 220, 20), SwingConstants.LEFT, 12);
-		Date = cp.Label("", cp.setBounds(565, 10, 220, 20), SwingConstants.CENTER, 14);
-		TextPanelCode = cp.TextPanel("", cp.setBounds(30, 105, 100, 20), SwingConstants.LEFT, 15, Color.BLUE, Color.BLUE, Allow, false);
-		TextPanelName = cp.TextPanel("", cp.setBounds(210, 105, 100, 20), SwingConstants.LEFT, 15, Color.BLUE, Color.BLUE, Allow, false);
-		TextPanelAmount = cp.TextPanel("", cp.setBounds(390, 105, 100, 20), SwingConstants.LEFT, 15, Color.BLUE, Color.BLUE, true, false);
-		TextPanelPrice = cp.TextPanel("", cp.setBounds(565, 105, 100, 20), SwingConstants.LEFT, 15, Color.BLUE, new Color(0, 0, 0, 0), false, false);
-		TextPanelTotal = cp.TextPanel("", cp.setBounds(740, 105, 100, 20), SwingConstants.LEFT, 13, Color.BLUE, new Color(0, 0, 0, 0), false, false);
-		TextPanelTotalPay = cp.TextPanel(ClientTotal, cp.setBounds(740, 355, 100, 20), SwingConstants.LEFT, 13, Money, new Color(0, 0, 0, 0), false, false);
-		TextPanelID = cp.TextPanel(ClientID.trim(), cp.setBounds(105, 15, 100, 20), SwingConstants.LEFT, 13, Color.BLUE, Color.BLUE, Allow, false);
-		TextPanelClient = cp.TextPanel(ClientName, cp.setBounds(215, 15, 200, 20), SwingConstants.CENTER, 13, Color.BLUE, new Color(0, 0, 0, 0), false, false);
-		TextPanelPay = cp.TextPanel(ClientPay, cp.setBounds(300, 355, 100, 20), SwingConstants.LEFT, 13, Money, Money, true, false);
-		TextPanelChange = cp.TextPanel(ClientChange, cp.setBounds(500, 355, 100, 20), SwingConstants.LEFT, 13, Money, new Color(0, 0, 0, 0), false, false);
-		Erase = cp.Button("", cp.setBounds(870, 310, 35, 35), CajaBorrar[m], 35, 35, true, false);
-		Accept = cp.Button("", cp.setBounds(870, 50, 35, 35), CajaAceptar[m], 35, 35, true, false);
-		Cancel = cp.Button("", cp.setBounds(870, 95, 35, 35), CajaCancelar[m], 35, 35, true, false);
-		Add = cp.Button("", cp.setBounds(430, 20, 120, 20), CajaAgregar[m], 20, 20, JButton.CENTER, JButton.RIGHT, JButton.LEFT, true, false);
-		Check = cp.Button("", cp.setBounds(30, 305, 120, 35), CajaFacturar[m], 60, 35, JButton.CENTER, JButton.RIGHT, JButton.LEFT, true, false);
-		Print = cp.Button("", cp.setBounds(30, 350, 190, 35), CajaImprimir[m], 60, 35, JButton.CENTER, JButton.RIGHT, JButton.LEFT, true, false);
-
-		add(Table);
-		add(Code);
-		add(Name);
-		add(Amount);
-		add(Price);
-		add(Total);
-		add(TotalPay);
-		add(Client);
-		add(Pay);
-		add(Change);
-		add(Unid);
-		add(MessageUnid);
-		add(Date);
-		add(TextPanelCode);
-		add(TextPanelName);
-		add(TextPanelAmount);
-		add(TextPanelPrice);
-		add(TextPanelTotal);
-		add(TextPanelTotalPay);
-		add(TextPanelID);
-		add(TextPanelClient);
-		add(TextPanelPay);
-		add(TextPanelChange);
-		add(Erase);
-		add(Accept);
-		add(Cancel);
-		add(Add);
-		add(Check);
-		add(Print);
+		Code = cp.buildLabel(CodeTexto[l], cp.doBounds(30, 60, 50, 20), SwingConstants.LEFT, Format);
+		Name = cp.buildLabel(NameTexto[l], cp.doBounds(210, 60, 70, 20), SwingConstants.LEFT, Format);
+		Amount = cp.buildLabel(AmountTexto[l], cp.doBounds(390, 60, 50, 20), SwingConstants.LEFT, Format);
+		Price = cp.buildLabel(PriceTexto[l], cp.doBounds(565, 60, 50, 20), SwingConstants.LEFT, Format);
+		Total = cp.buildLabel(TotalTexto[l], cp.doBounds(740, 60, 100, 20), SwingConstants.LEFT, Format);
+		TotalPay = cp.buildLabel(TotalPayTexto[l], cp.doBounds(740, 310, 100, 20), SwingConstants.LEFT, Format);
+		Client = cp.buildLabel(ClientTexto[l], cp.doBounds(30, 5, 70, 40), CajaCliente[m], 20, 20, JButton.CENTER, JButton.RIGHT, JButton.LEFT, Format);
+		Pay = cp.buildLabel(PayTexto[l], cp.doBounds(300, 310, 100, 20), SwingConstants.LEFT, Format);
+		Change = cp.buildLabel(ChangeTexto[l], cp.doBounds(500, 310, 100, 20), SwingConstants.LEFT, Format);
+		Unid = cp.buildLabel("", cp.doBounds(490, 105, 30, 20), SwingConstants.CENTER, Format);
+		MessageUnid = cp.buildLabel("", cp.doBounds(390, 125, 220, 20), SwingConstants.LEFT, Format);
+		Date = cp.buildLabel("", cp.doBounds(565, 10, 220, 20), SwingConstants.CENTER, new Font("Clarendon Blk BT", Font.BOLD, 14));	Format = new Font("Clarendon Blk BT", Font.PLAIN, 15);
+		TextPanelCode = cp.buildTextField("", cp.doBounds(30, 105, 100, 20), SwingConstants.LEFT, Format, Color.BLUE, Color.BLUE, Allow, false);
+		TextPanelName = cp.buildTextField("", cp.doBounds(210, 105, 100, 20), SwingConstants.LEFT, Format, Color.BLUE, Color.BLUE, Allow, false);
+		TextPanelAmount = cp.buildTextField("", cp.doBounds(390, 105, 100, 20), SwingConstants.LEFT, Format, Color.BLUE, Color.BLUE, true, false);
+		TextPanelPrice = cp.buildTextField("", cp.doBounds(565, 105, 100, 20), SwingConstants.LEFT, Format, Color.BLUE, new Color(0, 0, 0, 0), false, false);	Format = new Font("Clarendon Blk BT", Font.PLAIN, 13);
+		TextPanelTotal = cp.buildTextField("", cp.doBounds(740, 105, 100, 20), SwingConstants.LEFT, Format, Color.BLUE, new Color(0, 0, 0, 0), false, false);
+		TextPanelTotalPay = cp.buildTextField(ClientTotal, cp.doBounds(740, 355, 100, 20), SwingConstants.LEFT, Format, Money, new Color(0, 0, 0, 0), false, false);
+		TextPanelID = cp.buildTextField(ClientID.trim(), cp.doBounds(40+Client.getWidth(), 15, 100, 20), SwingConstants.LEFT, Format, Color.BLUE, Color.BLUE, Allow, false);
+		TextPanelClient = cp.buildTextField(ClientName, cp.doBounds(50+Client.getWidth()+TextPanelID.getWidth(), 15, 200, 20), SwingConstants.CENTER, Format, Color.BLUE, new Color(0, 0, 0, 0), false, false);
+		TextPanelPay = cp.buildTextField(ClientPay, cp.doBounds(300, 355, 100, 20), SwingConstants.LEFT, Format, Money, Money, true, false);
+		TextPanelChange = cp.buildTextField(ClientChange, cp.doBounds(500, 355, 100, 20), SwingConstants.LEFT, Format, Money, new Color(0, 0, 0, 0), false, false);
+		Erase = cp.buildButton(CajaBorrar[m], cp.doBounds(870, 310, 35, 35), true, false);
+		Accept = cp.buildButton(CajaAceptar[m], cp.doBounds(870, 50, 35, 35), true, false);
+		Cancel = cp.buildButton(CajaCancelar[m], cp.doBounds(870, 95, 35, 35), true, false);
+		Add = cp.buildButton("", cp.doBounds(65+Client.getWidth()+TextPanelID.getWidth()+TextPanelClient.getWidth(), 20, 120, 20), CajaAgregar[m], JButton.CENTER, JButton.RIGHT, JButton.LEFT, true, false);
+		Check = cp.buildButton("", cp.doBounds(30, 305, 120, 35), CajaFacturar[m], 60, 35, JButton.CENTER, JButton.RIGHT, JButton.LEFT, true, false);
+		Print = cp.buildButton("", cp.doBounds(30, 350, 190, 35), CajaImprimir[m], 60, 35, JButton.CENTER, JButton.RIGHT, JButton.LEFT, true, false);
 
 		setLayout(null);
 		setComponentZOrder(Table, z);	z++;
