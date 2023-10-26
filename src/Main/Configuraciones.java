@@ -65,12 +65,13 @@ public class Configuraciones extends JPanel{
 		setOpaque(false);
 		
 		Leave = cp.buildButton(ConfiguracionesSalir[m], cp.doBounds(this.getWidth()-50, 20, 25, 25), true, false);
-		BackReturn = cp.buildButton("", cp.doBounds(30, 20, 130, 25), ConfiguracionesAtras[m], JButton.CENTER, JButton.RIGHT, JButton.LEFT, true, false);
+		BackReturn = cp.buildButton("", cp.doBounds(30, 20, 130, 25), ConfiguracionesAtras[m], JButton.CENTER, JButton.RIGHT, JButton.LEFT, true, true);
 		Mode = cp.buildButton("", cp.doBounds(this.getWidth()/2-100, this.getHeight()/5, 200, 50), ConfiguracionesModo[m], JButton.CENTER, JButton.RIGHT, JButton.CENTER, true, false);
 		Language = cp.buildButton("", cp.doBounds(this.getWidth()/2-100, this.getHeight()-this.getHeight()/2, 200, 50), ConfiguracionesIdioma[m], JButton.CENTER, JButton.RIGHT, JButton.CENTER, true, false);
 		
 		setLayout(null);
 		setComponentZOrder(Leave, z);	z++;
+		setComponentZOrder(BackReturn, z);	z++;
 		setComponentZOrder(Mode, z);	z++;
 		setComponentZOrder(Language, z);	z++;
 		

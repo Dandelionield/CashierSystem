@@ -215,6 +215,7 @@ public class Inventario extends JFrame {
 		JScrollPane scrolltabla = cp.getJScrollPane();
 		
 		table.setBackground(Fondo[moder]);
+		if (moder==1){table.setForeground(Color.WHITE);}
 		
 		table.addMouseListener(new MouseAdapter() {
 			//@Override
