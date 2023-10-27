@@ -12,12 +12,15 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
@@ -35,7 +38,6 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 
-import Inventory.Inventario;
 import Main.Login;
 import Main.Runner;
 import Main.Mecanics; 
@@ -97,8 +99,6 @@ public class RegistroEmpleados {
     private static Image imgCancel;
     private static Image imgDelete;
     private static Image imgUser;
-    private static Image imgLanguage;
-    private static Image imgMode;
     private static Image imgPdf;
     private static Image imgUnlock = new ImageIcon(url + "CandadoAbierto.png").getImage();
     private static Image imgLock = new ImageIcon(url + "CandadoCerrado.png").getImage();
@@ -108,8 +108,6 @@ public class RegistroEmpleados {
     private static JLabel jlAccept = new JLabel();
     private static JLabel jlCancel = new JLabel();
     private static JLabel jlDelete = new JLabel();
-    private static JLabel jlLanguage = new JLabel();
-    private static JLabel jlMode = new JLabel();
     private static JLabel jlPdf = new JLabel();
     private static JLabel jlImg = new JLabel();
     private static JLabel jlLock = new JLabel(new ImageIcon(imgLock.getScaledInstance(40,40,Image.SCALE_SMOOTH)));
@@ -118,6 +116,8 @@ public class RegistroEmpleados {
     private static JRadioButton g1 = new JRadioButton(), g2 = new JRadioButton(), g3 = new JRadioButton();
     private static JRadioButton p1 = new JRadioButton(), p2 = new JRadioButton();
     private static JSpinner jsEdad = new JSpinner(new SpinnerNumberModel(18, 18, 100, 1));
+    private static ButtonGroup bgGenero = new ButtonGroup();
+    private static ButtonGroup bgPermisos = new ButtonGroup();
     private static DefaultTableModel modelo;
     private static JTable jtaEmpleados = new JTable();
     private static JScrollPane jscEmpleados = new JScrollPane();
@@ -127,21 +127,20 @@ public class RegistroEmpleados {
     private static ActionListener generoListener;
     private static ActionListener permisoListener;
 
+    private static Conexion basedata = new Conexion();
+
     public RegistroEmpleados() {
         main();
+        Recargar();
     }
 
     private void main() {
         /*          DECLARACION DE LOS OBJETOS          */
         ChangeMode();
         ChangeLanguage();
-
-        jlMode.setIcon(new ImageIcon(imgMode.getScaledInstance(40,40,Image.SCALE_SMOOTH)));
         
         jtaEmpleados.setModel(modelo);
         jscEmpleados.setViewportView(jtaEmpleados);
-        ButtonGroup bgGenero = new ButtonGroup();
-        ButtonGroup bgPermisos = new ButtonGroup();
 
         //Border
         MatteBorder border = new MatteBorder(0, 0, 2, 0, Color.GRAY);
@@ -222,9 +221,7 @@ public class RegistroEmpleados {
         jlDelete.setBounds(482, 250, 40, 40);
         jlEdit.setBounds(16, 250, 40, 40);
         jlLock.setBounds(62, 250, 40, 40);
-        jlLanguage.setBounds(581,5,40,40);
-        jlMode.setBounds(532,5,40,40);
-        jlPdf.setBounds(482,5,40,40);
+        jlPdf.setBounds(582,5,40,40);
         jlImg.setBounds(55,10,200,200);
         jlImgSelect.setBounds(55,10,200,200);
 
@@ -340,8 +337,6 @@ public class RegistroEmpleados {
         mainPanel.add(jlDelete);
         mainPanel.add(jlEdit);
         mainPanel.add(jlLock);
-        mainPanel.add(jlLanguage);
-        mainPanel.add(jlMode);
         mainPanel.add(jlPdf);
 
         userPanel.add(jlImgSelect);
@@ -399,6 +394,8 @@ public class RegistroEmpleados {
                 p1.removeActionListener(permisoListener);
                 p2.removeActionListener(permisoListener);
 
+                LimpiarDatos();
+
                 screen.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                 screen.dispose();
             }
@@ -416,6 +413,10 @@ public class RegistroEmpleados {
             @Override public void mouseReleased(MouseEvent e) {
                 jlCancel.setBounds(581, 250, 40, 40);
                 jlCancel.setIcon(new ImageIcon(imgCancel.getScaledInstance(40,40,Image.SCALE_SMOOTH)));
+
+                LimpiarDatos();
+                jlUserGenero.setText(GeneroI[language] + ": X");
+                jlUserPermisos.setText(PermisosI[language] + ":  X");
             }
         });
 
@@ -431,6 +432,18 @@ public class RegistroEmpleados {
             @Override public void mouseReleased(MouseEvent e) {
                 jlAccept.setBounds(532, 250, 40, 40);
                 jlAccept.setIcon(new ImageIcon(imgAccept.getScaledInstance(40,40,Image.SCALE_SMOOTH)));
+
+                if (jtCedula.getText().matches("\\d{10}") &&
+                    jtNombre.getText().matches("\\w*") && 
+                    jtApellido.getText().matches("\\w*") &&
+                    jtContacto.getText().matches("\\d{10}") && 
+                    jtEmail.getText().matches(".*@.*.com") &&
+                    jtDireccion.getText().matches("\\w*") &&
+                    (g1.isSelected() || g2.isSelected() || g3.isSelected()) &&
+                    (p1.isSelected() || p2.isSelected()))
+                {
+                    System.out.println("pum");
+                }
             }
         });
 
@@ -440,7 +453,6 @@ public class RegistroEmpleados {
 
             @Override public void mousePressed(MouseEvent e) {
                 edit = !edit;
-                System.out.println(edit);
 
                 jlEdit.setBounds(21, 255, 30, 30);
                 jlEdit.setIcon(new ImageIcon(imgEdit.getScaledInstance(30,30,Image.SCALE_SMOOTH)));
@@ -467,6 +479,10 @@ public class RegistroEmpleados {
             @Override public void mouseReleased(MouseEvent e) {
                 jlDelete.setBounds(482, 250, 40, 40);
                 jlDelete.setIcon(new ImageIcon(imgDelete.getScaledInstance(40,40,Image.SCALE_SMOOTH)));
+
+                if (!edit) {
+                    JOptionPane.showMessageDialog(null, "Seguro quieres eliminar?");
+                }
             }
         });
 
@@ -545,27 +561,18 @@ public class RegistroEmpleados {
         p1.setText(ElegirPI[0][language]);
         p2.setText(ElegirPI[1][language]);
 
-        if (jtNombre.getText().isEmpty() && jtApellido.getText().isEmpty()) {
-            jlUserNombre.setText(NombreI[language] + ((language == 0) ? " y " : " and ") + ApellidoI[language]);
-            jlUserNombre.setForeground(Color.GRAY);
-        } else {
-            jlUserNombre.setText(jtNombre.getText() + " " + jtApellido.getText());
-            jlUserNombre.setForeground(colorField);
-        }
-
-        jlUserCedula.setText(CedulaI[language] + ": " + ((jtCedula.getText().isEmpty()) ? "123456789" : jtCedula.getText()));
-        jlUserContacto.setText(ContactoI[language] + ": " + ((jtContacto.getText().isEmpty()) ? "0123456789" : jtContacto.getText()));
-        jlUserEmail.setText(EmailI[language] + ": " + ((jtEmail.getText().isEmpty()) ? "User@gmail.com" : jtEmail.getText()));
-        jlUserDireccion.setText(DireccionI[language] + ": " + ((jtDireccion.getText().isEmpty()) ? "" : jtDireccion.getText()));
+        jlUserNombre.setText(NombreI[language] + ((language == 0) ? " y " : " and ") + ApellidoI[language]);
+        jlUserCedula.setText(CedulaI[language] + ": 123456789");
+        jlUserContacto.setText(ContactoI[language] + ": 0123456789");
+        jlUserEmail.setText(EmailI[language] + ": User@gmail.com");
+        jlUserDireccion.setText(DireccionI[language] + ": ");
         jlUserEdad.setText(EdadI[language] + ": " + jsEdad.getValue());
-        jlUserGenero.setText(GeneroI[language] + ": " + ((g1.isSelected()) ? ElegirGI[0][language] : 
-                                                        ((g2.isSelected()) ? ElegirGI[1][language] :
-                                                        ((g3.isSelected()) ? ElegirGI[2][language] : "X"))));
-        jlUserPermisos.setText(PermisosI[language] + ": " + ((p1.isSelected()) ? ElegirPI[0][language] : 
-                                                            ((p2.isSelected()) ? ElegirPI[1][language] : "X")));
+        jlUserGenero.setText(GeneroI[language] + ": X");
+        jlUserPermisos.setText(PermisosI[language] + ":  X");
 
         modelo = new DefaultTableModel(
-            new Object [][] {}, new Object[] { 
+            new Object [][] {}, new Object[] {
+                "Codigo", 
                 CedulaI[language], 
                 NombreI[language], 
                 ApellidoI[language], 
@@ -661,8 +668,6 @@ public class RegistroEmpleados {
         imgCancel = new ImageIcon(url + "Cancelar" + m).getImage();
         imgDelete = new ImageIcon(url + "Borrar" + m).getImage();
         imgUser = new ImageIcon(url + "Usuario" + m).getImage();
-        imgLanguage = new ImageIcon(url + "idioma" + m).getImage();
-        imgMode = new ImageIcon(url + m).getImage();
         imgPdf = new ImageIcon(url + "Pdf" + m).getImage();
 
         jlExit.setIcon(new ImageIcon(imgExit.getScaledInstance(40,40,Image.SCALE_SMOOTH)));
@@ -670,8 +675,6 @@ public class RegistroEmpleados {
         jlAccept.setIcon(new ImageIcon(imgAccept.getScaledInstance(40,40,Image.SCALE_SMOOTH)));
         jlCancel.setIcon(new ImageIcon(imgCancel.getScaledInstance(40,40,Image.SCALE_SMOOTH)));
         jlDelete.setIcon(new ImageIcon(imgDelete.getScaledInstance(40,40,Image.SCALE_SMOOTH)));
-        jlLanguage.setIcon(new ImageIcon(imgLanguage.getScaledInstance(40,40,Image.SCALE_SMOOTH)));
-        jlMode.setIcon(new ImageIcon(imgMode.getScaledInstance(30,30,Image.SCALE_SMOOTH)));
         jlPdf.setIcon(new ImageIcon(imgPdf.getScaledInstance(40,40,Image.SCALE_SMOOTH)));
         jlImg.setIcon(new ImageIcon(imgUser.getScaledInstance(200,200,Image.SCALE_SMOOTH)));
     }
@@ -690,5 +693,38 @@ public class RegistroEmpleados {
                 if (e.getKeyCode() == KeyEvent.VK_UP && up != null) { up.requestFocus(); }
             }
         };
+    }
+
+    private static void LimpiarDatos() {
+        jtCedula.setText("");
+        jtNombre.setText("");
+        jtApellido.setText("");
+        jtContacto.setText("");
+        jtEmail.setText("");
+        jtDireccion.setText("");
+        jsEdad.setValue(18);
+        bgGenero.clearSelection();
+        bgPermisos.clearSelection();
+    }
+
+    private static void Recargar() {
+        modelo.setRowCount(0);
+
+        try {
+            ResultSet resultado = basedata.consulta("SELECT * FROM Trabajador;");
+
+            while (resultado.next()) { 
+                modelo.addRow(new String[] {resultado.getString("Code"),
+                                            resultado.getString("ID"), 
+                                            resultado.getString("Name"),
+                                            resultado.getString("LastName"),
+                                            resultado.getString("Phone"),
+                                            resultado.getString("Email"),
+                                            resultado.getString("Address"),
+                                            resultado.getString("Age"),
+                                            resultado.getString("Gender"),
+                                            resultado.getString("Admin")});
+            }
+        } catch (SQLException e) { System.out.println("ERROR\n"+e); }
     }
 }

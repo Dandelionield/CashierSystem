@@ -33,8 +33,10 @@ import javax.swing.SwingConstants;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.JFileChooser;
 import javax.swing.UIManager;
+import javax.swing.border.MatteBorder;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
@@ -56,6 +58,10 @@ import java.awt.AWTException;
 import java.awt.Rectangle;
 import java.awt.Desktop;
 import java.awt.Robot;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 public class Mecanics {
@@ -799,4 +805,22 @@ public class Mecanics {
 		return archivo;
 	}  
 
+    //Daniel me dijo que metiera estas dos funciones, eliminar este comentario una vez leido -Cleiver
+    //Cuado un Textfield es seleccionado que se cambie el color del borde
+    public static FocusListener FocusText(JTextField jtext) {
+        return new FocusListener() {
+            @Override public void focusGained(FocusEvent evt) { jtext.setBorder(new MatteBorder(0, 0, 2, 0, java.awt.Color.BLUE)); }
+            @Override public void focusLost(FocusEvent evt) { jtext.setBorder(new MatteBorder(0, 0, 2, 0, java.awt.Color.GRAY)); }
+        };
+    }
+
+    //Cambiar de Textfield con las teclas
+    public static KeyAdapter ChangeTextfield(JTextField down, JTextField up) {
+        return new KeyAdapter() {
+            @Override public void keyPressed(KeyEvent e) {
+                if ((e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_ENTER) && down != null) { down.requestFocus(); }
+                if (e.getKeyCode() == KeyEvent.VK_UP && up != null) { up.requestFocus(); }
+            }
+        };
+    }
 }

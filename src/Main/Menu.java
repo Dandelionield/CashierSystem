@@ -3,6 +3,7 @@ package Main;
 import Objects.Components;
 import CashCashier.Dashboard;
 import Inventory.Inventario;
+import Employees.RegistroEmpleados;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -209,8 +210,8 @@ public class Menu extends JPanel{
 		newEmploye.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e){
-				
-				
+				RegistroEmpleados empleados = new RegistroEmpleados();
+				LoginFrame.dispose();
 				
 				repaint();
 

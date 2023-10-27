@@ -2,7 +2,7 @@ package CashCashier;
 
 import Main.Mecanics;
 import Main.Runner;
-import Main.Menu;;
+import Main.Menu;
 import Objects.Components;
 import Objects.Factura;
 import Objects.Cliente;
