@@ -9,6 +9,8 @@ import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.MatteBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.SwingConstants;
 
 import java.awt.Color;
@@ -18,6 +20,7 @@ import java.awt.Desktop;
 
 import java.io.*; 
 import java.time.LocalDate;
+import java.util.EventObject;
 
 import javax.swing.JTable;
 import javax.swing.JLabel;
@@ -28,6 +31,7 @@ import java.awt.Image;
 
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
+import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JTextPane;
@@ -42,6 +46,7 @@ import java.time.LocalDate;
 
 import javax.swing.JButton;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
@@ -221,7 +226,6 @@ public class Inventario extends JFrame {
 			//@Override
 			public void mouseClicked(MouseEvent evt) {
 				
-				 Archivo miu;
 			       
 				 try {
 					
@@ -231,29 +235,7 @@ public class Inventario extends JFrame {
 			            
 			           codigo.setText(rec.getModel().getValueAt(rec.getSelectedRow(),0).toString());
 			           
-			           miu=muestra(codigo.getText());
-			           producto.setText(miu.getProduct());
-			           precio.setText(miu.getPrice()+"");
-			           existencias.setText(miu.getAmount()+"");
-			           
-
-			           unidad.setSelectedItem(miu.getUnid());        
-			          
-			           marca.setText(miu.getBrand());        
-			           descripcion.setText(miu.getDescription());        
-			           sold.setText(miu.getSold()+"");
-			           
-			           ruta=miu.getImage();
-			           
-			           if(new File(miu.getImage()).exists()==false) {
-			        	   
-			        	   ruta="./src/ResourcePackCaja/image-not-found.png";
-			           }
-			           
-			           ImageIcon ima = new ImageIcon(new ImageIcon(ruta).getImage().getScaledInstance(foto.getWidth(), foto.getHeight(), Image.SCALE_AREA_AVERAGING));
-			            foto.setIcon(ima);
-			            foto.repaint();
-			            
+			           fill(codigo.getText());
 			           
 			           repaint();
 			            
@@ -288,6 +270,37 @@ public class Inventario extends JFrame {
 		panel.add(txtcodigo);
 		
 		codigo = cp.buildTextField("", cp.doBounds(344, 65, 86, 20), SwingConstants.LEFT, new Font("Microsoft JhengHei UI", Font.BOLD, 12), Color.BLUE, Color.BLUE, true, true);
+codigo.getDocument().addDocumentListener(new DocumentListener() {
+			
+			public void insertUpdate(DocumentEvent e) {verifycode();}
+			public void removeUpdate(DocumentEvent e) {verifycode();}
+            public void changedUpdate(DocumentEvent e) {verifycode();}				
+
+            private void verifycode() {
+				
+            	ResultSet res = new Conexion().consulta("SELECT * FROM Inventario WHERE `Code`='"+codigo.getText().toUpperCase()+"'");
+        		
+        		try {
+        				if(codigo.getText().equalsIgnoreCase(res.getString("Code")) ) {
+        					
+        					if(access==false) {
+        						codigo.setBorder(new MatteBorder(0, 0, 2, 0, Color.RED));
+        					}
+        					fill(codigo.getText().toUpperCase());
+        				}
+        			res.close();
+        			
+        		} catch (SQLException e) {
+        			
+        			codigo.setBorder(new MatteBorder(0, 0, 2, 0, Color.BLUE)); 			
+        			fill(codigo.getText().toUpperCase());
+        		}
+				codigo.repaint();
+				
+			}
+
+			
+		});
 		panel.add(codigo);
 		codigo.setColumns(10);
 		
@@ -307,6 +320,20 @@ public class Inventario extends JFrame {
 		
 		precio = cp.buildTextField("", cp.doBounds(344, 137, 144, 20), SwingConstants.LEFT, new Font("Microsoft JhengHei UI", Font.BOLD, 12), Color.BLUE, Color.BLUE, true, true);
 		panel.add(precio);
+		precio.getDocument().addDocumentListener(new DocumentListener() {
+			
+			public void insertUpdate(DocumentEvent e) {verifyprice();}
+			public void removeUpdate(DocumentEvent e) {verifyprice();}
+            public void changedUpdate(DocumentEvent e) {verifyprice();}				
+
+            private void verifyprice() {
+				
+            	if(Mecanics.Allowed(precio.getText())==false){precio.setBorder(new MatteBorder(0, 0, 2, 0, Color.RED));}
+            	if(Mecanics.Allowed(precio.getText())==true||precio.getText().equals("")){precio.setBorder(new MatteBorder(0, 0, 2, 0, Color.BLUE));}
+			}
+
+			
+		});
 		precio.setColumns(10);		
 		
 		txtexistencia = new JLabel(len[5]);
@@ -316,6 +343,19 @@ public class Inventario extends JFrame {
 		
 		existencias = cp.buildTextField("", cp.doBounds(344, 174, 144, 20), SwingConstants.LEFT, new Font("Microsoft JhengHei UI", Font.BOLD, 12), Color.BLUE, Color.BLUE, true, true);
 		panel.add(existencias);
+		existencias.getDocument().addDocumentListener(new DocumentListener() {
+			
+			public void insertUpdate(DocumentEvent e) {verifyprice();}
+			public void removeUpdate(DocumentEvent e) {verifyprice();}
+            public void changedUpdate(DocumentEvent e) {verifyprice();}				
+
+            private void verifyprice() {
+				
+            	if(Mecanics.Allowed(existencias.getText())==false){existencias.setBorder(new MatteBorder(0, 0, 2, 0, Color.RED));}
+            	if(Mecanics.Allowed(existencias.getText())==true||existencias.getText().equals("")){existencias.setBorder(new MatteBorder(0, 0, 2, 0, Color.BLUE));}
+			}
+			
+		});
 		existencias.setColumns(10);
 		
 		txtmarca = new JLabel(len[7]);
@@ -374,17 +414,17 @@ public class Inventario extends JFrame {
 		
 		btnguardar = new JButton(len[10]);
 		btnguardar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+		public void actionPerformed(ActionEvent e) {
 				
-
-		        if (access == false) {
-		        	
-		        	
+				boolean limpieza=true;
+				
+		        if (access == false) {	
 		        	
 		       	Conexion a = new Conexion();
 		        			
 		            try {
-
+		            	
+		            	
 		                Archivo prod = new Archivo(codigo.getText(), producto.getText(), marca.getText(), descripcion.getText(), Float.parseFloat(existencias.getText()), 0, Float.parseFloat(precio.getText()), unidad.getSelectedItem().toString(), "./src/Inventory/productPhoto/"+codigo.getText()+"."+Mecanics.getExtension(new File(ruta)));
 
 		                a.sentence("INSERT INTO `Inventario` (`Code`, `Product`, `Brand`, `Description`, `Amount`, `Sold`,`Price`,`Unid`,`Image`) "
@@ -393,7 +433,8 @@ public class Inventario extends JFrame {
 		                Mecanics.iArchivo(ruta,"./src/Inventory/productPhoto",codigo.getText());
 		                
 		            } catch (Exception b) {
-		                JOptionPane.showMessageDialog(null, "Verifique los datos\nError: " + b.toString());
+		                
+		                limpieza=false;
 		                repaint();
 		            }
 		        }
@@ -418,9 +459,10 @@ public class Inventario extends JFrame {
 		                
 		                Mecanics.iArchivo(ruta,"./src/Inventory/productPhoto",codigo.getText());
 		                
+		                
 		            } catch (Exception b) {
-		                JOptionPane.showMessageDialog(null, "Verifique los datos\nError: " + b.toString());
 
+		                limpieza=false;
 		                repaint();
 		            }
 
@@ -429,8 +471,9 @@ public class Inventario extends JFrame {
 		        modelo.setRowCount(0);
 		        mostrar();
 		        
-		        limpiar();
-				
+		        if(limpieza) {
+		        	limpiar();
+		        }
 				
 			}
 		});
@@ -485,18 +528,37 @@ public class Inventario extends JFrame {
 			            regi = new ImageIcon(new ImageIcon("./src/ResourcePackCaja/CandadoAbierto.png").getImage().getScaledInstance(candado.getWidth(), candado.getHeight(), Image.SCALE_AREA_AVERAGING));
 			            candado.setIcon(regi);
 			            btnguardar.setText(len[13]);
+			            codigo.setEditable(false);
+			            codigo.setBorder(new MatteBorder(0, 0, 2, 0, Color.BLUE));
 			        }
 
 			        if (access == false) {
 
 			            regi = new ImageIcon(new ImageIcon("./src/ResourcePackCaja/CandadoCerrado.png").getImage().getScaledInstance(candado.getWidth(), candado.getHeight(), Image.SCALE_AREA_AVERAGING));
 			            candado.setIcon(regi);
+			            codigo.setEditable(true);
 			            btnguardar.setText(len[10]);
 
 			        }
 
 			        repaint();
 						
+			}
+			
+			public void mousePressed(MouseEvent e){
+
+				editar.setSize(45,45);
+
+				repaint();
+
+			}
+
+			public void mouseReleased(MouseEvent e) {
+
+				editar.setSize(35,35);
+
+				repaint();
+
 			}
 		});
 
@@ -553,6 +615,21 @@ public class Inventario extends JFrame {
 				
 			}
 			
+			public void mousePressed(MouseEvent e){
+
+				imprimir.setSize(63,63);
+
+				repaint();
+
+			}
+
+			public void mouseReleased(MouseEvent e) {
+
+				imprimir.setSize(53,53);
+
+				repaint();
+
+			}
 		});
 		
 		propiedades.add(imprimir);
@@ -569,6 +646,41 @@ public class Inventario extends JFrame {
 		
 		
 	}
+	
+		private void fill(String code) {
+		
+		Archivo miu;
+		
+		miu=muestra(code);
+		
+		if(miu==null) {
+			miu=new Archivo("","","","",0,0,0,"","");
+		}
+		
+		
+        producto.setText(miu.getProduct());
+        precio.setText(miu.getPrice()+"");
+        existencias.setText(miu.getAmount()+"");
+        
+
+        unidad.setSelectedItem(miu.getUnid());        
+       
+        marca.setText(miu.getBrand());        
+        descripcion.setText(miu.getDescription());        
+        sold.setText(miu.getSold()+"");
+        
+        ruta=miu.getImage();
+        
+        if(new File(miu.getImage()).exists()==false) {
+     	   
+     	   ruta="./src/ResourcePackCaja/image-not-found.png";
+        }
+        
+        ImageIcon ima = new ImageIcon(new ImageIcon(ruta).getImage().getScaledInstance(foto.getWidth(), foto.getHeight(), Image.SCALE_AREA_AVERAGING));
+         foto.setIcon(ima);
+         foto.repaint();
+	}
+	
 	
 	public void reporte() {
 		
@@ -719,35 +831,34 @@ public class Inventario extends JFrame {
 	
 	public void modifymode(boolean b) {
 		
-		Color colorin= new Color(20, 35, 54),fondo=new Color(238, 248, 254);
-		String md="Dark",mdo="Light";
+		Color colorfuente= new Color(20, 35, 54),colorfondo=new Color(238, 248, 254);
+		String labelcolor="Light";
 		
 		if(b==false) {
-			colorin=new Color(238, 248, 254);
-			fondo=new Color(20, 35, 54);
-			md="Light";
-			mdo="Dark";
+			colorfuente=new Color(238, 248, 254);
+			colorfondo=new Color(20, 35, 54); 
+			labelcolor="Dark";
 		}
+		 
+		panel.setBackground(colorfondo);
+		txtInformacion.setForeground(colorfuente);	
+		txttabla.setForeground(colorfuente);
+		txtcodigo.setForeground(colorfuente);
+		txtproductos.setForeground(colorfuente);
+		txtprecio.setForeground(colorfuente);
+		txtexistencia.setForeground(colorfuente);
+		txtunidad.setForeground(colorfuente);
+		txtmarca.setForeground(colorfuente);
+		txtdescripcion.setForeground(colorfuente);
+		txtidioma.setForeground(colorfuente);	
 		
-		panel.setBackground(fondo);
-		txtInformacion.setForeground(colorin);	
-		txttabla.setForeground(colorin);
-		txtcodigo.setForeground(colorin);
-		txtproductos.setForeground(colorin);
-		txtprecio.setForeground(colorin);
-		txtexistencia.setForeground(colorin);
-		txtunidad.setForeground(colorin);
-		txtmarca.setForeground(colorin);
-		txtdescripcion.setForeground(colorin);
-		txtidioma.setForeground(colorin);
+		editar.setIcon(new ImageIcon(new ImageIcon("./src/ResourcePackCaja/Editar"+labelcolor+".png").getImage().getScaledInstance(editar.getWidth(), editar.getHeight(), Image.SCALE_DEFAULT)));
 		
-		editar.setIcon(new ImageIcon(new ImageIcon("./src/ResourcePackCaja/Editar"+mdo+".png").getImage().getScaledInstance(editar.getWidth(), editar.getHeight(), Image.SCALE_DEFAULT)));
-		
-		codigo.setForeground(colorin);
-		precio.setForeground(colorin);
-		producto.setForeground(colorin);
-		existencias.setForeground(colorin);
-		marca.setForeground(colorin);
+		codigo.setForeground(colorfuente);
+		precio.setForeground(colorfuente);
+		producto.setForeground(colorfuente);
+		existencias.setForeground(colorfuente);
+		marca.setForeground(colorfuente);
 		
 	}
 	
@@ -787,8 +898,25 @@ public class Inventario extends JFrame {
             }
 
         } catch (Exception e) {
-        }
+        }   
+        
+        for (int i = 0; i < table.getColumnCount(); i++){
 
+			TableColumn column = table.getColumnModel().getColumn(i);
+
+			column.setCellEditor(new DefaultCellEditor(new JTextField()){
+
+
+				public boolean isCellEditable(EventObject e) {
+
+					return false;
+
+				}
+
+			});
+
+		}
+        
     }
 	
 	
@@ -808,8 +936,6 @@ public class Inventario extends JFrame {
                 
         } catch (Exception e) {
         }
-     
-        
         
         return prod;
     }     
@@ -867,8 +993,7 @@ public class Inventario extends JFrame {
 		        } catch (Exception e) {
 		        	
 		        }
-		     
-			 
+		      
 			 return prod;
 		 }
 	 
