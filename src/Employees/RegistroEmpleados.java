@@ -14,6 +14,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
@@ -40,7 +41,7 @@ import javax.swing.table.DefaultTableModel;
 
 import Main.Login;
 import Main.Runner;
-import Main.Mecanics; 
+import Main.Mecanics;
 import Objects.Conexion;
 
 public class RegistroEmpleados {
@@ -52,6 +53,10 @@ public class RegistroEmpleados {
 
     private int mode = Mecanics.getMode(true);
     private int language = Mecanics.getLanguage(true);
+
+    private static char genero = '.';
+    private static int permisos = -1;
+    private static int selection = -1;
 
     private static Color color1, color2, colorField;
     private static String[] CedulaI = {"Cedula", "Cedula"};
@@ -65,6 +70,7 @@ public class RegistroEmpleados {
     private static String[][] ElegirGI = {{"Femenino", "Female"}, {"Masculino", "Male"}, {"No decirlo", "Not say it"}};
     private static String[] PermisosI = {"Permisos", "Permit"};
     private static String[][] ElegirPI = {{"Empleado", "Employee"}, {"Administrador", "Administrator"}};
+    private static String[] CodeI = {"Codigo", "Code"};
     private static String[] PedirI = {"Ingrese su ", "Enter your "};
 
     private static JLabel jlCedula = new JLabel();
@@ -92,6 +98,7 @@ public class RegistroEmpleados {
     private static JLabel jlUserEdad = new JLabel();
     private static JLabel jlUserGenero = new JLabel();
     private static JLabel jlUserPermisos = new JLabel();
+    private static JLabel jlUserCode = new JLabel();
 
     private static Image imgExit;
     private static Image imgEdit;
@@ -128,6 +135,7 @@ public class RegistroEmpleados {
     private static ActionListener permisoListener;
 
     private static Conexion basedata = new Conexion();
+    private static ArrayList<String> codes = new ArrayList<>();
 
     public RegistroEmpleados() {
         main();
@@ -190,6 +198,7 @@ public class RegistroEmpleados {
         jlUserEdad.setBounds(10, 390, 200, 25);
         jlUserGenero.setBounds(10, 420, 200, 25);
         jlUserPermisos.setBounds(10, 450, 300, 25);
+        jlUserCode.setBounds(10, 478, 300, 25);
 
         Font jlFuente2 = new Font("Clarendon Blk BT", Font.PLAIN, 20);
         jlUserCedula.setFont(jlFuente2);
@@ -199,6 +208,7 @@ public class RegistroEmpleados {
         jlUserEdad.setFont(jlFuente2);
         jlUserGenero.setFont(jlFuente2);
         jlUserPermisos.setFont(jlFuente2);
+        jlUserCode.setFont(jlFuente2);
 
         jlUserNombre.setForeground(Color.GRAY);
 
@@ -248,6 +258,7 @@ public class RegistroEmpleados {
                 jlUserContacto.setText(ContactoI[language] + ": " + ((jtContacto.getText().isEmpty()) ? "0123456789" : jtContacto.getText()));
                 jlUserEmail.setText(EmailI[language] + ": " + ((jtEmail.getText().isEmpty()) ? "User@gmail.com" : jtEmail.getText()));
                 jlUserDireccion.setText(DireccionI[language] + ": " + ((jtDireccion.getText().isEmpty()) ? "" : jtDireccion.getText()));
+                jlUserCode.setText(CodeI[language] + ": " + CodeGenerate());
             }
         };
 
@@ -255,6 +266,7 @@ public class RegistroEmpleados {
             @Override
             public void stateChanged(ChangeEvent e) {
                 jlUserEdad.setText(EdadI[language] + ": " + jsEdad.getValue());
+                jlUserCode.setText(CodeI[language] + ": " + CodeGenerate());
             }
         };
         
@@ -277,17 +289,17 @@ public class RegistroEmpleados {
         generoListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(g1.isSelected()) jlUserGenero.setText(GeneroI[language] + ": " + ElegirGI[0][language]);
-                if(g2.isSelected()) jlUserGenero.setText(GeneroI[language] + ": " + ElegirGI[1][language]);
-                if(g3.isSelected()) jlUserGenero.setText(GeneroI[language] + ": " + ElegirGI[2][language]);
+                if(g1.isSelected()) {jlUserGenero.setText(GeneroI[language] + ": " + ElegirGI[0][language]); genero = 'F'; }
+                if(g2.isSelected()) {jlUserGenero.setText(GeneroI[language] + ": " + ElegirGI[1][language]); genero = 'M'; }
+                if(g3.isSelected()) {jlUserGenero.setText(GeneroI[language] + ": " + ElegirGI[2][language]); genero = 'N'; }
             }
         };
 
         permisoListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(p1.isSelected()) jlUserPermisos.setText(PermisosI[language] + ": " + ElegirPI[0][language]);
-                if(p2.isSelected()) jlUserPermisos.setText(PermisosI[language] + ": " + ElegirPI[1][language]);
+                if(p1.isSelected()) {jlUserPermisos.setText(PermisosI[language] + ": " + ElegirPI[0][language]); permisos = 0;}
+                if(p2.isSelected()) {jlUserPermisos.setText(PermisosI[language] + ": " + ElegirPI[1][language]); permisos = 1;}
             }
         };
 
@@ -349,6 +361,7 @@ public class RegistroEmpleados {
         userPanel.add(jlUserEdad);
         userPanel.add(jlUserGenero);
         userPanel.add(jlUserPermisos);
+        userPanel.add(jlUserCode);
 
         userPanel.setLayout(null);
         userPanel.setBounds(640, 0, 320, 540);
@@ -434,16 +447,35 @@ public class RegistroEmpleados {
                 jlAccept.setIcon(new ImageIcon(imgAccept.getScaledInstance(40,40,Image.SCALE_SMOOTH)));
 
                 if (jtCedula.getText().matches("\\d{10}") &&
-                    jtNombre.getText().matches("\\w*") && 
-                    jtApellido.getText().matches("\\w*") &&
+                    jtNombre.getText().length() > 0 && 
+                    jtApellido.getText().length() > 0 &&
                     jtContacto.getText().matches("\\d{10}") && 
-                    jtEmail.getText().matches(".*@.*.com") &&
-                    jtDireccion.getText().matches("\\w*") &&
-                    (g1.isSelected() || g2.isSelected() || g3.isSelected()) &&
-                    (p1.isSelected() || p2.isSelected()))
+                    jtEmail.getText().matches("\\w*@\\w*.com") &&
+                    jtDireccion.getText().length() > 0 &&
+                    genero != '.' &&
+                    permisos != -1)
                 {
-                    System.out.println("pum");
+                    JOptionPane.showMessageDialog(null, "Verificado");
+                    try {
+                        basedata.sentence("INSERT INTO `Trabajador` (`Code`, `ID`, `Name`, `LastName`, `Phone`, `Email`, `Address`, `Gender`, `Age`, `Admin`, `Image`) VALUES ('" + 
+                                          CodeGenerate() + "' , '" + 
+                                          jtCedula.getText() + "', '" + 
+                                          jtNombre.getText() + "', '" + 
+                                          jtApellido.getText() + "', '" +
+                                          jtContacto.getText() + "', '" + 
+                                          jtEmail.getText() +"' , '" + 
+                                          jtDireccion.getText() + "', '" +
+                                          genero + "' ," + 
+                                          Integer.parseInt(jsEdad.getValue()+"") + ", " +
+                                          permisos + ", " +
+                                          "'asd');");
+
+                    } catch (SQLException e1) { System.out.println(e1);}
+                } else {
+                    JOptionPane.showMessageDialog(null, "Datos erroneos");
                 }
+
+                Recargar();
             }
         });
 
@@ -457,6 +489,10 @@ public class RegistroEmpleados {
                 jlEdit.setBounds(21, 255, 30, 30);
                 jlEdit.setIcon(new ImageIcon(imgEdit.getScaledInstance(30,30,Image.SCALE_SMOOTH)));
                 jlLock.setIcon(new ImageIcon((edit ? imgLock : imgUnlock).getScaledInstance(40,40,Image.SCALE_SMOOTH)));
+
+                jlDelete.setEnabled(!edit);
+                jtaEmpleados.clearSelection();
+                selection = -1;
             }
 
             @Override public void mouseReleased(MouseEvent e) {
@@ -480,8 +516,13 @@ public class RegistroEmpleados {
                 jlDelete.setBounds(482, 250, 40, 40);
                 jlDelete.setIcon(new ImageIcon(imgDelete.getScaledInstance(40,40,Image.SCALE_SMOOTH)));
 
-                if (!edit) {
-                    JOptionPane.showMessageDialog(null, "Seguro quieres eliminar?");
+                if (!edit && selection != -1) {
+                    try {
+                        basedata.sentence("DELETE FROM Trabajador WHERE Code = '" + codes.get(selection) + "';");
+                        JOptionPane.showMessageDialog(null, "Empleado eliminado!");
+
+                        Recargar();
+                    } catch (SQLException e1) { e1.printStackTrace(); }
                 }
             }
         });
@@ -524,6 +565,12 @@ public class RegistroEmpleados {
                     Image img = new ImageIcon(j.getSelectedFile()+"").getImage().getScaledInstance(200,200,Image.SCALE_SMOOTH);
                     jlImg.setIcon(new ImageIcon(img));
                 }
+            }
+        });
+
+        jtaEmpleados.addMouseListener(new MouseAdapter() {
+			@Override public void mouseClicked(MouseEvent evt) {
+                selection = jtaEmpleados.getSelectedRow();
             }
         });
         
@@ -569,16 +616,17 @@ public class RegistroEmpleados {
         jlUserEdad.setText(EdadI[language] + ": " + jsEdad.getValue());
         jlUserGenero.setText(GeneroI[language] + ": X");
         jlUserPermisos.setText(PermisosI[language] + ":  X");
+        jlUserCode.setText(CodeI[language] + ": ");
 
         modelo = new DefaultTableModel(
             new Object [][] {}, new Object[] {
-                "Codigo", 
-                CedulaI[language], 
-                NombreI[language], 
-                ApellidoI[language], 
-                ContactoI[language], 
-                EmailI[language], 
-                DireccionI[language], 
+                CodeI[language],
+                CedulaI[language],
+                NombreI[language],
+                ApellidoI[language],
+                ContactoI[language],
+                EmailI[language],
+                DireccionI[language],
                 EdadI[language], 
                 GeneroI[language], 
                 PermisosI[language]}) 
@@ -644,6 +692,7 @@ public class RegistroEmpleados {
         jlUserEdad.setForeground(colorField);
         jlUserGenero.setForeground(colorField);
         jlUserPermisos.setForeground(colorField);
+        jlUserCode.setForeground(colorField);
 
         g1.setForeground(colorField);
         g2.setForeground(colorField);
@@ -677,6 +726,8 @@ public class RegistroEmpleados {
         jlDelete.setIcon(new ImageIcon(imgDelete.getScaledInstance(40,40,Image.SCALE_SMOOTH)));
         jlPdf.setIcon(new ImageIcon(imgPdf.getScaledInstance(40,40,Image.SCALE_SMOOTH)));
         jlImg.setIcon(new ImageIcon(imgUser.getScaledInstance(200,200,Image.SCALE_SMOOTH)));
+
+        jlDelete.setEnabled(false);
     }
 
     private static FocusListener FocusText(JTextField jtext) {
@@ -705,15 +756,19 @@ public class RegistroEmpleados {
         jsEdad.setValue(18);
         bgGenero.clearSelection();
         bgPermisos.clearSelection();
+        genero = '.';
+        permisos = -1;
     }
 
     private static void Recargar() {
         modelo.setRowCount(0);
+        codes.clear();
 
         try {
             ResultSet resultado = basedata.consulta("SELECT * FROM Trabajador;");
 
-            while (resultado.next()) { 
+            while (resultado.next()) {
+                codes.add(resultado.getString("Code"));
                 modelo.addRow(new String[] {resultado.getString("Code"),
                                             resultado.getString("ID"), 
                                             resultado.getString("Name"),
@@ -725,6 +780,10 @@ public class RegistroEmpleados {
                                             resultado.getString("Gender"),
                                             resultado.getString("Admin")});
             }
-        } catch (SQLException e) { System.out.println("ERROR\n"+e); }
+        } catch (SQLException e) {}
+    }
+
+    private static String CodeGenerate() {
+        return String.valueOf(Math.abs((jtCedula.getText() + jtNombre.getText() + jtApellido.getText() + jtContacto.getText() + jtEmail.getText() + jtDireccion.getText() + jsEdad.getValue()).hashCode()));
     }
 }
