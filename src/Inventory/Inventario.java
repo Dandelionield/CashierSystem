@@ -430,7 +430,7 @@ codigo.getDocument().addDocumentListener(new DocumentListener() {
 		                a.sentence("INSERT INTO `Inventario` (`Code`, `Product`, `Brand`, `Description`, `Amount`, `Sold`,`Price`,`Unid`,`Image`) "
 		                        + "VALUES ('" + prod.getCode().toUpperCase() + "', '" + prod.getProduct() + "', '" + prod.getBrand() + "', '" + prod.getDescription() + "', '" + prod.getAmount() + "', 0, '" + prod.getPrice() + "', '" + prod.getUnid() + "', '" + prod.getImage() + "');");
 		                 
-		                Mecanics.iArchivo(ruta,"./src/Inventory/productPhoto",codigo.getText());
+		                Mecanics.iArchivo(ruta,"./src/Inventory/productPhoto",codigo.getText().toUpperCase());
 		                
 		            } catch (Exception b) {
 		                
@@ -457,7 +457,7 @@ codigo.getDocument().addDocumentListener(new DocumentListener() {
 		                		"',`Unid`='"+unidad.getSelectedItem().toString()+"',`Image`='"+imgurl+
 		                		"'  WHERE `Code`='" + codigo.getText().toUpperCase() + "';");
 		                
-		                Mecanics.iArchivo(ruta,"./src/Inventory/productPhoto",codigo.getText());
+		                Mecanics.iArchivo(ruta,"./src/Inventory/productPhoto",codigo.getText().toUpperCase());
 		                
 		                
 		            } catch (Exception b) {
