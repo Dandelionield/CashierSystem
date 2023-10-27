@@ -3,7 +3,7 @@ package CashCashier;
 import Main.Mecanics;
 import Main.Runner;
 import Main.Menu;
-import Objects.Components;
+import Objects.ComponentBuilder;
 import Objects.Factura;
 import Objects.Cliente;
 import Objects.Trabajador;
@@ -57,11 +57,13 @@ public class Configuraciones extends JPanel{
 	private String[] ConfiguracionesGuardar = {"GuardarLight","GuardarDark"};
 	private String[] ConfiguracionesSalir = {"CerrarLight","CerrarDark"};
 	
-	private final Components cp = new Components("./src/ResourcePackCaja/", Fondo[m], m);
+	private final ComponentBuilder cp = new ComponentBuilder("./src/ResourcePackCaja", Fondo[m]);
 	
 	public Configuraciones(JFrame frame){
 		
 		DashboardFrame = frame;
+		
+		if (m==1){cp.setForeground(Color.WHITE);}
 		
 		int z = 0;
 		
@@ -70,23 +72,14 @@ public class Configuraciones extends JPanel{
 		setBounds(20, 45, 960, 415);
 		setOpaque(false);
 		
-		Title = cp.Label(Mecanics.getTitle(true), cp.setBounds((this.getWidth()/2)-200, 130, 400, 30), SwingConstants.CENTER, new Font("Clarendon Blk BT", Font.BOLD, 20));
-		Address = cp.Label(Mecanics.getAddress(true), cp.setBounds((this.getWidth()/2)-200, 165, 400, 30), SwingConstants.CENTER, new Font("Clarendon Blk BT", Font.BOLD, 15));
-		TextPanelTitle = cp.TextPanel("", cp.setBounds((this.getWidth()/2)-200, 130, 400, 30), SwingConstants.CENTER, new Font("Clarendon Blk BT", Font.BOLD, 20), Color.BLUE, Color.BLUE, true, false);
-		TextPanelAddress = cp.TextPanel("", cp.setBounds((this.getWidth()/2)-200, 165, 400, 30), SwingConstants.CENTER, new Font("Clarendon Blk BT", Font.BOLD, 15), Color.BLUE, Color.BLUE, true, false);
-		Logo = cp.Button("", cp.setBounds((this.getWidth()/2)-50, 10, 100, 100), "Logo", 100, 100, true, true);
-		Logout = cp.Button("", cp.setBounds(this.getWidth()-170, 10, 130, 25), ConfiguracionesSalir[m], 25, 25, JButton.CENTER, JButton.LEFT, JButton.RIGHT, true, false);
-		Edit = cp.Button("", cp.setBounds(410, 200, 25, 25), ConfiguracionesEditar[m], 25, 25, p.getAdmin(), false);
-		Save = cp.Button("", cp.setBounds(520, 200, 25, 25), ConfiguracionesGuardar[m], 25, 25, false, false);
-		
-		add(Title);
-		add(Logo);
-		add(Address);
-		add(TextPanelTitle);
-		add(TextPanelAddress);
-		add(Logout);
-		add(Edit);
-		add(Save);
+		Title = cp.buildLabel(Mecanics.getTitle(true), cp.doBounds((this.getWidth()/2)-200, 130, 400, 30), SwingConstants.CENTER, new Font("Clarendon Blk BT", Font.BOLD, 20));
+		Address = cp.buildLabel(Mecanics.getAddress(true), cp.doBounds((this.getWidth()/2)-200, 165, 400, 30), SwingConstants.CENTER, new Font("Clarendon Blk BT", Font.BOLD, 15));
+		TextPanelTitle = cp.buildTextField("", cp.doBounds((this.getWidth()/2)-200, 130, 400, 30), SwingConstants.CENTER, new Font("Clarendon Blk BT", Font.BOLD, 20), Color.BLUE, Color.BLUE, true, false);
+		TextPanelAddress = cp.buildTextField("", cp.doBounds((this.getWidth()/2)-200, 165, 400, 30), SwingConstants.CENTER, new Font("Clarendon Blk BT", Font.BOLD, 15), Color.BLUE, Color.BLUE, true, false);
+		Logo = cp.buildButton("Logo", cp.doBounds((this.getWidth()/2)-50, 10, 100, 100), true, true);
+		Logout = cp.buildButton("", cp.doBounds(this.getWidth()-170, 10, 130, 25), ConfiguracionesSalir[m], 25, 25, JButton.CENTER, JButton.LEFT, JButton.RIGHT, true, false);
+		Edit = cp.buildButton(ConfiguracionesEditar[m], cp.doBounds(410, 200, 25, 25), p.getAdmin(), false);
+		Save = cp.buildButton(ConfiguracionesGuardar[m], cp.doBounds(520, 200, 25, 25), false, false);
 		
 		setLayout(null);
 		setComponentZOrder(Title, z);z++;

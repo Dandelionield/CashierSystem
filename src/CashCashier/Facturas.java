@@ -1,7 +1,7 @@
 package CashCashier;
 
 import Main.Mecanics;
-import Objects.Components;
+import Objects.ComponentBuilder;
 import Objects.Factura;
 import Objects.Cliente;
 import Objects.Trabajador;
@@ -111,27 +111,28 @@ public class Facturas extends JPanel{
 	private String[][] ColumnaNombre1 = {{"Código","Producto","Cantidad","Precio","Total"},{"Code","Product","Amount","Price","Total"}};
 	private String[][] ColumnaNombre2 = {{"Código","Fecha"},{"Code","Date"}};
 	
-	private final Components cp = new Components("./src/ResourcePackCaja/", Fondo[m], m);
+	private final ComponentBuilder cp = new ComponentBuilder("./src/ResourcePackCaja", Fondo[m]);
 	
 	public Facturas(){
 		
+		if (m==1){cp.setForeground(Color.WHITE);}
+		
 		int z = 0;
 		final Color Money = new Color(60, 133, 100);
+		Font Format = new Font("Clarendon Blk BT", Font.BOLD, 12);
 		
 		setBounds(20, 45, 960, 415);
 		setOpaque(false);
 		
 		String[] Column = {ColumnaNombre1[l][0],ColumnaNombre1[l][1],ColumnaNombre1[l][2],ColumnaNombre1[l][3],ColumnaNombre1[l][4]};
 	
-		cp.Table(Column, cp.setBounds(20, 200, 900, 140));
+		cp.buildTable(Column, cp.doBounds(20, 200, 900, 140));
 		
 		Tablita1 = cp.getDefaultTableModel();
 		Tablitita1 = cp.getJTable();
 		Table1 = cp.getJScrollPane();
 		
-		Column = new String[2];
-		Column[0] = ColumnaNombre2[l][0];
-		Column[1] = ColumnaNombre2[l][1];
+		Column = new String[] {ColumnaNombre2[l][0], ColumnaNombre2[l][1]};
 		
 		Object[][] Data = new Object[Mecanics.Receipt.size()][2];
 
@@ -144,11 +145,11 @@ public class Facturas extends JPanel{
 
 			}
 			
-			cp.Table(Column, Data, cp.setBounds(460, 20, 400, 100));
+			cp.buildTable(Column, Data, cp.doBounds(460, 20, 400, 100));
 
 		}else{
 			
-			cp.Table(Column, cp.setBounds(460, 20, 400, 100));
+			cp.buildTable(Column, cp.doBounds(460, 20, 400, 100));
 			
 		}
 		
@@ -156,59 +157,31 @@ public class Facturas extends JPanel{
 		Tablitita2 = cp.getJTable();
 		Table2 = cp.getJScrollPane();
 		
-		Code = cp.Label(CodeTexto[l], cp.setBounds(30, 125, 50, 20), SwingConstants.LEFT, 12);
-		Name = cp.Label(NameTexto[l], cp.setBounds(210, 125, 70, 20), SwingConstants.LEFT, 12);
-		Amount = cp.Label(AmountTexto[l], cp.setBounds(390, 125, 50, 20), SwingConstants.LEFT, 12);
-		Price = cp.Label(PriceTexto[l], cp.setBounds(565, 125, 50, 20), SwingConstants.LEFT, 12);
-		Total = cp.Label(TotalTexto[l], cp.setBounds(740, 125, 100, 20), SwingConstants.LEFT, 12);
-		TotalPay = cp.Label(TotalPayTexto[l]+":", cp.setBounds(710, 355, 80, 20), SwingConstants.RIGHT, 12);
-		Client = cp.Label(ClientTexto[l], cp.setBounds(30, 345, 100, 40), CajaCliente[m], 20, 20, JButton.CENTER, JButton.RIGHT, JButton.LEFT, 12);
-		Pay = cp.Label(PayTexto[l]+":", cp.setBounds(360, 355, 70, 20), SwingConstants.RIGHT, 12);
-		Change = cp.Label(ChangeTexto[l]+":", cp.setBounds(530, 355, 70, 20), SwingConstants.RIGHT, 12);
-		Search = cp.Label(SearchTexto[l], cp.setBounds(30, 5, 100, 40), CajaCliente[m], 20, 20, JButton.CENTER, JButton.RIGHT, JButton.LEFT, 12);
-		Unid = cp.Label("", cp.setBounds(490, 165, 30, 20), SwingConstants.CENTER, 12);
-		TextPanelCode = cp.TextPanel("", cp.setBounds(30, 165, 100, 20), SwingConstants.LEFT, 15, Color.BLUE, new Color(0, 0, 0, 0), false, false);
-		TextPanelName = cp.TextPanel("", cp.setBounds(210, 165, 100, 20), SwingConstants.LEFT, 15, Color.BLUE, new Color(0, 0, 0, 0), false, false);
-		TextPanelAmount = cp.TextPanel("", cp.setBounds(390, 165, 100, 20), SwingConstants.LEFT, 15, Color.BLUE, new Color(0, 0, 0, 0), false, false);
-		TextPanelPrice = cp.TextPanel("", cp.setBounds(565, 165, 100, 20), SwingConstants.LEFT, 15, Color.BLUE, new Color(0, 0, 0, 0), false, false);
-		TextPanelTotal = cp.TextPanel("", cp.setBounds(740, 165, 100, 20), SwingConstants.LEFT, 13, Color.BLUE, new Color(0, 0, 0, 0), false, false);
-		TextPanelTotalPay = cp.TextPanel("0.0$", cp.setBounds(800, 355, 100, 20), SwingConstants.LEFT, 13, Money, new Color(0, 0, 0, 0), false, false);
-		TextPanelID = cp.TextPanel("", cp.setBounds(105, 355, 80, 20), SwingConstants.CENTER, 13, Color.BLUE, new Color(0, 0, 0, 0), false, false);
-		TextPanelClient = cp.TextPanel("", cp.setBounds(195, 355, 170, 20), SwingConstants.CENTER, 13, Color.BLUE, new Color(0, 0, 0, 0), false, false);
-		TextPanelPay = cp.TextPanel("", cp.setBounds(440, 355, 100, 20), SwingConstants.LEFT, 13, Money, new Color(0, 0, 0, 0), false, false);
-		TextPanelChange = cp.TextPanel("", cp.setBounds(610, 355, 100, 20), SwingConstants.LEFT, 13, Money, new Color(0, 0, 0, 0), false, false);
-		TextPanelSearch = cp.TextPanel("", cp.setBounds(105, 15, 100, 20), SwingConstants.LEFT, 13, Color.BLUE, Color.BLUE, true, false);
-		Erase = cp.Button("", cp.setBounds(880, 20, 35, 35), CajaBorrar[m], 35, 35, true, false);
-		PDF = cp.Button("", cp.setBounds(880, 140, 35, 35), CajaPDF[m], 35, 35, true, false);
-		Edit = cp.Button("", cp.setBounds(420, 20, 22, 22), CajaEditar[m], 22, 22, false, false);
-		
-		add(Table1);
-		add(Table2);
-		add(Code);
-		add(Name);
-		add(Amount);
-		add(Price);
-		add(Total);
-		add(TotalPay);
-		add(Client);
-		add(Pay);
-		add(Change);
-		add(Search);
-		add(Unid);
-		add(TextPanelCode);
-		add(TextPanelName);
-		add(TextPanelAmount);
-		add(TextPanelPrice);
-		add(TextPanelTotal);
-		add(TextPanelTotalPay);
-		add(TextPanelID);
-		add(TextPanelClient);
-		add(TextPanelPay);
-		add(TextPanelChange);
-		add(TextPanelSearch);
-		add(Erase);
-		add(PDF);
-		add(Edit);
+		Code = cp.buildLabel(CodeTexto[l], cp.doBounds(30, 125, 50, 20), SwingConstants.LEFT, Format);
+		Name = cp.buildLabel(NameTexto[l], cp.doBounds(210, 125, 70, 20), SwingConstants.LEFT, Format);
+		Amount = cp.buildLabel(AmountTexto[l], cp.doBounds(390, 125, 50, 20), SwingConstants.LEFT, Format);
+		Price = cp.buildLabel(PriceTexto[l], cp.doBounds(565, 125, 50, 20), SwingConstants.LEFT, Format);
+		Total = cp.buildLabel(TotalTexto[l], cp.doBounds(740, 125, 100, 20), SwingConstants.LEFT, Format);
+		TotalPay = cp.buildLabel(TotalPayTexto[l]+":", cp.doBounds(710, 355, 80, 20), SwingConstants.RIGHT, Format);
+		Client = cp.buildLabel(ClientTexto[l], cp.doBounds(30, 345, 75, 40), CajaCliente[m], 20, 20, JButton.CENTER, JButton.RIGHT, JButton.LEFT, Format);
+		Pay = cp.buildLabel(PayTexto[l]+":", cp.doBounds(360, 355, 70, 20), SwingConstants.RIGHT, Format);
+		Change = cp.buildLabel(ChangeTexto[l]+":", cp.doBounds(530, 355, 70, 20), SwingConstants.RIGHT, Format);
+		Search = cp.buildLabel(SearchTexto[l], cp.doBounds(30, 5, 75, 40), CajaCliente[m], 20, 20, JButton.CENTER, JButton.RIGHT, JButton.LEFT, Format);
+		Unid = cp.buildLabel("", cp.doBounds(490, 165, 30, 20), SwingConstants.CENTER, Format);	Format = new Font("Clarendon Blk BT", Font.PLAIN, 15);
+		TextPanelCode = cp.buildTextField("", cp.doBounds(30, 165, 100, 20), SwingConstants.LEFT, Format, Color.BLUE, new Color(0, 0, 0, 0), false, false);
+		TextPanelName = cp.buildTextField("", cp.doBounds(210, 165, 100, 20), SwingConstants.LEFT, Format, Color.BLUE, new Color(0, 0, 0, 0), false, false);
+		TextPanelAmount = cp.buildTextField("", cp.doBounds(390, 165, 100, 20), SwingConstants.LEFT, Format, Color.BLUE, new Color(0, 0, 0, 0), false, false);
+		TextPanelPrice = cp.buildTextField("", cp.doBounds(565, 165, 100, 20), SwingConstants.LEFT, Format, Color.BLUE, new Color(0, 0, 0, 0), false, false);	Format = new Font("Clarendon Blk BT", Font.PLAIN, 13);
+		TextPanelTotal = cp.buildTextField("", cp.doBounds(740, 165, 100, 20), SwingConstants.LEFT, Format, Color.BLUE, new Color(0, 0, 0, 0), false, false);
+		TextPanelTotalPay = cp.buildTextField("0.0$", cp.doBounds(800, 355, 100, 20), SwingConstants.LEFT, Format, Money, new Color(0, 0, 0, 0), false, false);
+		TextPanelID = cp.buildTextField("", cp.doBounds(105, 355, 80, 20), SwingConstants.CENTER, Format, Color.BLUE, new Color(0, 0, 0, 0), false, false);
+		TextPanelClient = cp.buildTextField("", cp.doBounds(195, 355, 170, 20), SwingConstants.CENTER, Format, Color.BLUE, new Color(0, 0, 0, 0), false, false);
+		TextPanelPay = cp.buildTextField("", cp.doBounds(440, 355, 100, 20), SwingConstants.LEFT, Format, Money, new Color(0, 0, 0, 0), false, false);
+		TextPanelChange = cp.buildTextField("", cp.doBounds(610, 355, 100, 20), SwingConstants.LEFT, Format, Money, new Color(0, 0, 0, 0), false, false);
+		TextPanelSearch = cp.buildTextField("", cp.doBounds(105, 15, 100, 20), SwingConstants.LEFT, Format, Color.BLUE, Color.BLUE, true, false);
+		Erase = cp.buildButton(CajaBorrar[m], cp.doBounds(880, 20, 35, 35), true, false);
+		PDF = cp.buildButton(CajaPDF[m], cp.doBounds(880, 140, 35, 35), 35, 35, true, false);
+		Edit = cp.buildButton(CajaEditar[m], cp.doBounds(420, 20, 22, 22), false, false);
 		
 		setLayout(null);
 		setComponentZOrder(Table1, z);	z++;
