@@ -368,13 +368,19 @@ public class RegistroEmpleados {
 
         mainPanel.add(userPanel); 
         mainPanel.setLayout(null);
-        mainPanel.setBounds(0, 0, 960, 540);
+        mainPanel.setBounds(30, 40, 960, 510);
+
+        //Panel fondo
+        JLabel fondo = new JLabel(new ImageIcon(new ImageIcon(url + "Fondo.jpg").getImage().getScaledInstance(1040,630,Image.SCALE_SMOOTH)));
+
+        fondo.setBounds(0, 0, 1040, 630);
 
         /*          JFRAME          */
         screen.add(mainPanel);
+        screen.add(fondo);
         screen.setResizable(false);
         screen.setLayout(null);
-        screen.setSize(960, 540);
+        screen.setSize(1040, 630);
         screen.setLocationRelativeTo(null);
         screen.setVisible(true);
         screen.setIconImage(new ImageIcon(url + "Icono.png").getImage());
@@ -470,6 +476,7 @@ public class RegistroEmpleados {
                                           permisos + ", " +
                                           "'asd');");
 
+                        Mecanics.getEmploye(true);
                     } catch (SQLException e1) { System.out.println(e1);}
                 } else {
                     JOptionPane.showMessageDialog(null, "Datos erroneos");
@@ -522,6 +529,7 @@ public class RegistroEmpleados {
                         JOptionPane.showMessageDialog(null, "Empleado eliminado!");
 
                         Recargar();
+                        Mecanics.getEmploye(true);
                     } catch (SQLException e1) { e1.printStackTrace(); }
                 }
             }
@@ -575,12 +583,16 @@ public class RegistroEmpleados {
         });
         
         //FocusListener
-        jtCedula.addFocusListener(FocusText(jtCedula));
-        jtNombre.addFocusListener(FocusText(jtNombre));
-        jtApellido.addFocusListener(FocusText(jtApellido));
-        jtContacto.addFocusListener(FocusText(jtContacto));
-        jtEmail.addFocusListener(FocusText(jtEmail));
-        jtDireccion.addFocusListener(FocusText(jtDireccion));
+        FocusTextField(jtCedula, "\\d{10}");
+        FocusTextField(jtNombre, ".*");
+        FocusTextField(jtApellido, ".*");
+        FocusTextField(jtContacto, "\\d{10}");
+        FocusTextField(jtEmail, "\\w*@\\w*.com");
+        FocusTextField(jtDireccion, ".*");
+
+        EditTextField(jtCedula, "\\d{10}");
+        EditTextField(jtContacto, "\\d{10}");
+        EditTextField(jtEmail, "\\w*@\\w*.com");
 
         //KeyListener
         jtCedula.addKeyListener(Tecla(jtNombre, null));
@@ -730,11 +742,29 @@ public class RegistroEmpleados {
         jlDelete.setEnabled(false);
     }
 
-    private static FocusListener FocusText(JTextField jtext) {
-        return new FocusListener() {
-            @Override public void focusGained(FocusEvent evt) { jtext.setBorder(new MatteBorder(0, 0, 2, 0, Color.BLUE)); }
-            @Override public void focusLost(FocusEvent evt) { jtext.setBorder(new MatteBorder(0, 0, 2, 0, Color.GRAY)); }
-        };
+    private static void FocusTextField(JTextField jtext, String pattern) {
+        jtext.addFocusListener(new FocusListener() {
+            @Override public void focusGained(FocusEvent evt) { 
+                jtext.setBorder(new MatteBorder(0, 0, 2, 0, (jtext.getText().matches(pattern) ||  jtext.getText().isEmpty()) ? Color.BLUE : Color.RED));
+            }
+            @Override public void focusLost(FocusEvent evt) { 
+                jtext.setBorder(new MatteBorder(0, 0, 2, 0, (jtext.getText().matches(pattern) ||  jtext.getText().isEmpty()) ? Color.GRAY : Color.RED));
+            }
+        });
+    }
+
+    private static void EditTextField(JTextField jtext, String pattern) {
+        jtext.getDocument().addDocumentListener(new DocumentListener() {
+            @Override public void insertUpdate(DocumentEvent e) { updateFieldState(); }
+            @Override public void removeUpdate(DocumentEvent e) { updateFieldState(); }
+            @Override public void changedUpdate(DocumentEvent e) { updateFieldState(); }
+
+            public void updateFieldState() {
+                if (jtext.isFocusOwner()) {
+                    jtext.setBorder(new MatteBorder(0, 0, 2, 0, (jtext.getText().matches(pattern) ||  jtext.getText().isEmpty()) ? Color.BLUE : Color.RED));
+                }
+            }
+        });
     }
 
     private static KeyAdapter Tecla(JTextField down, JTextField up) {
