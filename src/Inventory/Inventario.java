@@ -467,7 +467,7 @@ codigo.getDocument().addDocumentListener(new DocumentListener() {
 		            }
 
 		        }
-
+			Mecanics.getFile(true);
 		        modelo.setRowCount(0);
 		        mostrar();
 		        
@@ -493,7 +493,7 @@ codigo.getDocument().addDocumentListener(new DocumentListener() {
 		            JOptionPane.showMessageDialog(null, "Verifique los datos\nError: " + e.toString());
 		            repaint();
 		        }
-
+			Mecanics.getFile(true);
 		        modelo.setRowCount(0);
 		        mostrar();
 
