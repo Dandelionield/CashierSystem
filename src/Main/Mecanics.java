@@ -976,6 +976,71 @@ public class Mecanics {
 		
 	}
 	
+	private static HashMap<JTextField, JPopupMenu> TextFields = new HashMap<>();
+	private static HashMap<JTextField, Object[]> TextFieldError = new HashMap<>();
+	
+	public static void txtErrorMessage(JTextField TextField, String Message){
+		
+		JPopupMenu PopUpMenu;
+		
+		if (TextFields.containsKey(TextField)==false){
+			
+			PopUpMenu = new JPopupMenu();
+			PopUpMenu.add(new JMenuItem(Message));
+			
+			TextFields.put(TextField, PopUpMenu);
+			TextFieldError.put(TextField, new Object[] {TextField.getText(), true});
+			
+			addTextListener(PopUpMenu, TextField);
+			
+		}else{
+			
+			PopUpMenu = TextFields.get(TextField);
+			PopUpMenu.removeAll();
+			PopUpMenu.add(new JMenuItem(Message));
+			PopUpMenu.show(TextField, 0, TextField.getHeight());
+			
+			TextFields.put(TextField, PopUpMenu);
+			TextFieldError.put(TextField, new Object[] {TextField.getText(), true});
+			
+		}
+		
+	}
+	
+	private static void addTextListener(JPopupMenu PopUpMenu, JTextField TextField){
+		
+		TextField.addMouseListener(new MouseAdapter() {
+          
+        	public void mouseEntered(MouseEvent e) {
+				
+				final boolean MessageValue = Boolean.parseBoolean(TextFieldError.get(TextField)[1].toString());
+				final String BackUpMessage = TextFieldError.get(TextField)[0].toString();
+				final String bup = TextField.getText().trim();
+				
+				if (BackUpMessage.equalsIgnoreCase(bup)==true && MessageValue==true){
+					
+					System.out.print(BackUpMessage+"\n");
+                
+					PopUpMenu.show(TextField, 0, TextField.getHeight());
+					
+				}else{
+					
+					TextFieldError.put(TextField, new Object[] {BackUpMessage, false});
+					
+				}
+				
+            }
+
+            public void mouseExited(MouseEvent e) {
+                
+                PopUpMenu.setVisible(false);
+				
+            }
+			
+        });
+		
+	}
+	
 	private static MouseAdapter mouseListener;
 	
 	public static void txtmensaje(JTextField textField,String mensaje,boolean mostrar){
@@ -1007,3 +1072,5 @@ public class Mecanics {
         textField.addMouseListener(mouseListener);
         
 	}
+	
+}
