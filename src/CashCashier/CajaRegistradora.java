@@ -29,6 +29,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
+import javax.swing.JPopupMenu;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -111,7 +112,6 @@ public class CajaRegistradora extends JPanel{
 	private String[] PrintTexto = {"Facturar e Imprimir","Check In and Print"};
 	private String[] PayTexto = {"Pago","Payment"};
 	private String[] ChangeTexto = {"Vuelto","Change"};
-	private String[] MessageTexto = {" disponible"," availiable"};
 
 	private String[][] ColumnaNombre = {{"Código","Producto","Cantidad","Precio","Total"},{"Code","Product","Amount","Price","Total"}};
 	
@@ -295,6 +295,8 @@ public class CajaRegistradora extends JPanel{
 				Object[] NewRow = new Object[5];
 				int indice = -1;
 				Archivo p;
+				
+				String[] ErrorMessages;
 
 				boolean Pass = true;
 
@@ -307,6 +309,10 @@ public class CajaRegistradora extends JPanel{
 				}else{
 
 					TextPanelCode.setBorder(new MatteBorder(0, 0, 2, 0, Color.RED));
+					
+					ErrorMessages = new String[] {"Debe Ingresar un Código", "Must Enter a Code"};
+					
+					Mecanics.txtErrorMessage(TextPanelCode, ErrorMessages[l]);
 
 					Pass = false;
 
@@ -324,6 +330,10 @@ public class CajaRegistradora extends JPanel{
 				}else{
 
 					TextPanelName.setBorder(new MatteBorder(0, 0, 2, 0, Color.RED));
+					
+					ErrorMessages = new String[] {"Debe Ingresar un Nombre", "Must Enter a Name"};
+					
+					Mecanics.txtErrorMessage(TextPanelName, ErrorMessages[l]);
 
 					Pass = false;
 
@@ -349,6 +359,10 @@ public class CajaRegistradora extends JPanel{
 							Pass = false;
 
 							TextPanelAmount.setBorder(new MatteBorder(0, 0, 2, 0, Color.RED));
+							
+							ErrorMessages = new String[] {"Valor Ingresado no Positvo", "Entered Value not Positive"};
+					
+							Mecanics.txtErrorMessage(TextPanelAmount, ErrorMessages[l]);
 
 						}
 
@@ -357,6 +371,10 @@ public class CajaRegistradora extends JPanel{
 						Pass = false;
 
 						TextPanelAmount.setBorder(new MatteBorder(0, 0, 2, 0, Color.RED));
+						
+						ErrorMessages = new String[] {"Valor Ingresado no Numerico", "Entered Value not Numeric"};
+					
+						Mecanics.txtErrorMessage(TextPanelAmount, ErrorMessages[l]);
 
 					}
 
@@ -365,6 +383,10 @@ public class CajaRegistradora extends JPanel{
 					Pass = false;
 
 					TextPanelAmount.setBorder(new MatteBorder(0, 0, 2, 0, Color.RED));
+					
+					ErrorMessages = new String[] {"Debe Ingresar una Cantidad", "Must Enter an Amount"};
+					
+					Mecanics.txtErrorMessage(TextPanelAmount, ErrorMessages[l]);
 
 				}
 
@@ -463,18 +485,25 @@ public class CajaRegistradora extends JPanel{
 						
 					}
 					
-					if (p.getUnid().equals("u") && Cantidad%1!=0){
+					if (p.getUnid().equalsIgnoreCase("u") && Cantidad%1!=0){
 						
 						Pass = false;
 					
 						TextPanelAmount.setBorder(new MatteBorder(0, 0, 2, 0, Color.RED));
 						
+						ErrorMessages = new String[] {" No Puede Ser Decimal", " Cannot Be Decimal"};
+					
+						Mecanics.txtErrorMessage(TextPanelAmount, p.getProduct()+ErrorMessages[l]);
+						
 					}else if (((plus+p.getAmount())-Cantidad)<0){
 						
 						Pass = false;
 						
-						MessageUnid.setText((plus+p.getAmount())+" "+p.getUnid()+MessageTexto[l]);
 						TextPanelAmount.setBorder(new MatteBorder(0, 0, 2, 0, Color.RED));
+						
+						ErrorMessages = new String[] {" Disponible", " Availiable"};
+					
+						Mecanics.txtErrorMessage(TextPanelAmount, (plus+p.getAmount())+" "+p.getUnid()+ErrorMessages[l]);
 						
 					}else{
 						
