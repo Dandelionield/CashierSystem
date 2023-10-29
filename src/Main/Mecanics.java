@@ -972,5 +972,27 @@ public class Mecanics {
 		return value;
 		
 	}
+
+	public static void txtmensaje(JTextField textField,String mensaje){
+	
+	JPopupMenu popupMenu = new JPopupMenu();
+        JMenuItem menuItem = new JMenuItem(mensaje);
+        popupMenu.add(menuItem);
+
+        textField.addMouseListener(new MouseAdapter() {
+          
+        	 public void mouseEntered(MouseEvent e) {
+                 
+                 popupMenu.show(textField, 0, textField.getHeight());
+             }
+
+             
+             public void mouseExited(MouseEvent e) {
+                 
+                 popupMenu.setVisible(false);
+             }
+        });
+		
+	}
 	
 }
