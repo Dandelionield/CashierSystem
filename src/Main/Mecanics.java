@@ -976,69 +976,34 @@ public class Mecanics {
 		
 	}
 	
-	private static HashMap<JTextField, JPopupMenu> TextFields = new HashMap<>();
-	private static HashMap<JTextField, Object[]> TextFieldError = new HashMap<>();
+	private static MouseAdapter mouseListener;
 	
-	public static void txtErrorMessage(JTextField TextField, String Message){
+	public static void txtmensaje(JTextField textField,String mensaje,boolean mostrar){
 		
-		JPopupMenu PopUpMenu;
-		
-		if (TextFields.containsKey(TextField)==false){
-			
-			PopUpMenu = new JPopupMenu();
-			PopUpMenu.add(new JMenuItem(Message));
-			
-			TextFields.put(TextField, PopUpMenu);
-			TextFieldError.put(TextField, new Object[] {TextField.getText(), true});
-			
-			addTextListener(PopUpMenu, TextField);
-			
-		}else{
-			
-			PopUpMenu = TextFields.get(TextField);
-			PopUpMenu.removeAll();
-			PopUpMenu.add(new JMenuItem(Message));
-			PopUpMenu.show(TextField, 0, TextField.getHeight());
-			
-			TextFields.put(TextField, PopUpMenu);
-			TextFieldError.put(TextField, new Object[] {TextField.getText(), true});
-			
-		}
-		
-	}
-	
-	private static void addTextListener(JPopupMenu PopUpMenu, JTextField TextField){
-		
-		TextField.addMouseListener(new MouseAdapter() {
-          
-        	public void mouseEntered(MouseEvent e) {
-				
-				final boolean MessageValue = Boolean.parseBoolean(TextFieldError.get(TextField)[1].toString());
-				final String BackUpMessage = TextFieldError.get(TextField)[0].toString();
-				final String bup = TextField.getText().trim();
-				
-				if (BackUpMessage.equalsIgnoreCase(bup)==true && MessageValue==true){
-					
-					System.out.print(BackUpMessage+"\n");
-                
-					PopUpMenu.show(TextField, 0, TextField.getHeight());
-					
-				}else{
-					
-					TextFieldError.put(TextField, new Object[] {BackUpMessage, false});
-					
-				}
-				
+		JPopupMenu popupMenu = new JPopupMenu();
+        JMenuItem menuItem = new JMenuItem(mensaje);
+        popupMenu.add(menuItem);
+              
+        textField.removeMouseListener(mouseListener);
+        
+        mouseListener = new MouseAdapter() {
+            public void mouseEntered(MouseEvent e) {
+            	if(mostrar==true) {
+                popupMenu.show(textField, 0, textField.getHeight());
+            	}
+            	
+            	if(mostrar==false) {
+            		popupMenu.setVisible(false);
+            	}
+            	
             }
 
             public void mouseExited(MouseEvent e) {
-                
-                PopUpMenu.setVisible(false);
-				
+                popupMenu.setVisible(false);
             }
-			
-        });
-		
+        };
+        
+        
+        textField.addMouseListener(mouseListener);
+        
 	}
-	
-}
