@@ -153,13 +153,24 @@ public class Inventario extends JFrame {
 		
 		setIconImage(Toolkit.getDefaultToolkit().getImage("./src/ResourcePackCaja/Inventario.png"));
 		
+		setResizable(false);
+		setTitle(len[19]);
+		setLocationRelativeTo(null);
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		setBounds(100, 100, 1013, 609);
+		
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		
+		final Inventario thisFrame = this;
+		
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				
-				int scp=JOptionPane.showConfirmDialog(null, "Desea abandonar?","Salir",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
+				boolean scp = Mecanics.Leave(thisFrame);
 				
-				if(scp==JOptionPane.YES_OPTION) {
+				if(scp==true) {
 					
 					Runner lg = new Runner();
 					
@@ -178,15 +189,6 @@ public class Inventario extends JFrame {
 				
 			}
 		});
-		
-		
-		setResizable(false);
-		setTitle(len[19]);
-		setLocationRelativeTo(null);
-		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		setBounds(100, 100, 1013, 609);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
