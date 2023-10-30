@@ -786,6 +786,8 @@ public class CajaRegistradora extends JPanel{
 				Factura p;
 				Archivo d;
 				s = -1;
+				
+				String[] ErrorMessages;
 
 				bup = TextPanelID.getText().trim();
 
@@ -794,6 +796,10 @@ public class CajaRegistradora extends JPanel{
 					if (TextPanelClient.getText().equals("")==true || TextPanelClient.getText()==null){
 
 						TextPanelID.setBorder(new MatteBorder(0, 0, 2, 0, Color.RED));
+						
+						ErrorMessages = new String[] {"Cliente Inexistente", "Unexistance Client"};
+					
+						Mecanics.txtErrorMessage(TextPanelID, ErrorMessages[l]);
 
 						Pass = false;
 						
