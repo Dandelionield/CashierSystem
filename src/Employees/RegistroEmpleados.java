@@ -12,9 +12,11 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
@@ -119,6 +121,7 @@ public class RegistroEmpleados {
     private static JLabel jlImg = new JLabel();
     private static JLabel jlLock = new JLabel(new ImageIcon(imgLock.getScaledInstance(40,40,Image.SCALE_SMOOTH)));
     private static JLabel jlImgSelect = new JLabel(new ImageIcon(url + "vacio.png"));
+    private static JLabel fondo = new JLabel(new ImageIcon(new ImageIcon(url + "Fondo.jpg").getImage().getScaledInstance(1040,630,Image.SCALE_SMOOTH)));
 
     private static JRadioButton g1 = new JRadioButton(), g2 = new JRadioButton(), g3 = new JRadioButton();
     private static JRadioButton p1 = new JRadioButton(), p2 = new JRadioButton();
@@ -128,6 +131,7 @@ public class RegistroEmpleados {
     private static DefaultTableModel modelo;
     private static JTable jtaEmpleados = new JTable();
     private static JScrollPane jscEmpleados = new JScrollPane();
+    private static File imagenUser = new File("./src/ResourcePackCaja/image-not-found.png");
 
     private static DocumentListener user;
     private static ChangeListener edadListener;
@@ -135,7 +139,6 @@ public class RegistroEmpleados {
     private static ActionListener permisoListener;
 
     private static Conexion basedata = new Conexion();
-    private static ArrayList<String> codes = new ArrayList<>();
 
     public RegistroEmpleados() {
         main();
@@ -258,7 +261,7 @@ public class RegistroEmpleados {
                 jlUserContacto.setText(ContactoI[language] + ": " + ((jtContacto.getText().isEmpty()) ? "0123456789" : jtContacto.getText()));
                 jlUserEmail.setText(EmailI[language] + ": " + ((jtEmail.getText().isEmpty()) ? "User@gmail.com" : jtEmail.getText()));
                 jlUserDireccion.setText(DireccionI[language] + ": " + ((jtDireccion.getText().isEmpty()) ? "" : jtDireccion.getText()));
-                jlUserCode.setText(CodeI[language] + ": " + CodeGenerate());
+                jlUserCode.setText(CodeI[language] + ": " + (selection != -1 ? Mecanics.Employe.get(selection).getCode() : CodeGenerate()));
             }
         };
 
@@ -266,7 +269,7 @@ public class RegistroEmpleados {
             @Override
             public void stateChanged(ChangeEvent e) {
                 jlUserEdad.setText(EdadI[language] + ": " + jsEdad.getValue());
-                jlUserCode.setText(CodeI[language] + ": " + CodeGenerate());
+                jlUserCode.setText(CodeI[language] + ": " + (selection != -1 ? Mecanics.Employe.get(selection).getCode() : CodeGenerate()));
             }
         };
         
@@ -370,9 +373,7 @@ public class RegistroEmpleados {
         mainPanel.setLayout(null);
         mainPanel.setBounds(30, 40, 960, 510);
 
-        //Panel fondo
-        JLabel fondo = new JLabel(new ImageIcon(new ImageIcon(url + "Fondo.jpg").getImage().getScaledInstance(1040,630,Image.SCALE_SMOOTH)));
-
+        //JLabel fondo
         fondo.setBounds(0, 0, 1040, 630);
 
         /*          JFRAME          */
@@ -452,37 +453,50 @@ public class RegistroEmpleados {
                 jlAccept.setBounds(532, 250, 40, 40);
                 jlAccept.setIcon(new ImageIcon(imgAccept.getScaledInstance(40,40,Image.SCALE_SMOOTH)));
 
-                if (jtCedula.getText().matches("\\d{10}") &&
-                    jtNombre.getText().length() > 0 && 
-                    jtApellido.getText().length() > 0 &&
-                    jtContacto.getText().matches("\\d{10}") && 
-                    jtEmail.getText().matches("\\w*@\\w*.com") &&
-                    jtDireccion.getText().length() > 0 &&
-                    genero != '.' &&
-                    permisos != -1)
-                {
+                if (CheckTextfield()) {
                     JOptionPane.showMessageDialog(null, "Verificado");
                     try {
-                        basedata.sentence("INSERT INTO `Trabajador` (`Code`, `ID`, `Name`, `LastName`, `Phone`, `Email`, `Address`, `Gender`, `Age`, `Admin`, `Image`) VALUES ('" + 
-                                          CodeGenerate() + "' , '" + 
-                                          jtCedula.getText() + "', '" + 
-                                          jtNombre.getText() + "', '" + 
-                                          jtApellido.getText() + "', '" +
-                                          jtContacto.getText() + "', '" + 
-                                          jtEmail.getText() +"' , '" + 
-                                          jtDireccion.getText() + "', '" +
-                                          genero + "' ," + 
-                                          Integer.parseInt(jsEdad.getValue()+"") + ", " +
-                                          permisos + ", " +
-                                          "'asd');");
-
-                        Mecanics.getEmploye(true);
+                        if (edit) {
+                            basedata.sentence("INSERT INTO `Trabajador` (`Code`, `ID`, `Name`, `LastName`, `Phone`, `Email`, `Address`, `Gender`, `Age`, `Admin`, `Image`) VALUES ('" + 
+                                              CodeGenerate() + "' , '" + 
+                                              jtCedula.getText() + "', '" + 
+                                              jtNombre.getText() + "', '" + 
+                                              jtApellido.getText() + "', '" +
+                                              jtContacto.getText() + "', '" + 
+                                              jtEmail.getText() +"' , '" + 
+                                              jtDireccion.getText() + "', '" +
+                                              genero + "' ," + 
+                                              Integer.parseInt(jsEdad.getValue()+"") + ", '" +
+                                              permisos + 
+                                              "', './src/Employees/ImageEmployees/" + jtCedula.getText() + ".png');");
+                        } else {
+                            basedata.sentence("UPDATE `Trabajador` SET 'Name' = '" + jtNombre.getText() +
+                                                                   "', 'LastName' = '" + jtApellido.getText() +
+                                                                   "', 'Phone' = '" + jtContacto.getText() +
+                                                                   "', 'Email' = '" + jtEmail.getText() +
+                                                                   "', 'Address' = '" + jtDireccion.getText() + 
+                                                                   "', 'Gender' = '" + genero + 
+                                                                   "', 'Age' = '" + Integer.parseInt(jsEdad.getValue()+"") +
+                                                                   "', 'Admin' = '" + permisos + 
+                                                                   "', 'Image' = './src/Employees/ImageEmployees/" + Mecanics.Employe.get(selection).getID() + ".png" +
+                                                                   "' WHERE ID = '" + Mecanics.Employe.get(selection).getID() + "';");
+                        }
                     } catch (SQLException e1) { System.out.println(e1);}
+
+                    Recargar();
+
+                    try {
+                        File destino = new File("./src/Employees/ImageEmployees/" + (edit ? jtCedula.getText() : Mecanics.Employe.get(selection).getID()) + ".png");
+                        
+                        if(destino.exists()) Files.delete(destino.toPath());
+
+                        Files.copy(imagenUser.toPath(), destino.toPath());
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
                 } else {
                     JOptionPane.showMessageDialog(null, "Datos erroneos");
                 }
-
-                Recargar();
             }
         });
 
@@ -500,6 +514,11 @@ public class RegistroEmpleados {
                 jlDelete.setEnabled(!edit);
                 jtaEmpleados.clearSelection();
                 selection = -1;
+
+                if (edit) {
+                    LimpiarDatos();
+                    jtCedula.setEditable(true);
+                } else jtCedula.setEditable(false);
             }
 
             @Override public void mouseReleased(MouseEvent e) {
@@ -525,12 +544,16 @@ public class RegistroEmpleados {
 
                 if (!edit && selection != -1) {
                     try {
-                        basedata.sentence("DELETE FROM Trabajador WHERE Code = '" + codes.get(selection) + "';");
+                        basedata.sentence("DELETE FROM Trabajador WHERE ID = '" + Mecanics.Employe.get(selection).getID() + "';");
+                        File destino = new File("./src/Employees/ImageEmployees/" + Mecanics.Employe.get(selection).getID() + ".png");
+
+                        if(destino.exists()) Files.delete(destino.toPath());
                         JOptionPane.showMessageDialog(null, "Empleado eliminado!");
 
                         Recargar();
-                        Mecanics.getEmploye(true);
-                    } catch (SQLException e1) { e1.printStackTrace(); }
+                    } catch (SQLException | IOException e1) {
+                        e1.printStackTrace();
+                    }
                 }
             }
         });
@@ -566,12 +589,13 @@ public class RegistroEmpleados {
                 try { UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());} 
                 catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e1) {}
 
-                JFileChooser j = new JFileChooser("C:/Users/" + System.getProperty("user.name"));
-                j.showOpenDialog(null);
+                JFileChooser file = new JFileChooser("C:/Users/" + System.getProperty("user.name"));
+                file.showOpenDialog(null);
+                String ruta = String.valueOf(file.getSelectedFile());
 
-                if (j.getSelectedFile() != null) {
-                    Image img = new ImageIcon(j.getSelectedFile()+"").getImage().getScaledInstance(200,200,Image.SCALE_SMOOTH);
-                    jlImg.setIcon(new ImageIcon(img));
+                if (file.getSelectedFile() != null && (ruta.endsWith(".png") || ruta.endsWith(".jpg") || ruta.endsWith(".jpeg"))) {
+                    imagenUser = file.getSelectedFile();
+                    jlImg.setIcon(new ImageIcon(new ImageIcon(ruta).getImage().getScaledInstance(200,200,Image.SCALE_SMOOTH)));
                 }
             }
         });
@@ -579,6 +603,44 @@ public class RegistroEmpleados {
         jtaEmpleados.addMouseListener(new MouseAdapter() {
 			@Override public void mouseClicked(MouseEvent evt) {
                 selection = jtaEmpleados.getSelectedRow();
+
+                if (!edit) {
+                    jtCedula.setText(Mecanics.Employe.get(selection).getID());
+                    jtNombre.setText(Mecanics.Employe.get(selection).getName());
+                    jtApellido.setText(Mecanics.Employe.get(selection).getLastName());
+                    jtContacto.setText(Mecanics.Employe.get(selection).getPhone());
+                    jtEmail.setText(Mecanics.Employe.get(selection).getEmail());
+                    jtDireccion.setText(Mecanics.Employe.get(selection).getAddress());
+                    jsEdad.setValue(Mecanics.Employe.get(selection).getAge());
+                    genero = Mecanics.Employe.get(selection).getGender();
+                    permisos = Mecanics.Employe.get(selection).getAdmin() ? 1 : 0;
+
+                    jlUserEdad.setText(EdadI[language] + ": " + jsEdad.getValue());
+                    jlImg.setIcon(new ImageIcon(new ImageIcon(Mecanics.Employe.get(selection).getImage()).getImage().getScaledInstance(200,200,Image.SCALE_SMOOTH)));
+
+                    if (Mecanics.Employe.get(selection).getAdmin()) {
+                        p2.setSelected(true);
+                        jlUserPermisos.setText(PermisosI[language] + ": " + ElegirPI[1][language]);
+                    } else {
+                        p1.setSelected(true);
+                        jlUserPermisos.setText(PermisosI[language] + ": " + ElegirPI[0][language]);
+                    }
+
+                    switch (genero) {
+                        case 'F':
+                            g1.setSelected(true);
+                            jlUserGenero.setText(GeneroI[language] + ": " + ElegirGI[0][language]);
+                            break;
+                        case 'M':
+                            g2.setSelected(true);
+                            jlUserGenero.setText(GeneroI[language] + ": " + ElegirGI[1][language]);
+                            break;
+                        default:
+                            g3.setSelected(true);
+                            jlUserGenero.setText(GeneroI[language] + ": " + ElegirGI[2][language]);
+                            break;
+                    }
+                }
             }
         });
         
@@ -788,17 +850,17 @@ public class RegistroEmpleados {
         bgPermisos.clearSelection();
         genero = '.';
         permisos = -1;
+        imagenUser = new File("./src/ResourcePackCaja/image-not-found.png");
+        jlImg.setIcon(new ImageIcon(new ImageIcon(imagenUser.toString()).getImage().getScaledInstance(200,200,Image.SCALE_SMOOTH)));
     }
 
     private static void Recargar() {
         modelo.setRowCount(0);
-        codes.clear();
 
         try {
             ResultSet resultado = basedata.consulta("SELECT * FROM Trabajador;");
 
             while (resultado.next()) {
-                codes.add(resultado.getString("Code"));
                 modelo.addRow(new String[] {resultado.getString("Code"),
                                             resultado.getString("ID"), 
                                             resultado.getString("Name"),
@@ -810,10 +872,24 @@ public class RegistroEmpleados {
                                             resultado.getString("Gender"),
                                             resultado.getString("Admin")});
             }
+
+            Mecanics.getEmploye(true);
         } catch (SQLException e) {}
+        //Mecanics.Employe.forEach(x -> System.out.println(x.getAll() + "\n"));
     }
 
     private static String CodeGenerate() {
         return String.valueOf(Math.abs((jtCedula.getText() + jtNombre.getText() + jtApellido.getText() + jtContacto.getText() + jtEmail.getText() + jtDireccion.getText() + jsEdad.getValue()).hashCode()));
+    }
+
+    private static boolean CheckTextfield() {
+        return (jtCedula.getText().matches("\\d{10}") &&
+                jtNombre.getText().length() > 0 && 
+                jtApellido.getText().length() > 0 &&
+                jtContacto.getText().matches("\\d{10}") && 
+                jtEmail.getText().matches("\\w*@\\w*.com") &&
+                jtDireccion.getText().length() > 0 &&
+                genero != '.' &&
+                permisos != -1);
     }
 }

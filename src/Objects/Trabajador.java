@@ -161,5 +161,8 @@ public class Trabajador{
 		this.Imagen = Imagen;
 		
 	}
-	
+
+	public String getAll() {
+		return "[ Codigo: " + Codigo + ", ID: " +  ID + ", Nombre: " + Nombre + ", Apellido: " + Apellido + ", Telefono: " + Telefono + ", Email: " + Email + ", Direccion: " + Direccion + ", Genero: " + Genero + ", Edad: " + Edad + ", Genero: " + Genero + ", Permiso: " + Admin + ", Image: " + Imagen + "]";
+	}
 }

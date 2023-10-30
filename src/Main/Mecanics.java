@@ -349,7 +349,8 @@ public class Mecanics {
         long n = 0;
 
         if (b == true) {
-
+            Mecanics.Employe.clear();
+            
             Conexion cn = new Conexion();
             Trabajador p = cn.getTrabajador(n);
 
