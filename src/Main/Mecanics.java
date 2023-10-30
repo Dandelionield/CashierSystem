@@ -5,6 +5,7 @@ import Objects.Factura;
 import Objects.Cliente;
 import Objects.Trabajador;
 import Objects.Archivo;
+import Objects.ComponentBuilder;
 
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
@@ -33,15 +34,19 @@ import javax.swing.SwingConstants;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JMenuItem;
 import javax.swing.JTextField;
 import javax.swing.JFileChooser;
 import javax.swing.UIManager;
 import javax.swing.border.MatteBorder;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.UIManager;
+import javax.swing.JButton;
+import javax.swing.JDialog;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.io.BufferedReader;
@@ -49,11 +54,13 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.File;
+import java.io.IOException;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.io.IOException;
+
 import java.awt.AWTException;
 import java.awt.Rectangle;
 import java.awt.Desktop;
@@ -63,7 +70,19 @@ import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.geom.RoundRectangle2D;
+import java.awt.Component;
+
+import java.util.EventObject;
 import javax.imageio.ImageIO;
+
 public class Mecanics {
 
     public static ArrayList<Archivo> Archive = new ArrayList<>();
@@ -824,4 +843,235 @@ public class Mecanics {
             }
         };
     }
+	
+	private static boolean value = false;
+	
+	public static boolean Leave(JFrame parentComponent){
+		
+		int z = 0;
+		
+		final int m = getMode(true);
+		final int l = getLanguage(true);
+		final java.awt.Color[] Fondo = {new java.awt.Color(238, 248, 254), new java.awt.Color(20, 35, 54)};
+		
+		final String[] MecanicsCerrar = {"xLight", "xDark"};
+		final String[] MecanicsSalir = {"SalirLight", "SalirDark"};
+		final String[] MecanicsMenu = {"MenuLight", "MenuDark"};
+		
+		final String[] ExitTexto = {"Salir", "Exit"};
+		final String[] MenuTexto = {"Menú", "Menu"};
+		
+		final ComponentBuilder cp = new ComponentBuilder("./src/ResourcePackCaja", Fondo[m]);
+		
+		if (m==1){cp.setForeground(java.awt.Color.WHITE);}
+		
+		JPanel Background = cp.buildPanel(cp.doBounds(0, 0, 300, 400), new int[] {0, 0, 300, 400, 60, 60}, 0, 0, Fondo[m]);
+		JButton Close = cp.buildButton("", cp.doBounds(Background.getWidth()-50, 30, 30, 30), MecanicsCerrar[m], JButton.CENTER, JButton.CENTER, JButton.CENTER, true, true);
+		JButton Exit = cp.buildButton("", cp.doBounds(Background.getWidth()/2-100, Background.getHeight()/2-100, 200, 50), MecanicsSalir[m], JButton.CENTER, JButton.RIGHT, JButton.CENTER, true, true);
+		JButton Menu = cp.buildButton("", cp.doBounds(Background.getWidth()/2-100, Background.getHeight()/2+40, 200, 50), MecanicsMenu[m], JButton.CENTER, JButton.RIGHT, JButton.CENTER, true, true);
+
+		Background.setLayout(null);
+		Background.setComponentZOrder(Close, z);	z++;
+		Background.setComponentZOrder(Exit, z);	z++;
+		Background.setComponentZOrder(Menu, z);	z++;
+		
+		JDialog customDialog = new JDialog(parentComponent, "", true);
+        customDialog.setSize(300, 400);
+        customDialog.setLocationRelativeTo(parentComponent);
+        customDialog.setUndecorated(true);
+        customDialog.setShape(new RoundRectangle2D.Double(0, 0, Background.getWidth(), Background.getHeight(), 60, 60));
+		
+		Menu.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e){
+				
+				customDialog.dispose();
+				
+				value = true;
+
+			}
+
+		});
+		
+		Close.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e){
+				
+				customDialog.dispose();
+				
+				value = false;
+
+			}
+
+		});
+		
+		Exit.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e){
+				
+				try {
+					
+					Thread.sleep(200);
+					
+				} catch (InterruptedException ev){
+					
+					ev.printStackTrace();
+					
+				}
+				
+				System.exit(0);
+
+			}
+
+		});
+		
+		Menu.addMouseListener(new MouseAdapter() {
+
+			public void mouseEntered(MouseEvent e) {
+
+				Menu.setText(MenuTexto[l]);
+
+			}
+
+			public void mousePressed(MouseEvent e){
+
+				mouseExited(e);
+
+			}
+
+			public void mouseExited(MouseEvent e) {
+
+				Menu.setText("");
+
+			}
+
+		});
+		
+		Exit.addMouseListener(new MouseAdapter() {
+
+			public void mouseEntered(MouseEvent e) {
+
+				Exit.setText(ExitTexto[l]);
+
+			}
+
+			public void mousePressed(MouseEvent e){
+
+				mouseExited(e);
+
+			}
+
+			public void mouseExited(MouseEvent e) {
+
+				Exit.setText("");
+
+			}
+
+		});
+
+        customDialog.add(Background);
+		
+		customDialog.setVisible(true);
+		
+		return value;
+		
+	}
+	
+	private static HashMap<JTextField, JPopupMenu> TextFields = new HashMap<>();
+	private static HashMap<JTextField, Object[]> TextFieldError = new HashMap<>();
+	
+	public static void txtErrorMessage(JTextField TextField, String Message){
+		
+		JPopupMenu PopUpMenu;
+		
+		if (TextFields.containsKey(TextField)==false){
+			
+			PopUpMenu = new JPopupMenu();
+			PopUpMenu.add(new JMenuItem(Message));
+			
+			TextFields.put(TextField, PopUpMenu);
+			TextFieldError.put(TextField, new Object[] {TextField.getText(), true});
+			
+			addTextListener(PopUpMenu, TextField);
+			
+		}else{
+			
+			PopUpMenu = TextFields.get(TextField);
+			PopUpMenu.removeAll();
+			PopUpMenu.add(new JMenuItem(Message));
+			PopUpMenu.show(TextField, 0, TextField.getHeight());
+			
+			TextFields.put(TextField, PopUpMenu);
+			TextFieldError.put(TextField, new Object[] {TextField.getText(), true});
+			
+		}
+		
+	}
+	
+	private static void addTextListener(JPopupMenu PopUpMenu, JTextField TextField){
+		
+		TextField.addMouseListener(new MouseAdapter() {
+          
+        	public void mouseEntered(MouseEvent e) {
+				
+				final boolean MessageValue = Boolean.parseBoolean(TextFieldError.get(TextField)[1].toString());
+				final String BackUpMessage = TextFieldError.get(TextField)[0].toString();
+				final String bup = TextField.getText().trim();
+				
+				if (BackUpMessage.equalsIgnoreCase(bup)==true && MessageValue==true){
+					
+					System.out.print(BackUpMessage+"\n");
+                
+					PopUpMenu.show(TextField, 0, TextField.getHeight());
+					
+				}else{
+					
+					TextFieldError.put(TextField, new Object[] {BackUpMessage, false});
+					
+				}
+				
+            }
+
+            public void mouseExited(MouseEvent e) {
+                
+                PopUpMenu.setVisible(false);
+				
+            }
+			
+        });
+		
+	}
+	
+	private static MouseAdapter mouseListener;
+	
+	public static void txtmensaje(JTextField textField,String mensaje,boolean mostrar){
+		
+		JPopupMenu popupMenu = new JPopupMenu();
+        JMenuItem menuItem = new JMenuItem(mensaje);
+        popupMenu.add(menuItem);
+              
+        textField.removeMouseListener(mouseListener);
+        
+        mouseListener = new MouseAdapter() {
+            public void mouseEntered(MouseEvent e) {
+            	if(mostrar==true) {
+                popupMenu.show(textField, 0, textField.getHeight());
+            	}
+            	
+            	if(mostrar==false) {
+            		popupMenu.setVisible(false);
+            	}
+            	
+            }
+
+            public void mouseExited(MouseEvent e) {
+                popupMenu.setVisible(false);
+            }
+        };
+        
+        
+        textField.addMouseListener(mouseListener);
+        
+	}
+	
 }

@@ -75,8 +75,8 @@ public class Login extends JPanel{
 		User = cp.buildLabel(UserTexto[l], cp.doBounds(100, 250, 80, 20), SwingConstants.LEFT, new Font("Clarendon Blk BT", Font.BOLD, 14));
 		Password = cp.buildLabel(PasswordTexto[l], cp.doBounds(100, 355, 100, 20), SwingConstants.LEFT, new Font("Clarendon Blk BT", Font.BOLD, 14));
 		UserImage = cp.buildLabel("", cp.doBounds(65, 288, 25, 25), LoginUsuario[m], 25, 25, SwingConstants.CENTER, SwingConstants.CENTER, SwingConstants.CENTER, null);
-		TextPanelUser = cp.buildTextField("", cp.doBounds(100, 295, 200, 20), SwingConstants.LEFT, new Font("Clarendon Blk BT", Font.BOLD, 15), Color.BLUE, Color.BLUE, true, false);
-		TextPanelPassword1 = cp.buildTextField("", cp.doBounds(100, 400, 200, 20), SwingConstants.LEFT, new Font("Clarendon Blk BT", Font.BOLD, 15), Color.BLUE, Color.BLUE, true, false);
+		TextPanelUser = cp.buildTextField("", cp.doBounds(100, 295, 200, 20), SwingConstants.LEFT, new Font("Clarendon Blk BT", Font.PLAIN, 15), Color.BLUE, Color.BLUE, true, false);
+		TextPanelPassword1 = cp.buildTextField("", cp.doBounds(100, 400, 200, 20), SwingConstants.LEFT, new Font("Clarendon Blk BT", Font.PLAIN, 15), Color.BLUE, Color.BLUE, true, false);
 		TextPanelPassword2 = PassPanelTexto();
 		Show = cp.buildButton(LoginVer[m], cp.doBounds(64, 393, 25, 25), true, false);
 		Login = Entrar();

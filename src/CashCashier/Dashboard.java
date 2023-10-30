@@ -1,11 +1,15 @@
 package CashCashier;
 
 import Main.Mecanics;
+import Main.Runner;
+import Main.Menu;
 import Objects.Cliente;
 import Objects.Factura;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import javax.swing.JLayeredPane;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -26,14 +30,13 @@ public class Dashboard extends JFrame{
 	public static RegistrarUsuario CRUD;
 	public static Facturas Cuenta;
 	public static Configuraciones Settings;
-	
-	//public static Factura iniciar = new Factura("","","",0,0,0,{{000,"Prueba",0,0,0}},"",""));
 
 	private int m = Mecanics.getMode(true);
 	private int l = Mecanics.getLanguage(true);
 	
 	public static Object[][] datos = {{000,"Prueba",0,0,0}};
 	public static String User;
+	private String Name;
 	
 	private Color[] Fondo = {new Color(238, 248, 254), new Color(20, 35, 54)};
 	
@@ -50,14 +53,15 @@ public class Dashboard extends JFrame{
 	
 	public Dashboard(String User, String Name){
 		
-		Dashboard.User = User;
+		this.User = User;
+		this.Name = Name;
 		
 		Caja = new CajaRegistradora(true,new Factura("",0,0,0,datos,"",Mecanics.Employe.get(Mecanics.getEmploye(User)), new Cliente(" "," "," "," "," "," ")));
 		
 		setResizable(false);
 		setTitle(CajaTitulo[l]+" - "+Name);
 		setIconImage(Toolkit.getDefaultToolkit().getImage("./src/ResourcePackCaja/Icono.png"));
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(200,200,1000,500);
 		setLocationRelativeTo(null);
 
@@ -258,6 +262,38 @@ public class Dashboard extends JFrame{
 	}
 	
 	private void Actions(){
+		
+		final Dashboard thisFrame = this;
+		
+		addWindowListener(new WindowAdapter() {
+			
+			public void windowClosing(WindowEvent e) {
+				
+				boolean scp = Mecanics.Leave(thisFrame);
+				
+				if(scp==true) {
+					
+					removeAll();
+				
+					Runner lg = new Runner();
+					
+					lg.contentPane.removeAll();
+					
+					lg.Opciones = new Menu(lg, User, Name);
+					
+					lg.contentPane.add(lg.Opciones, Integer.valueOf(0));
+
+					lg.setVisible(true);
+					
+					dispose();
+					
+					repaint();
+					
+				}
+				
+			}
+			
+		});
 		
 		Window1st.addMouseListener(new MouseAdapter() {
 
