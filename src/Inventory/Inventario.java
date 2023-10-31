@@ -138,7 +138,7 @@ public class Inventario extends JFrame {
 	private JButton imprimir;
 	private JLabel txtunpopular;
 	private JLabel unpopular;
-	private Archivo mayor;
+	private Archivo[] mayor;
 	private Archivo menor;
 
 	
@@ -283,10 +283,12 @@ codigo.getDocument().addDocumentListener(new DocumentListener() {
             	ResultSet res = new Conexion().consulta("SELECT * FROM Inventario WHERE `Code`='"+codigo.getText().toUpperCase()+"'");
         		
         		try {
-        				if(codigo.getText().equalsIgnoreCase(res.getString("Code")) ) {
+        				if(codigo.getText().equalsIgnoreCase(res.getString("Code"))) {
         					
         					if(access==false) {
+        						String [] error= {"Codigo ya registrado","Code already registered"};
         						codigo.setBorder(new MatteBorder(0, 0, 2, 0, Color.RED));
+        						Mecanics.txtErrorMessage(codigo, error[lengu]);
         					}
         					fill(codigo.getText().toUpperCase());
         				}
@@ -330,8 +332,15 @@ codigo.getDocument().addDocumentListener(new DocumentListener() {
 
             private void verifyprice() {
 				
-            	if(Mecanics.Allowed(precio.getText())==false){precio.setBorder(new MatteBorder(0, 0, 2, 0, Color.RED));}
-            	if(Mecanics.Allowed(precio.getText())==true||precio.getText().equals("")){precio.setBorder(new MatteBorder(0, 0, 2, 0, Color.BLUE));}
+            	if(Mecanics.Allowed(precio.getText())==false){
+            		String [] error= {"El campo debe ser sólo números","The field must be only numbers"};
+            		precio.setBorder(new MatteBorder(0, 0, 2, 0, Color.RED));
+            		Mecanics.txtErrorMessage(precio, error[lengu]);
+            		
+            		}
+            	if(Mecanics.Allowed(precio.getText())==true||precio.getText().equals("")){
+            		precio.setBorder(new MatteBorder(0, 0, 2, 0, Color.BLUE));
+            		}
 			}
 
 			
@@ -353,22 +362,19 @@ codigo.getDocument().addDocumentListener(new DocumentListener() {
 
             private void verifyprice() {
 				
-            	if(Mecanics.Allowed(existencias.getText())==false){existencias.setBorder(new MatteBorder(0, 0, 2, 0, Color.RED));}
-            	if(Mecanics.Allowed(existencias.getText())==true||existencias.getText().equals("")){existencias.setBorder(new MatteBorder(0, 0, 2, 0, Color.BLUE));}
+            	if(Mecanics.Allowed(existencias.getText())==false){
+            		String [] error= {"El campo debe ser sólo números","The field must be only numbers"};
+            			existencias.setBorder(new MatteBorder(0, 0, 2, 0, Color.RED));
+            			Mecanics.txtErrorMessage(existencias, error[lengu]);
+            		}
+            	if(Mecanics.Allowed(existencias.getText())==true||existencias.getText().equals("")){
+            		existencias.setBorder(new MatteBorder(0, 0, 2, 0, Color.BLUE));
+            		}
 			}
 			
 		});
 		existencias.setColumns(10);
-		
-		txtmarca = new JLabel(len[7]);
-		txtmarca.setFont(new Font("Microsoft JhengHei UI", Font.BOLD, 12));
-		txtmarca.setBounds(262, 242, 72, 26);
-		panel.add(txtmarca);
-		
-		marca = cp.buildTextField("", cp.doBounds(344, 246, 144, 20), SwingConstants.LEFT, new Font("Microsoft JhengHei UI", Font.BOLD, 12), Color.BLUE, Color.BLUE, true, true);
-		panel.add(marca);
-		marca.setColumns(10);
-		
+				
 		txtunidad = new JLabel(len[6]);
 		txtunidad.setFont(new Font("Microsoft JhengHei UI", Font.BOLD, 12));
 		txtunidad.setBounds(262, 207, 72, 26);
@@ -378,6 +384,15 @@ codigo.getDocument().addDocumentListener(new DocumentListener() {
 		unidad = new JComboBox<>(modl);
 		unidad.setBounds(344, 213, 60, 22);
 		panel.add(unidad);
+		
+		txtmarca = new JLabel(len[7]);
+		txtmarca.setFont(new Font("Microsoft JhengHei UI", Font.BOLD, 12));
+		txtmarca.setBounds(262, 242, 72, 26);
+		panel.add(txtmarca);
+		
+		marca = cp.buildTextField("", cp.doBounds(344, 246, 144, 20), SwingConstants.LEFT, new Font("Microsoft JhengHei UI", Font.BOLD, 12), Color.BLUE, Color.BLUE, true, true);
+		panel.add(marca);
+		marca.setColumns(10);
 		
 		txtdescripcion = new JLabel(len[8]);
 		txtdescripcion.setFont(new Font("Microsoft JhengHei UI", Font.BOLD, 12));
@@ -529,7 +544,7 @@ codigo.getDocument().addDocumentListener(new DocumentListener() {
 
 			            regi = new ImageIcon(new ImageIcon("./src/ResourcePackCaja/CandadoAbierto.png").getImage().getScaledInstance(candado.getWidth(), candado.getHeight(), Image.SCALE_AREA_AVERAGING));
 			            candado.setIcon(regi);
-			            btnguardar.setText(len[13]);
+			            btnguardar.setText(len[13]);			            
 			            codigo.setEditable(false);
 			            codigo.setBorder(new MatteBorder(0, 0, 2, 0, Color.BLUE));
 			        }
@@ -584,9 +599,9 @@ codigo.getDocument().addDocumentListener(new DocumentListener() {
 		sold.setBounds(69, 11, 58, 24);
 		propiedades.add(sold);
 		
-		mayor= mayor();menor=menor();
-		String may= mayor.getCode()+" - "+mayor.getProduct();
-		String men= menor.getCode()+" - "+menor.getProduct();
+		mayor= MayorMenor();
+		String may= mayor[0].getCode()+" - "+mayor[0].getProduct();
+		String men= mayor[1].getCode()+" - "+mayor[1].getProduct();
 		
 		txtpopular = new JLabel("Mas popular: ");
 		txtpopular.setFont(new Font("Agency FB", Font.BOLD, 13));
@@ -649,20 +664,23 @@ codigo.getDocument().addDocumentListener(new DocumentListener() {
 		
 	}
 	
+
 		private void fill(String code) {
 		
 		Archivo miu;
-		
+		String a="",b="";
 		miu=muestra(code);
 		
 		if(miu==null) {
 			miu=new Archivo("","","","",0,0,0,"","");
-		}
+			
+		}else {a=miu.getPrice()+"";b=miu.getAmount()+"";}
+		
 		
 		
         producto.setText(miu.getProduct());
-        precio.setText(miu.getPrice()+"");
-        existencias.setText(miu.getAmount()+"");
+        precio.setText(a);
+        existencias.setText(b);
         
 
         unidad.setSelectedItem(miu.getUnid());        
@@ -681,6 +699,9 @@ codigo.getDocument().addDocumentListener(new DocumentListener() {
         ImageIcon ima = new ImageIcon(new ImageIcon(ruta).getImage().getScaledInstance(foto.getWidth(), foto.getHeight(), Image.SCALE_AREA_AVERAGING));
          foto.setIcon(ima);
          foto.repaint();
+         
+         
+         
 	}
 	
 	
@@ -764,13 +785,13 @@ codigo.getDocument().addDocumentListener(new DocumentListener() {
             }
             
             
-            Paragraph may= new Paragraph("\n"+len[17]+mayor.getCode()+": "+mayor.getProduct());
+            Paragraph may= new Paragraph("\n"+len[17]+mayor[0].getCode()+": "+mayor[0].getProduct());
 			Title.setFontSize(20);
             Title.setBold();
             Title.setTextAlignment(TextAlignment.CENTER);
             Title.setVerticalAlignment(VerticalAlignment.MIDDLE);
             
-            Paragraph men= new Paragraph(len[18]+menor.getCode()+": "+menor.getProduct());
+            Paragraph men= new Paragraph("\n"+len[18]+mayor[1].getCode()+": "+mayor[1].getProduct());
 			Title.setFontSize(20);
             Title.setBold();
             Title.setTextAlignment(TextAlignment.CENTER);
@@ -943,9 +964,10 @@ codigo.getDocument().addDocumentListener(new DocumentListener() {
     }     
 	 
 	 
-	 public Archivo mayor() {
+	 public Archivo [] MayorMenor() {
 		 
-		 Archivo prod=null;
+		 Archivo [] prod=new Archivo [2];
+		 
 		 
 		 Conexion a = new Conexion();
 		 
@@ -953,14 +975,19 @@ codigo.getDocument().addDocumentListener(new DocumentListener() {
 
 	            ResultSet res = a.consulta("SELECT * FROM Inventario");
 
-	            prod=muestra(res.getString("Code"));
+	            prod [0]=muestra(res.getString("Code"));
+	            prod [1]=muestra(res.getString("Code"));
 	            
 	            while (res.next()) {
 	            	
 	              Archivo aux=muestra(res.getString("Code"));
-	               if(aux.getSold()>prod.getSold()) {
-	            	   prod=aux;
+	               if(aux.getSold()>prod[0].getSold()) {
+	            	   prod[0]=aux; 
 	               }
+	               
+	               if(aux.getSold()<prod[1].getSold()) {
+	            	   prod[1]=aux;
+	               }	               
 
 	            }
 
@@ -968,35 +995,5 @@ codigo.getDocument().addDocumentListener(new DocumentListener() {
 	        }
 	     
 		 return prod;
-	 }
-	 
-	 
-	public Archivo menor() {
-			 
-			 Archivo prod=null;
-			 
-			 Conexion a = new Conexion();
-			 
-			 try {
-	
-		            ResultSet res = a.consulta("SELECT * FROM Inventario");
-	
-		            prod=muestra(res.getString("Code"));
-		            
-		            while (res.next()) {
-		            	
-		              Archivo aux=muestra(res.getString("Code"));
-		               if(aux.getSold()<prod.getSold()) {
-		            	   prod=aux;
-		               }
-	
-		            }
-	
-		        } catch (Exception e) {
-		        	
-		        }
-		      
-			 return prod;
-		 }
-	 
+	 }	 
 	}
