@@ -1004,16 +1004,28 @@ public class Mecanics {
 					
             	}else{
 					
-					BackUpErrorMessage = ""+TextField;
+					TextField.removeMouseListener(this);
 					
 				}
             	
             }
 			
+			public void mouseClicked(MouseEvent e) {
+
+				mouseEntered(e);
+
+			}
+			
 			public void mousePressed(MouseEvent e){
 				
 				mouseEntered(e);
 				
+			}
+
+			public void mouseReleased(MouseEvent e) {
+
+				mouseEntered(e);
+
 			}
 
             public void mouseExited(MouseEvent e) {
