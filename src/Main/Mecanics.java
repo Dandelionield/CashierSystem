@@ -811,19 +811,23 @@ public class Mecanics {
 			
 			if(arc.equalsIgnoreCase("png")==false && arc.equalsIgnoreCase("jpg")==false) {
 				
-			    JOptionPane.showMessageDialog(null, "ERROR, Seleccione un archivo con los formatos permitidos. \n\n->PNG\n->JPEG\n", "Error", JOptionPane.ERROR_MESSAGE);
+				String []error= {"ERROR, Seleccione un archivo con los formatos permitidos.","ERROR, Select a file with the allowed formats."};
+				
+			    JOptionPane.showMessageDialog(null, error[getLanguage(true)]+" \n\n->PNG\n->JPG\n", "Error", JOptionPane.ERROR_MESSAGE);
 			    archivo=new File("./src/ResourcePackCaja/image-not-found.png");
 				
 			}
 
 		}catch(Exception e) {
 			
-			JOptionPane.showMessageDialog(null, "Error de busqueda: "+e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			String []error= {"Error de búsqueda: Documento no encontrado.","Search error: Document not found."};
+			JOptionPane.showMessageDialog(null, error[getLanguage(true)], "Error", JOptionPane.ERROR_MESSAGE);
+			archivo=new File("./src/ResourcePackCaja/image-not-found.png");
 			
 		}
 
 		return archivo;
-	}  
+	} 
 
     //Daniel me dijo que metiera estas dos funciones, eliminar este comentario una vez leido -Cleiver
     //Cuado un Textfield es seleccionado que se cambie el color del borde
