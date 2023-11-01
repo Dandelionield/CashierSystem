@@ -742,6 +742,7 @@ public class CajaRegistradora extends JPanel{
 				TextPanelAmount.setBorder(new MatteBorder(0, 0, 2, 0, Color.BLUE));
 				TextPanelPrice.setBorder(new MatteBorder(0, 0, 2, 0, Color.BLUE));
 				TextPanelTotal.setBorder(new MatteBorder(0, 0, 2, 0, Color.BLUE));
+				TextPanelPay.setBorder(new MatteBorder(0, 0, 2, 0, new Color(60, 133, 100)));
 				TextPanelChange.setBorder(new MatteBorder(0, 0, 2, 0, new Color(60, 133, 100)));
 
 				TextPanelCode.repaint();
@@ -1026,9 +1027,6 @@ public class CajaRegistradora extends JPanel{
 						}
 						
 						Allow = true;
-						TextPanelID.setEditable(true);
-						TextPanelCode.setEditable(true);
-						TextPanelName.setEditable(true);
 						
 						Erase.doClick();
 
@@ -1680,7 +1678,10 @@ public class CajaRegistradora extends JPanel{
 				TextPanelClient.repaint();
 
 				boolean Pass = true;
+				int indice;
+				Cliente p;
 				String ID = "";
+				String[] ErrorMessages;
 
 				String bup = TextPanelID.getText().trim();
 
@@ -1699,6 +1700,9 @@ public class CajaRegistradora extends JPanel{
 							Pass = false;
 
 							TextPanelID.setBorder(new MatteBorder(0, 0, 2, 0, Color.RED));
+							
+							ErrorMessages = new String[] {"Pago No Puede Ser Decimal o Negativo", "Payment Cannot Be Decimal or Nevative"};
+							Mecanics.txtErrorMessage(TextPanelID, ErrorMessages[l]);
 
 						}
 
@@ -1707,6 +1711,9 @@ public class CajaRegistradora extends JPanel{
 						Pass = false;
 
 						TextPanelID.setBorder(new MatteBorder(0, 0, 2, 0, Color.RED));
+						
+						ErrorMessages = new String[] {"Valor Ingresado No Númerico", "Entered Value Not Numeric"};
+						Mecanics.txtErrorMessage(TextPanelID, ErrorMessages[l]);
 
 					}
 
@@ -1715,6 +1722,9 @@ public class CajaRegistradora extends JPanel{
 					Pass = false;
 
 					TextPanelID.setBorder(new MatteBorder(0, 0, 2, 0, Color.RED));
+					
+					ErrorMessages = new String[] {"Pago No Ser Vacio", "Payment Cannot be Empty"};
+					Mecanics.txtErrorMessage(TextPanelID, ErrorMessages[l]);
 
 				}
 
@@ -1722,19 +1732,15 @@ public class CajaRegistradora extends JPanel{
 				TextPanelID.repaint();
 
 				if (Pass==true){
-
-					for (Cliente p : Mecanics.Client){
-
-						if (p.getID().equalsIgnoreCase(ID)==true){
-
-							TextPanelClient.setText(p.getName()+" "+p.getLastName());
-
-							TextPanelClient.repaint();
-
-							break;
-
-						}
-
+					
+					indice = Mecanics.getClient(ID);
+					
+					if (indice!=-1){
+						
+						p = Mecanics.Client.get(indice);
+						
+						TextPanelClient.setText(p.getName()+" "+p.getLastName());
+						
 					}
 
 				}
@@ -1780,6 +1786,8 @@ public class CajaRegistradora extends JPanel{
 				double Vuelto = 0;
 
 				boolean Pass = true;
+				
+				String[] ErrorMessages;
 
 				bup = TextPanelPay.getText().trim();
 
@@ -1798,6 +1806,9 @@ public class CajaRegistradora extends JPanel{
 							Pass = false;
 
 							TextPanelPay.setBorder(new MatteBorder(0, 0, 2, 0, Color.RED));
+							
+							ErrorMessages = new String[] {"Pago No Puede Ser Decimal", "Payment Cannot Be Decimal"};
+							Mecanics.txtErrorMessage(TextPanelPay, ErrorMessages[l]);
 
 						}
 
@@ -1806,6 +1817,9 @@ public class CajaRegistradora extends JPanel{
 						Pass = false;
 
 						TextPanelPay.setBorder(new MatteBorder(0, 0, 2, 0, Color.RED));
+						
+						ErrorMessages = new String[] {"Valor Ingresado No Númerico", "Entered Value Not Numeric"};
+						Mecanics.txtErrorMessage(TextPanelPay, ErrorMessages[l]);
 
 					}
 
@@ -1814,6 +1828,9 @@ public class CajaRegistradora extends JPanel{
 					Pass = false;
 
 					TextPanelPay.setBorder(new MatteBorder(0, 0, 2, 0, Color.RED));
+					
+					ErrorMessages = new String[] {"Pago No Ser Vacio", "Payment Cannot be Empty"};
+					Mecanics.txtErrorMessage(TextPanelPay, ErrorMessages[l]);
 
 				}
 
@@ -1827,14 +1844,19 @@ public class CajaRegistradora extends JPanel{
 					if (Vuelto<0){
 
 						TextPanelChange.setForeground(Color.RED);
+						
+						TextPanelChange.setText(Vuelto+"$");
+						
+						ErrorMessages = new String[] {"Pago Insuficiente", "Payment Insuficient"};
+						Mecanics.txtErrorMessage(TextPanelChange, ErrorMessages[l]);
 
 					}else{
+						
+						TextPanelChange.setText(Vuelto+"$");
 
 						TextPanelChange.setForeground(Color.BLACK);
 
 					}
-
-					TextPanelChange.setText(Vuelto+"$");
 
 
 					TextPanelChange.revalidate();
