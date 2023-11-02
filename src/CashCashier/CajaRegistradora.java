@@ -1723,7 +1723,7 @@ public class CajaRegistradora extends JPanel{
 
 					TextPanelID.setBorder(new MatteBorder(0, 0, 2, 0, Color.RED));
 					
-					ErrorMessages = new String[] {"Pago No Ser Vacio", "Payment Cannot be Empty"};
+					ErrorMessages = new String[] {"Pago No Ser Vacio", "Payment Cannot Be Empty"};
 					Mecanics.txtErrorMessage(TextPanelID, ErrorMessages[l]);
 
 				}

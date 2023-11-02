@@ -223,18 +223,17 @@ public class RegistrarUsuario extends JPanel{
 				String Email = " ";
 				String Direccion = " ";
 				Object[] NewRow = new Object[6];
+				String[] ErrorMessages;
 
 				boolean Pass = true;
 
 				bup = TextPanelID.getText().trim();
 
-				if (bup!=null && bup.equals("")==false){
+				if (bup!=null && bup.equals("")==false && bup.contains(",")==false){
 
 					if (Mecanics.Allowed(bup)==true){
 
 						if (Double.parseDouble(bup)>0 && Double.parseDouble(bup)%1==0 && (bup.length()>=8 && bup.length()<=10)){
-
-							TextPanelID.setBorder(new MatteBorder(0, 0, 2, 0, Color.BLUE));
 							
 							ID = bup;
 
@@ -243,6 +242,9 @@ public class RegistrarUsuario extends JPanel{
 							Pass = false;
 
 							TextPanelID.setBorder(new MatteBorder(0, 0, 2, 0, Color.RED));
+							
+							ErrorMessages = new String[] {"Formato ID No Reconocido", "ID Format Not Recognized"};
+							Mecanics.txtErrorMessage(TextPanelID, ErrorMessages[l]);
 
 						}
 
@@ -251,12 +253,27 @@ public class RegistrarUsuario extends JPanel{
 						Pass = false;
 
 						TextPanelID.setBorder(new MatteBorder(0, 0, 2, 0, Color.RED));
+						
+						ErrorMessages = new String[] {"Valor Ingresado No Númerico", "Entered Value Not Numeric"};
+						Mecanics.txtErrorMessage(TextPanelID, ErrorMessages[l]);
 
 					}
 
 				}else{
 
 					TextPanelID.setBorder(new MatteBorder(0, 0, 2, 0, Color.RED));
+					
+					if (bup.contains(",")==true){
+						
+						ErrorMessages = new String[] {"ID No Puede Contener Comas (,)", "ID Cannot Contain Commas (,)"};
+						Mecanics.txtErrorMessage(TextPanelID, ErrorMessages[l]);
+						
+					}else{
+						
+						ErrorMessages = new String[] {"ID No Ser Vacio", "ID Cannot Be Empty"};
+						Mecanics.txtErrorMessage(TextPanelID, ErrorMessages[l]);
+						
+					}
 
 					Pass = false;
 
@@ -265,14 +282,24 @@ public class RegistrarUsuario extends JPanel{
 				bup = TextPanelName.getText().trim();
 
 				if (bup!=null && bup.equals("")==false && bup.contains(",")==false){
-
-					TextPanelName.setBorder(new MatteBorder(0, 0, 2, 0, Color.BLUE));
 					
 					Nombre = bup;
 
 				}else{
 
 					TextPanelName.setBorder(new MatteBorder(0, 0, 2, 0, Color.RED));
+					
+					if (bup.contains(",")==true){
+						
+						ErrorMessages = new String[] {"Nombre No Puede Contener Comas (,)", "Name Cannot Contain Commas (,)"};
+						Mecanics.txtErrorMessage(TextPanelName, ErrorMessages[l]);
+						
+					}else{
+						
+						ErrorMessages = new String[] {"Nombre No Ser Vacio", "Name Cannot be Empty"};
+						Mecanics.txtErrorMessage(TextPanelName, ErrorMessages[l]);
+						
+					}
 
 					Pass = false;
 
@@ -283,8 +310,6 @@ public class RegistrarUsuario extends JPanel{
 				if (bup!=null && bup.equals("")==false && bup.contains(",")==false){
 
 					if (Mecanics.Allowed(bup)==false){
-
-						TextPanelLastName.setBorder(new MatteBorder(0, 0, 2, 0, Color.BLUE));
 						
 						Apellido = bup;
 
@@ -293,6 +318,9 @@ public class RegistrarUsuario extends JPanel{
 						Pass = false;
 
 						TextPanelLastName.setBorder(new MatteBorder(0, 0, 2, 0, Color.RED));
+						
+						ErrorMessages = new String[] {"Valor Ingresado No Puede Ser Númerico", "Entered Value Cannot Be Numeric"};
+						Mecanics.txtErrorMessage(TextPanelLastName, ErrorMessages[l]);
 
 					}
 
@@ -301,18 +329,28 @@ public class RegistrarUsuario extends JPanel{
 					Pass = false;
 
 					TextPanelLastName.setBorder(new MatteBorder(0, 0, 2, 0, Color.RED));
+					
+					if (bup.contains(",")==true){
+						
+						ErrorMessages = new String[] {"Apellido No Puede Contener Comas (,)", "Last Name Cannot Contain Commas (,)"};
+						Mecanics.txtErrorMessage(TextPanelLastName, ErrorMessages[l]);
+						
+					}else{
+						
+						ErrorMessages = new String[] {"Apellido No Ser Vacio", "Last Name Cannot be Empty"};
+						Mecanics.txtErrorMessage(TextPanelLastName, ErrorMessages[l]);
+						
+					}
 
 				}
 
 				bup = TextPanelPhone.getText().trim();
 
-				if (bup!=null && bup.equals("")==false){
+				if (bup!=null && bup.equals("")==false && bup.contains(",")==false){
 
 					if (Mecanics.Allowed(bup)==true){
 
 						if (Double.parseDouble(bup)>0 && Double.parseDouble(bup)%1==0 && bup.length()==10){
-
-							TextPanelPhone.setBorder(new MatteBorder(0, 0, 2, 0, Color.BLUE));
 							
 							Telefono = bup;
 
@@ -321,6 +359,9 @@ public class RegistrarUsuario extends JPanel{
 							Pass = false;
 
 							TextPanelPhone.setBorder(new MatteBorder(0, 0, 2, 0, Color.RED));
+							
+							ErrorMessages = new String[] {"Formato Contacto No Reconocido", "Contact Format Not Recognized"};
+							Mecanics.txtErrorMessage(TextPanelPhone, ErrorMessages[l]);
 
 						}
 
@@ -329,18 +370,32 @@ public class RegistrarUsuario extends JPanel{
 						Pass = false;
 
 						TextPanelPhone.setBorder(new MatteBorder(0, 0, 2, 0, Color.RED));
+						
+						ErrorMessages = new String[] {"Valor Ingresado No Númerico", "Entered Value Not Numeric"};
+						Mecanics.txtErrorMessage(TextPanelPhone, ErrorMessages[l]);
 
 					}
 
+				}else{
+					
+					if (bup.contains(",")==true){
+						
+						Pass = false;
+
+						TextPanelPhone.setBorder(new MatteBorder(0, 0, 2, 0, Color.RED));
+						
+						ErrorMessages = new String[] {"Contacto No Puede Contener Comas (,)", "Contact Cannot Contain Commas (,)"};
+						Mecanics.txtErrorMessage(TextPanelPhone, ErrorMessages[l]);
+						
+					}
+					
 				}
 
 				bup = TextPanelEmail.getText().trim();
 
-				if (bup!=null && bup.equals("")==false){
+				if (bup!=null && bup.equals("")==false && bup.contains(",")==false){
 
-					if (Mecanics.ValidarEmail(bup)==true && bup.contains(",")==false){
-						
-						TextPanelEmail.setBorder(new MatteBorder(0, 0, 2, 0, Color.BLUE));
+					if (Mecanics.ValidarEmail(bup)==true){
 						
 						Email = bup;
 
@@ -349,9 +404,25 @@ public class RegistrarUsuario extends JPanel{
 						Pass = false;
 
 						TextPanelEmail.setBorder(new MatteBorder(0, 0, 2, 0, Color.RED));
+						
+						ErrorMessages = new String[] {"Debe Ingresar un Email", "Must Entered an Email"};
+						Mecanics.txtErrorMessage(TextPanelEmail, ErrorMessages[l]);
 
 					}
 
+				}else{
+					
+					if (bup.contains(",")==true){
+						
+						Pass = false;
+
+						TextPanelEmail.setBorder(new MatteBorder(0, 0, 2, 0, Color.RED));
+						
+						ErrorMessages = new String[] {"Email No Puede Contener Comas (,)", "Email Cannot Contain Commas (,)"};
+						Mecanics.txtErrorMessage(TextPanelEmail, ErrorMessages[l]);
+						
+					}
+					
 				}
 				
 				bup = TextPanelAddress.getText().trim();
@@ -360,8 +431,6 @@ public class RegistrarUsuario extends JPanel{
 
 					if (bup.contains(",")==false){
 						
-						TextPanelAddress.setBorder(new MatteBorder(0, 0, 2, 0, Color.BLUE));
-						
 						Direccion = bup;
 
 					}else{
@@ -369,6 +438,9 @@ public class RegistrarUsuario extends JPanel{
 						Pass = false;
 
 						TextPanelAddress.setBorder(new MatteBorder(0, 0, 2, 0, Color.RED));
+						
+						ErrorMessages = new String[] {"Dirección No Puede Contener Comas (,)", "Address Cannot Contain Commas (,)"};
+						Mecanics.txtErrorMessage(TextPanelAddress, ErrorMessages[l]);
 
 					}
 
