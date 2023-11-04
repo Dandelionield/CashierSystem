@@ -266,6 +266,8 @@ public class Login extends JPanel{
 				int indice = 0;
 				Trabajador p;
 				
+				String[] ErrorMessages;
+				
 				bup = TextPanelUser.getText().trim();
 				
 				if (bup!=null){// && bup.equals("")==false){
@@ -287,6 +289,9 @@ public class Login extends JPanel{
 						
 						Pass = false;
 						
+						ErrorMessages = new String[] {"Usuario Inexistente", "Unexistance User"};
+						Mecanics.txtErrorMessage(TextPanelUser, ErrorMessages[l]);
+						
 					}
 					
 				}else{
@@ -294,6 +299,9 @@ public class Login extends JPanel{
 					TextPanelUser.setBorder(new MatteBorder(0, 0, 2, 0, Color.RED));
 					
 					Pass = false;
+					
+					ErrorMessages = new String[] {"Usuario No Ser Vacio", "User Cannot Be Empty"};
+					Mecanics.txtErrorMessage(TextPanelUser, ErrorMessages[l]);
 					
 				}
 				
@@ -326,6 +334,9 @@ public class Login extends JPanel{
 						
 						Pass = false;
 						
+						ErrorMessages = new String[] {"Contraseña Incorrecta", "Wrong Password"};
+						Mecanics.txtErrorMessage(TextPanelPassword1, ErrorMessages[l]);
+						
 					}
 					
 				}else{
@@ -334,6 +345,9 @@ public class Login extends JPanel{
 					TextPanelPassword2.setBorder(new MatteBorder(0, 0, 2, 0, Color.RED));
 					
 					Pass = false;
+					
+					ErrorMessages = new String[] {"Contraseña No Ser Vacio", "Password Cannot Be Empty"};
+					Mecanics.txtErrorMessage(TextPanelPassword1, ErrorMessages[l]);
 					
 				}
 				
