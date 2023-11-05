@@ -5,6 +5,7 @@ import Main.Runner;
 import Main.Menu;
 import Objects.Cliente;
 import Objects.Factura;
+import Objects.ComponentBuilder;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -15,6 +16,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -51,6 +53,8 @@ public class Dashboard extends JFrame{
 	
 	public static JLayeredPane contentPane;
 	
+	private final ComponentBuilder cp = new ComponentBuilder("./src/ResourcePackCaja", "jpg", Fondo[m]);
+	
 	public Dashboard(String User, String Name){
 		
 		this.User = User;
@@ -69,11 +73,11 @@ public class Dashboard extends JFrame{
         contentPane.setPreferredSize(new Dimension(getWidth(), getHeight()));
 		
 		Background = FondoPantalla();
-        Window1st = Ventana1ra(new Color(175, 186, 199));
-        Window2nd = Ventana2da(new Color(175, 186, 199));
-        Window3rd = Ventana3ra(new Color(175, 186, 199));
-        Window4th = Ventana4ta(new Color(175, 186, 199));
-		WindowSelected = VentanaSeleccionada(Fondo[m]);
+        Window1st = cp.buildPanel(cp.doBounds(45, 21, 225, 25), new int[] {12, 0, 215, 25, 0, 60}, (float) -0.6, 0, new Color(175, 186, 199));
+        Window2nd = cp.buildPanel(cp.doBounds(270, 21, 225, 25), new int[] {12, 0, 215, 25, 0, 60}, (float) -0.6, 0, new Color(175, 186, 199));
+        Window3rd = cp.buildPanel(cp.doBounds(495, 21, 225, 25), new int[] {12, 0, 215, 25, 0, 60}, (float) -0.6, 0, new Color(175, 186, 199));
+        Window4th = cp.buildPanel(cp.doBounds(720, 21, 225, 25), new int[] {12, 0, 215, 25, 0, 60}, (float) -0.6, 0, new Color(175, 186, 199));
+		WindowSelected = cp.buildPanel(cp.doBounds(45, 21, 225, 50), new int[] {12, 0, 215, 25, 0, 60}, (float) -0.6, 0, Fondo[m]);
 		
 		contentPane.add(Background, Integer.valueOf(0));
         contentPane.add(Caja, Integer.valueOf(1));
@@ -119,146 +123,6 @@ public class Dashboard extends JFrame{
 		
 		return Background;
 		
-	}
-	
-	private JPanel Ventana1ra(Color color){
-
-		JPanel Window1st = new JPanel(){
-
-            protected void paintComponent(Graphics g){
-
-                super.paintComponent(g);
-                Graphics2D g2d = (Graphics2D) g.create();
-                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-                RoundRectangle2D roundedRectangle = new RoundRectangle2D.Double(12, 0, 215, 25, 0, 60);
-				g2d.shear(-0.6,0.0);
-                g2d.setColor(color);
-                g2d.fill(roundedRectangle);
-
-				g2d.dispose();
-
-            }
-
-        };
-
-		Window1st.setBounds(45, 21, 225, 25);
-		Window1st.setOpaque(false);
-
-		return Window1st;
-
-	}
-
-	private JPanel Ventana2da(Color color){
-
-		JPanel Window2nd = new JPanel(){
-
-            protected void paintComponent(Graphics g){
-
-                super.paintComponent(g);
-                Graphics2D g2d = (Graphics2D) g.create();
-                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-                RoundRectangle2D roundedRectangle = new RoundRectangle2D.Double(12, 0, 215, 25, 0, 60);
-				g2d.shear(-0.6,0.0);
-                g2d.setColor(color);
-                g2d.fill(roundedRectangle);
-
-				g2d.dispose();
-
-            }
-
-        };
-
-		Window2nd.setBounds(270, 21, 225, 25);
-		Window2nd.setOpaque(false);
-
-		return Window2nd;
-
-	}
-
-	private JPanel Ventana3ra(Color color){
-
-		JPanel Window3rd = new JPanel(){
-
-            protected void paintComponent(Graphics g){
-
-                super.paintComponent(g);
-                Graphics2D g2d = (Graphics2D) g.create();
-                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-                RoundRectangle2D roundedRectangle = new RoundRectangle2D.Double(12, 0, 215, 25, 0, 60);
-				g2d.shear(-0.6,0.0);
-                g2d.setColor(color);
-                g2d.fill(roundedRectangle);
-
-				g2d.dispose();
-
-            }
-
-        };
-
-		Window3rd.setBounds(495, 21, 225, 25);
-		Window3rd.setOpaque(false);
-
-		return Window3rd;
-
-	}
-
-	private JPanel Ventana4ta(Color color){
-
-		JPanel Window4th = new JPanel(){
-
-            protected void paintComponent(Graphics g){
-
-                super.paintComponent(g);
-                Graphics2D g2d = (Graphics2D) g.create();
-                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-                RoundRectangle2D roundedRectangle = new RoundRectangle2D.Double(12, 0, 215, 25, 0, 60);
-				g2d.shear(-0.6,0.0);
-                g2d.setColor(color);
-                g2d.fill(roundedRectangle);
-
-				g2d.dispose();
-
-            }
-
-        };
-
-		Window4th.setBounds(720, 21, 225, 25);
-		Window4th.setOpaque(false);
-
-		return Window4th;
-
-	}
-	
-	public static JPanel VentanaSeleccionada(Color color){
-
-		JPanel WindowSelected = new JPanel(){
-
-            protected void paintComponent(Graphics g){
-
-                super.paintComponent(g);
-                Graphics2D g2d = (Graphics2D) g.create();
-                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-                RoundRectangle2D roundedRectangle = new RoundRectangle2D.Double(12, 0, 215, 25, 0, 60);
-				g2d.shear(-0.6,0.0);
-                g2d.setColor(color);
-                g2d.fill(roundedRectangle);
-
-				g2d.dispose();
-
-            }
-
-        };
-
-		WindowSelected.setBounds(45, 21, 225, 50);
-		WindowSelected.setOpaque(false);
-
-		return WindowSelected;
-
 	}
 	
 	private void Actions(){
