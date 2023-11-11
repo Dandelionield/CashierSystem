@@ -811,19 +811,23 @@ public class Mecanics {
 			
 			if(arc.equalsIgnoreCase("png")==false && arc.equalsIgnoreCase("jpg")==false) {
 				
-			    JOptionPane.showMessageDialog(null, "ERROR, Seleccione un archivo con los formatos permitidos. \n\n->PNG\n->JPEG\n", "Error", JOptionPane.ERROR_MESSAGE);
+				String []error= {"ERROR, Seleccione un archivo con los formatos permitidos.","ERROR, Select a file with the allowed formats."};
+				
+			    JOptionPane.showMessageDialog(null, error[getLanguage(true)]+" \n\n->PNG\n->JPG\n", "Error", JOptionPane.ERROR_MESSAGE);
 			    archivo=new File("./src/ResourcePackCaja/image-not-found.png");
 				
 			}
 
 		}catch(Exception e) {
 			
-			JOptionPane.showMessageDialog(null, "Error de busqueda: "+e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			String []error= {"Error de búsqueda: Documento no encontrado.","Search error: Document not found."};
+			JOptionPane.showMessageDialog(null, error[getLanguage(true)], "Error", JOptionPane.ERROR_MESSAGE);
+			archivo=new File("./src/ResourcePackCaja/image-not-found.png");
 			
 		}
 
 		return archivo;
-	}  
+	} 
 
     //Daniel me dijo que metiera estas dos funciones, eliminar este comentario una vez leido -Cleiver
     //Cuado un Textfield es seleccionado que se cambie el color del borde
@@ -977,100 +981,62 @@ public class Mecanics {
 		
 	}
 	
-	private static HashMap<JTextField, JPopupMenu> TextFields = new HashMap<>();
-	private static HashMap<JTextField, Object[]> TextFieldError = new HashMap<>();
+	private static MouseAdapter mouseListener;
 	
 	public static void txtErrorMessage(JTextField TextField, String Message){
 		
-		JPopupMenu PopUpMenu;
-		
-		if (TextFields.containsKey(TextField)==false){
+		JPopupMenu PopUpMenu = new JPopupMenu();
+        PopUpMenu.add(new JMenuItem(Message));
+        
+        TextField.removeMouseListener(mouseListener);
+        
+        mouseListener = new MouseAdapter() {
 			
-			PopUpMenu = new JPopupMenu();
-			PopUpMenu.add(new JMenuItem(Message));
+			private String BackUpErrorMessage = TextField.getText().trim();
 			
-			TextFields.put(TextField, PopUpMenu);
-			TextFieldError.put(TextField, new Object[] {TextField.getText(), true});
-			
-			addTextListener(PopUpMenu, TextField);
-			
-		}else{
-			
-			PopUpMenu = TextFields.get(TextField);
-			PopUpMenu.removeAll();
-			PopUpMenu.add(new JMenuItem(Message));
-			PopUpMenu.show(TextField, 0, TextField.getHeight());
-			
-			TextFields.put(TextField, PopUpMenu);
-			TextFieldError.put(TextField, new Object[] {TextField.getText(), true});
-			
-		}
-		
-	}
-	
-	private static void addTextListener(JPopupMenu PopUpMenu, JTextField TextField){
-		
-		TextField.addMouseListener(new MouseAdapter() {
-          
-        	public void mouseEntered(MouseEvent e) {
+            public void mouseEntered(MouseEvent e){
 				
-				final boolean MessageValue = Boolean.parseBoolean(TextFieldError.get(TextField)[1].toString());
-				final String BackUpMessage = TextFieldError.get(TextField)[0].toString();
-				final String bup = TextField.getText().trim();
-				
-				if (BackUpMessage.equalsIgnoreCase(bup)==true && MessageValue==true){
+				String bup = TextField.getText().trim();
+			
+            	if (BackUpErrorMessage.equalsIgnoreCase(bup)==true){
 					
-					System.out.print(BackUpMessage+"\n");
-                
 					PopUpMenu.show(TextField, 0, TextField.getHeight());
 					
-				}else{
+            	}else{
 					
-					TextFieldError.put(TextField, new Object[] {BackUpMessage, false});
+					TextField.removeMouseListener(this);
 					
 				}
-				
+            	
             }
+			
+			public void mouseClicked(MouseEvent e) {
+
+				mouseEntered(e);
+
+			}
+			
+			public void mousePressed(MouseEvent e){
+				
+				mouseEntered(e);
+				
+			}
+
+			public void mouseReleased(MouseEvent e) {
+
+				mouseEntered(e);
+
+			}
 
             public void mouseExited(MouseEvent e) {
-                
+				
                 PopUpMenu.setVisible(false);
 				
             }
 			
-        });
-		
-	}
-	
-	private static MouseAdapter mouseListener;
-	
-	public static void txtmensaje(JTextField textField,String mensaje,boolean mostrar){
-		
-		JPopupMenu popupMenu = new JPopupMenu();
-        JMenuItem menuItem = new JMenuItem(mensaje);
-        popupMenu.add(menuItem);
-              
-        textField.removeMouseListener(mouseListener);
-        
-        mouseListener = new MouseAdapter() {
-            public void mouseEntered(MouseEvent e) {
-            	if(mostrar==true) {
-                popupMenu.show(textField, 0, textField.getHeight());
-            	}
-            	
-            	if(mostrar==false) {
-            		popupMenu.setVisible(false);
-            	}
-            	
-            }
-
-            public void mouseExited(MouseEvent e) {
-                popupMenu.setVisible(false);
-            }
         };
         
-        
-        textField.addMouseListener(mouseListener);
+        TextField.addMouseListener(mouseListener);
         
 	}
 	
