@@ -215,7 +215,7 @@ public class Menu extends JPanel{
 		newEmploye.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e){
-				RegistroEmpleados empleados = new RegistroEmpleados();
+				new RegistroEmpleados(User, Name);
 				LoginFrame.dispose();
 				
 				repaint();
