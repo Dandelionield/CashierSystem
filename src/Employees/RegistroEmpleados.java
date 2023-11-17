@@ -1,9 +1,16 @@
 package Employees;
 
+import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.PopupMenu;
+import java.awt.Robot;
+import java.awt.Toolkit;
+import java.awt.Desktop;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -12,19 +19,27 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.ArrayList;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
@@ -41,17 +56,29 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 
-import Main.Login;
+import com.itextpdf.io.image.ImageDataFactory;
+import com.itextpdf.kernel.geom.PageSize;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.property.HorizontalAlignment;
+import com.itextpdf.layout.property.TextAlignment;
+import com.itextpdf.layout.property.UnitValue;
+import com.itextpdf.layout.property.VerticalAlignment;
+
 import Main.Runner;
 import Main.Mecanics;
 import Main.Menu;
+import Objects.Archivo;
 import Objects.Conexion;
 import Objects.Trabajador;
 
 public class RegistroEmpleados {
     private static String url = "./src/ResourcePackCaja/";
     private static Boolean edit = true;
-    private static JFrame screen = new JFrame("Ventana");
+    private static JFrame screen = new JFrame();
     private static JPanel mainPanel = new JPanel();
     private static JPanel userPanel = new JPanel();
 
@@ -151,6 +178,7 @@ public class RegistroEmpleados {
 
         User = user;
         Name = name;
+        screen.setTitle(language == 0 ? "Empleados" : "Employees");
     }
 
     private void main() {
@@ -251,6 +279,32 @@ public class RegistroEmpleados {
         }
 
         //DocumentListener
+        JPopupMenu PopUpMenu = new JPopupMenu();
+        PopUpMenu.add(new JMenuItem("Copiar"));
+
+        jlUserCode.addMouseListener(new MouseAdapter() {
+            public void mouseEntered(MouseEvent e) {
+                PopUpMenu.setVisible(true);
+                PopUpMenu.show(jlUserCode, 0, jlUserCode.getHeight());
+            }
+
+            public void mouseExited(MouseEvent e) {
+                PopUpMenu.setVisible(false);
+            }
+
+            public void mouseClicked(MouseEvent e) {
+                StringSelection stringSelection = new StringSelection(CodeGenerate());
+
+                if (!edit && selection != -1) {
+                    stringSelection = new StringSelection(Mecanics.Employe.get(selection).getCode());
+                }
+
+                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                clipboard.setContents(stringSelection, null);
+            }
+        });
+
+
         user = new DocumentListener() {
             @Override public void insertUpdate(DocumentEvent e) { updateFieldState(); }
             @Override public void removeUpdate(DocumentEvent e) { updateFieldState(); }
@@ -269,7 +323,7 @@ public class RegistroEmpleados {
                 jlUserContacto.setText(ContactoI[language] + ": " + ((jtContacto.getText().isEmpty()) ? "0123456789" : jtContacto.getText()));
                 jlUserEmail.setText(EmailI[language] + ": " + ((jtEmail.getText().isEmpty()) ? "User@gmail.com" : jtEmail.getText()));
                 jlUserDireccion.setText(DireccionI[language] + ": " + ((jtDireccion.getText().isEmpty()) ? "" : jtDireccion.getText()));
-                jlUserCode.setText(CodeI[language] + ": " + (selection != -1 ? Mecanics.Employe.get(selection).getCode() : CodeGenerate()));
+                jlUserCode.setText(CodeI[language] + ": " + (selection != -1 && !edit ? Mecanics.Employe.get(selection).getCode() : CodeGenerate()));
             }
         };
 
@@ -424,7 +478,30 @@ public class RegistroEmpleados {
         screen.setSize(1040, 630);
         screen.setLocationRelativeTo(null);
         screen.setVisible(true);
-        screen.setIconImage(new ImageIcon(url + "Icono.png").getImage());
+        screen.setIconImage(new ImageIcon(url + "Registro.png").getImage());
+        screen.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+                boolean scp = Mecanics.Leave(screen);
+				
+				if(scp==true) {
+					
+					Runner lg = new Runner();
+					
+					Runner.contentPane.removeAll();
+					
+					Runner.Opciones = new Menu(lg, User, Name);
+					
+					Runner.contentPane.add(Runner.Opciones, Integer.valueOf(0));
+					
+					lg.setVisible(true);
+					
+					screen.dispose();
+					
+					screen.repaint();
+				}
+            }
+        });
     }
 
     private void Listener() {
@@ -479,8 +556,6 @@ public class RegistroEmpleados {
                 jlCancel.setIcon(new ImageIcon(imgCancel.getScaledInstance(40,40,Image.SCALE_SMOOTH)));
 
                 LimpiarDatos();
-                jlUserGenero.setText(GeneroI[language] + ": X");
-                jlUserPermisos.setText(PermisosI[language] + ":  X");
             }
         });
 
@@ -498,7 +573,6 @@ public class RegistroEmpleados {
                 jlAccept.setIcon(new ImageIcon(imgAccept.getScaledInstance(40,40,Image.SCALE_SMOOTH)));
 
                 if (CheckTextfield()) {
-                    JOptionPane.showMessageDialog(null, "[PlaceHolder] Verificado");
                     try {
                         boolean comp = true;
                         for (Trabajador empleados : Mecanics.Employe) {
@@ -508,6 +582,7 @@ public class RegistroEmpleados {
                             }
                         }
 
+                        JOptionPane.showMessageDialog(null,  comp ? "[PlaceHolder] Verificado" : "[PlaceHolder] Cedula repetida");
                         if (edit && comp) {
                             basedata.sentence("INSERT INTO `Trabajador` (`Code`, `ID`, `Name`, `LastName`, `Phone`, `Email`, `Address`, `Gender`, `Age`, `Admin`, `Image`) VALUES ('" + 
                                               CodeGenerate() + "' , '" + 
@@ -569,8 +644,8 @@ public class RegistroEmpleados {
                 jtaEmpleados.clearSelection();
                 selection = -1;
 
+                LimpiarDatos();
                 if (edit) {
-                    LimpiarDatos();
                     jtCedula.setEditable(true);
                 } else jtCedula.setEditable(false);
             }
@@ -625,6 +700,7 @@ public class RegistroEmpleados {
             @Override public void mouseReleased(MouseEvent e) {
                 jlPdf.setBounds(582, 5, 40, 40);
                 jlPdf.setIcon(new ImageIcon(imgPdf.getScaledInstance(40,40,Image.SCALE_SMOOTH)));
+                reporte();
             }
         });
 
@@ -724,7 +800,7 @@ public class RegistroEmpleados {
         jlUserEdad.setText(EdadI[language] + ": " + jsEdad.getValue());
         jlUserGenero.setText(GeneroI[language] + ": X");
         jlUserPermisos.setText(PermisosI[language] + ":  X");
-        jlUserCode.setText(CodeI[language] + ": ");
+        jlUserCode.setText(CodeI[language] + ": 0");
 
         modelo = new DefaultTableModel(
             new Object [][] {}, new Object[] {
@@ -919,6 +995,10 @@ public class RegistroEmpleados {
     }
 
     private static String CodeGenerate() {
+        if (jtCedula.getText().isEmpty() && jtNombre.getText().isEmpty() && jtApellido.getText().isEmpty() && jtContacto.getText().isEmpty() && jtEmail.getText().isEmpty() && jtDireccion.getText().isEmpty()) {
+            return "0";
+        }
+
         return String.valueOf(Math.abs((jtCedula.getText() + jtNombre.getText() + jtApellido.getText() + jtContacto.getText() + jtEmail.getText() + jtDireccion.getText() + jsEdad.getValue()).hashCode()));
     }
 
@@ -932,4 +1012,83 @@ public class RegistroEmpleados {
                 genero != '.' &&
                 permisos != -1);
     }
+
+    public void reporte() {
+		Path Downloads = Paths.get(System.getProperty("user.home"), "Downloads");
+		String url = Downloads.toString()+"\\EMP- " + LocalDate.now() + ".pdf";
+		
+        if(new File(url).exists()) {
+            int i=1;
+            while(new File(url).exists()) {
+                url= Downloads.toString()+"\\EMP- "+ LocalDate.now() + "("+ i + ").pdf";
+                i++;
+            }
+        }
+		
+		try (PdfWriter pdfw = new PdfWriter(new File(url))){
+			PdfDocument pdfdoc = new PdfDocument(pdfw);
+			pdfdoc.setDefaultPageSize(PageSize.LETTER);
+			Document doc = new Document(pdfdoc);
+			
+			/*com.itextpdf.layout.element.Image Logo = new com.itextpdf.layout.element.Image(ImageDataFactory.create(url + "Registro.png"));
+            Logo.setAutoScale(false);
+			Logo.scaleToFit(180, 180);
+            Logo.setHorizontalAlignment(HorizontalAlignment.CENTER);*/
+			
+			Paragraph Title = new Paragraph(screen.getTitle());
+			Title.setFontSize(20);
+            Title.setBold();
+            Title.setTextAlignment(TextAlignment.CENTER);
+            Title.setVerticalAlignment(VerticalAlignment.MIDDLE);
+
+            Table tableta = new Table(9);
+			tableta.setWidth(UnitValue.createPercentValue(100));
+			tableta.addCell(new Paragraph(CodeI[language]));
+			tableta.addCell(new Paragraph(CedulaI[language]));
+			tableta.addCell(new Paragraph(NombreI[language]));
+			tableta.addCell(new Paragraph(ApellidoI[language]));
+			tableta.addCell(new Paragraph(ContactoI[language]));
+			tableta.addCell(new Paragraph(EmailI[language]));
+            tableta.addCell(new Paragraph(DireccionI[language]));
+			tableta.addCell(new Paragraph(EdadI[language]));
+            tableta.addCell(new Paragraph(GeneroI[language]));
+            tableta.addCell(new Paragraph(PermisosI[language]));
+			
+			for (int j = 0; j < 9; j++)
+				tableta.getCell(0, j).setBorder(null).setBold().setFontSize(2).setTextAlignment(TextAlignment.CENTER);
+			
+			
+            try {
+                ArrayList<Trabajador> employes = Mecanics.Employe;
+
+                for (int j = 0; j < employes.size(); j++) {
+                    tableta.addCell(new Paragraph(employes.get(j).getCode()));
+                    tableta.addCell(new Paragraph(employes.get(j).getID()));
+                    tableta.addCell(new Paragraph(employes.get(j).getName()));
+                    tableta.addCell(new Paragraph(employes.get(j).getLastName()));
+                    tableta.addCell(new Paragraph(employes.get(j).getPhone()));
+                    tableta.addCell(new Paragraph(employes.get(j).getEmail()));
+                    tableta.addCell(new Paragraph(employes.get(j).getAddress()));
+                    tableta.addCell(new Paragraph(employes.get(j).getAge()+""));
+                    tableta.addCell(new Paragraph(employes.get(j).getGender()+""));
+                    tableta.addCell(new Paragraph(employes.get(j).getAdmin()+""));
+
+                    for (int k = 0; k < 9; k++) 
+                        tableta.getCell(j+1, k).setBorder(null).setFontSize(2).setTextAlignment(TextAlignment.CENTER);
+                }
+            } catch (Exception e) {}
+            
+            doc.add(Title);
+            //doc.add(Logo);
+			doc.add(tableta);
+			
+			doc.close();
+			pdfdoc.close();
+			
+			Desktop.getDesktop().open(new File(url));
+		}catch (IOException e){
+			JOptionPane.showMessageDialog(null, "Error: "+e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+		}
+		
+	}
 }
