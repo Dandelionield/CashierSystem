@@ -779,7 +779,6 @@ public class CajaRegistradora extends JPanel{
 				long Pago = 0;
 				double Vuelto = 0;
 				boolean Pass = true;
-				boolean Break = false;
 				int Counter = 0;
 				int indice = -1;
 				Object[][] Buyout;
@@ -961,15 +960,7 @@ public class CajaRegistradora extends JPanel{
 												Mecanics.Archive.add(indice,d);
 												Mecanics.setFile(true);
 												
-												Break = true;
-												
-											}else{
-												
-												Break = false;
-												
 											}
-											
-											if (Break==true){break;}
 											
 										}else{
 											
