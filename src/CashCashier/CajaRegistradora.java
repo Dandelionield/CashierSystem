@@ -934,46 +934,36 @@ public class CajaRegistradora extends JPanel{
 								
 								Missing = new String[p.getBuyout().length-Buyout.length];
 								
-								for (Object[] q : p.getBuyout()){
-									
-									if (bup.equals("")==false && Missing.length!=0){
+								if (Missing.length!=0){
+								
+									for (Object[] q : p.getBuyout()){
 										
-										Missing[Counter] = bup;Counter++;
-										
-									}
-									
-									for (Object[] b : Buyout){
-										
-										if (q[0].toString().equalsIgnoreCase(b[0].toString())==true){
+										for (Object[] b : Buyout){
 											
-											bup = "";
-											
-											indice = Mecanics.getArchive(q[0].toString());
-											
-											if (indice!=-1){
+											if (q[0].toString().equalsIgnoreCase(b[0].toString())==false){
 												
-												d = Mecanics.Archive.get(indice);
+												bup = q[0].toString();
 												
-												d.withDraw(Float.parseFloat(b[2].toString())-Float.parseFloat(q[2].toString()));
+											}else{
 												
-												Mecanics.Archive.remove(indice);
-												Mecanics.Archive.add(indice,d);
-												Mecanics.setFile(true);
+												bup = "";
+												
+												break;
 												
 											}
 											
-										}else{
+										}
+										
+										if (bup.equals("")==false){
 											
-											bup = q[0].toString();
+											Missing[Counter] = bup;
+											
+											Counter++;
 											
 										}
 										
 									}
 									
-								}
-								
-								if (Missing.length!=0){
-								
 									for (String q : Missing){
 									
 										for (Object[] b : p.getBuyout()){
@@ -993,6 +983,32 @@ public class CajaRegistradora extends JPanel{
 													Mecanics.setFile(true);
 													
 												}
+												
+											}
+											
+										}
+										
+									}
+									
+								}
+								
+								for (Object[] q : p.getBuyout()){
+								
+									for (Object[] b : Buyout){
+										
+										if (q[0].toString().equalsIgnoreCase(b[0].toString())){
+									
+											indice = Mecanics.getArchive(q[0].toString());
+										
+											if (indice!=-1){
+												
+												d = Mecanics.Archive.get(indice);
+												
+												d.withDraw(Float.parseFloat(b[2].toString())-Float.parseFloat(q[2].toString()));
+												
+												Mecanics.Archive.remove(indice);
+												Mecanics.Archive.add(indice,d);
+												Mecanics.setFile(true);
 												
 											}
 											
