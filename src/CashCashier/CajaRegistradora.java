@@ -779,7 +779,6 @@ public class CajaRegistradora extends JPanel{
 				long Pago = 0;
 				double Vuelto = 0;
 				boolean Pass = true;
-				boolean Break = false;
 				int Counter = 0;
 				int indice = -1;
 				Object[][] Buyout;
@@ -935,54 +934,36 @@ public class CajaRegistradora extends JPanel{
 								
 								Missing = new String[p.getBuyout().length-Buyout.length];
 								
-								for (Object[] q : p.getBuyout()){
-									
-									if (bup.equals("")==false && Missing.length!=0){
+								if (Missing.length!=0){
+								
+									for (Object[] q : p.getBuyout()){
 										
-										Missing[Counter] = bup;Counter++;
-										
-									}
-									
-									for (Object[] b : Buyout){
-										
-										if (q[0].toString().equalsIgnoreCase(b[0].toString())==true){
+										for (Object[] b : Buyout){
 											
-											bup = "";
-											
-											indice = Mecanics.getArchive(q[0].toString());
-											
-											if (indice!=-1){
+											if (q[0].toString().equalsIgnoreCase(b[0].toString())==false){
 												
-												d = Mecanics.Archive.get(indice);
-												
-												d.withDraw(Float.parseFloat(b[2].toString())-Float.parseFloat(q[2].toString()));
-												
-												Mecanics.Archive.remove(indice);
-												Mecanics.Archive.add(indice,d);
-												Mecanics.setFile(true);
-												
-												Break = true;
+												bup = q[0].toString();
 												
 											}else{
 												
-												Break = false;
+												bup = "";
+												
+												break;
 												
 											}
 											
-											if (Break==true){break;}
+										}
+										
+										if (bup.equals("")==false){
 											
-										}else{
+											Missing[Counter] = bup;
 											
-											bup = q[0].toString();
+											Counter++;
 											
 										}
 										
 									}
 									
-								}
-								
-								if (Missing.length!=0){
-								
 									for (String q : Missing){
 									
 										for (Object[] b : p.getBuyout()){
@@ -1002,6 +983,32 @@ public class CajaRegistradora extends JPanel{
 													Mecanics.setFile(true);
 													
 												}
+												
+											}
+											
+										}
+										
+									}
+									
+								}
+								
+								for (Object[] q : p.getBuyout()){
+								
+									for (Object[] b : Buyout){
+										
+										if (q[0].toString().equalsIgnoreCase(b[0].toString())){
+									
+											indice = Mecanics.getArchive(q[0].toString());
+										
+											if (indice!=-1){
+												
+												d = Mecanics.Archive.get(indice);
+												
+												d.withDraw(Float.parseFloat(b[2].toString())-Float.parseFloat(q[2].toString()));
+												
+												Mecanics.Archive.remove(indice);
+												Mecanics.Archive.add(indice,d);
+												Mecanics.setFile(true);
 												
 											}
 											
