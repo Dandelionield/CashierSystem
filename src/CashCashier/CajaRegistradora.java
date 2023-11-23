@@ -1708,7 +1708,7 @@ public class CajaRegistradora extends JPanel{
 
 							TextPanelID.setBorder(new MatteBorder(0, 0, 2, 0, Color.RED));
 							
-							ErrorMessages = new String[] {"Pago No Puede Ser Decimal o Negativo", "Payment Cannot Be Decimal or Nevative"};
+							ErrorMessages = new String[] {"ID No Puede Ser Decimal o Negativo", "ID Cannot Be Decimal or Nevative"};
 							Mecanics.txtErrorMessage(TextPanelID, ErrorMessages[l]);
 
 						}
