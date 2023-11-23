@@ -171,6 +171,11 @@ public class RegistroEmpleados {
     private static ActionListener permisoListener;
     private static MouseAdapter buttongroup;
     private static MouseAdapter deleteListener;
+    private static MouseAdapter userCodeListener;
+    private static MouseAdapter acceptListener;
+    private static MouseAdapter cancelListener;
+    private static MouseAdapter editListener;
+    private static MouseAdapter pdfListener;
 
     private static Conexion basedata = new Conexion();
 
@@ -181,7 +186,7 @@ public class RegistroEmpleados {
         main();
         Recargar();
 
-        screen.setTitle(language == 0 ? "Empleados" : "Employees");
+        screen.setTitle((language == 0 ? "Empleados" : "Employees") + " : " + Name);
     }
 
     private void main() {
@@ -281,171 +286,8 @@ public class RegistroEmpleados {
             Listener();
         }
 
-        // DocumentListener
-        JPopupMenu PopUpMenu = new JPopupMenu();
-        PopUpMenu.add(new JMenuItem("Copiar"));
+        changeListener();
 
-        jlUserCode.addMouseListener(new MouseAdapter() {
-            public void mouseEntered(MouseEvent e) {
-                PopUpMenu.setVisible(true);
-                PopUpMenu.show(jlUserCode, 0, jlUserCode.getHeight());
-            }
-
-            public void mouseExited(MouseEvent e) {
-                PopUpMenu.setVisible(false);
-            }
-
-            public void mouseClicked(MouseEvent e) {
-                StringSelection stringSelection = new StringSelection(CodeGenerate());
-
-                if (!edit && selection != -1) {
-                    stringSelection = new StringSelection(Mecanics.Employe.get(selection).getCode());
-                }
-
-                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-                clipboard.setContents(stringSelection, null);
-            }
-        });
-
-        user = new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                updateFieldState();
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                updateFieldState();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                updateFieldState();
-            }
-
-            public void updateFieldState() {
-                if (jtNombre.getText().isEmpty() && jtApellido.getText().isEmpty()) {
-                    jlUserNombre.setText(NombreI[language] + ((language == 0) ? " y " : " and ") + ApellidoI[language]);
-                    jlUserNombre.setForeground(Color.GRAY);
-                } else {
-                    jlUserNombre.setText(jtNombre.getText() + " " + jtApellido.getText());
-                    jlUserNombre.setForeground(colorField);
-                }
-
-                jlUserCedula.setText(
-                        CedulaI[language] + ": " + ((jtCedula.getText().isEmpty()) ? "123456789" : jtCedula.getText()));
-                jlUserContacto.setText(ContactoI[language] + ": "
-                        + ((jtContacto.getText().isEmpty()) ? "0123456789" : jtContacto.getText()));
-                jlUserEmail.setText(EmailI[language] + ": "
-                        + ((jtEmail.getText().isEmpty()) ? "User@gmail.com" : jtEmail.getText()));
-                jlUserDireccion.setText(
-                        DireccionI[language] + ": " + ((jtDireccion.getText().isEmpty()) ? "" : jtDireccion.getText()));
-                jlUserCode.setText(CodeI[language] + ": "
-                        + (selection != -1 && !edit ? Mecanics.Employe.get(selection).getCode() : CodeGenerate()));
-            }
-        };
-
-        edadListener = new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                jlUserEdad.setText(EdadI[language] + ": " + jsEdad.getValue());
-                jlUserCode.setText(CodeI[language] + ": "
-                        + (selection != -1 ? Mecanics.Employe.get(selection).getCode() : CodeGenerate()));
-            }
-        };
-
-        buttongroup = new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (!edit) {
-                    if (Mecanics.Employe.get(selection).getAdmin()) {
-                        p2.setSelected(true);
-                        jlUserPermisos.setText(PermisosI[language] + ": " + ElegirPI[1][language]);
-                    } else {
-                        p1.setSelected(true);
-                        jlUserPermisos.setText(PermisosI[language] + ": " + ElegirPI[0][language]);
-                    }
-
-                    switch (genero) {
-                        case 'F':
-                            g1.setSelected(true);
-                            jlUserGenero.setText(GeneroI[language] + ": " + ElegirGI[0][language]);
-                            break;
-                        case 'M':
-                            g2.setSelected(true);
-                            jlUserGenero.setText(GeneroI[language] + ": " + ElegirGI[1][language]);
-                            break;
-                        default:
-                            g3.setSelected(true);
-                            jlUserGenero.setText(GeneroI[language] + ": " + ElegirGI[2][language]);
-                            break;
-                    }
-
-                    jlUserEdad.setText(EdadI[language] + ": " + jsEdad.getValue());
-                }
-            }
-        };
-
-        jtaEmpleados.addMouseListener(buttongroup);
-        jtNombre.getDocument().addDocumentListener(user);
-        jtApellido.getDocument().addDocumentListener(user);
-        jtCedula.getDocument().addDocumentListener(user);
-        jtContacto.getDocument().addDocumentListener(user);
-        jtEmail.getDocument().addDocumentListener(user);
-        jtDireccion.getDocument().addDocumentListener(user);
-        jsEdad.addChangeListener(edadListener);
-
-        deleteListener = new MouseAdapter() {
-            @Override
-            public void mouseExited(MouseEvent e) {
-                screen.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                if (!edit)
-                    screen.setCursor(new Cursor(Cursor.HAND_CURSOR));
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                if (!edit) {
-                    jlDelete.setBounds(487, 255, 30, 30);
-                    jlDelete.setIcon(new ImageIcon(imgDelete.getScaledInstance(30, 30, Image.SCALE_SMOOTH)));
-                }
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                jlDelete.setBounds(482, 250, 40, 40);
-                jlDelete.setIcon(new ImageIcon(imgDelete.getScaledInstance(40, 40, Image.SCALE_SMOOTH)));
-
-                boolean comp = !Mecanics.Employe.get(selection).getCode().equals(User.trim());
-
-                if (!edit && selection != -1 && comp) {
-                    try {
-                        basedata.sentence("DELETE FROM Trabajador WHERE ID = '" + Mecanics.Employe.get(selection).getID() + "';");
-                        File destino = new File("./src/Employees/ImageEmployees/" + Mecanics.Employe.get(selection).getID() + ".png");
-
-                        if (destino.exists())
-                            Files.delete(destino.toPath());
-                        LimpiarDatos();
-                        JOptionPane.showMessageDialog(null, "Empleado eliminado!", "Verificado!", JOptionPane.PLAIN_MESSAGE);
-
-                        selection = -1;
-                        Recargar();
-                    } catch (SQLException | IOException e1) {
-                        e1.printStackTrace();
-                    }
-                }
-
-                if (!comp) {
-                    JOptionPane.showMessageDialog(null, "No puedes eliminarte a ti mismo!", "Advertencia!", JOptionPane.WARNING_MESSAGE);
-                }
-            }
-        };
-
-        jlDelete.addMouseListener(deleteListener);
 
         /* RadioButton */
         bgGenero.add(g1);
@@ -454,45 +296,6 @@ public class RegistroEmpleados {
 
         bgPermisos.add(p1);
         bgPermisos.add(p2);
-
-        generoListener = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (g1.isSelected()) {
-                    jlUserGenero.setText(GeneroI[language] + ": " + ElegirGI[0][language]);
-                    genero = 'F';
-                }
-                if (g2.isSelected()) {
-                    jlUserGenero.setText(GeneroI[language] + ": " + ElegirGI[1][language]);
-                    genero = 'M';
-                }
-                if (g3.isSelected()) {
-                    jlUserGenero.setText(GeneroI[language] + ": " + ElegirGI[2][language]);
-                    genero = 'N';
-                }
-            }
-        };
-
-        permisoListener = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (p1.isSelected()) {
-                    jlUserPermisos.setText(PermisosI[language] + ": " + ElegirPI[0][language]);
-                    permisos = 0;
-                }
-                if (p2.isSelected()) {
-                    jlUserPermisos.setText(PermisosI[language] + ": " + ElegirPI[1][language]);
-                    permisos = 1;
-                }
-            }
-        };
-
-        g1.addActionListener(generoListener);
-        g2.addActionListener(generoListener);
-        g3.addActionListener(generoListener);
-
-        p1.addActionListener(permisoListener);
-        p2.addActionListener(permisoListener);
 
         /* JPANEL PRINCIPAL */
         mainPanel.add(jlCedula);
@@ -566,6 +369,7 @@ public class RegistroEmpleados {
         screen.setLocationRelativeTo(null);
         screen.setVisible(true);
         screen.setIconImage(new ImageIcon(url + "Registro.png").getImage());
+        screen.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
         if (screen.getWindowListeners().length == 0) {
             screen.addWindowListener(new WindowAdapter() {
@@ -586,6 +390,387 @@ public class RegistroEmpleados {
                 }
             });
         }
+    }
+
+    private void changeListener() {
+        JPopupMenu PopUpMenu = new JPopupMenu();
+        PopUpMenu.add(new JMenuItem(language == 0 ? "Copiar" : "Copy"));
+
+        userCodeListener = new MouseAdapter() {
+
+            public void mouseEntered(MouseEvent e) {
+                PopUpMenu.setVisible(true);
+                PopUpMenu.show(jlUserCode, 0, jlUserCode.getHeight());
+            }
+
+            public void mouseExited(MouseEvent e) {
+                PopUpMenu.setVisible(false);
+            }
+
+            public void mouseClicked(MouseEvent e) {
+                StringSelection stringSelection = new StringSelection(CodeGenerate());
+
+                if (!edit && selection != -1) {
+                    stringSelection = new StringSelection(Mecanics.Employe.get(selection).getCode());
+                }
+
+                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                clipboard.setContents(stringSelection, null);
+            }
+        };
+
+        user = new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                updateFieldState();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                updateFieldState();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                updateFieldState();
+            }
+
+            public void updateFieldState() {
+                if (jtNombre.getText().isEmpty() && jtApellido.getText().isEmpty()) {
+                    jlUserNombre.setText(NombreI[language] + ((language == 0) ? " y " : " and ") + ApellidoI[language]);
+                    jlUserNombre.setForeground(Color.GRAY);
+                } else {
+                    jlUserNombre.setText(jtNombre.getText() + " " + jtApellido.getText());
+                    jlUserNombre.setForeground(colorField);
+                }
+
+                jlUserCedula.setText(CedulaI[language] + ": " + ((jtCedula.getText().isEmpty()) ? "123456789" : jtCedula.getText()));
+                jlUserContacto.setText(ContactoI[language] + ": " + ((jtContacto.getText().isEmpty()) ? "0123456789" : jtContacto.getText()));
+                jlUserEmail.setText(EmailI[language] + ": " + ((jtEmail.getText().isEmpty()) ? "User@gmail.com" : jtEmail.getText()));
+                jlUserDireccion.setText(DireccionI[language] + ": " + ((jtDireccion.getText().isEmpty()) ? "" : jtDireccion.getText()));
+                jlUserCode.setText(CodeI[language] + ": " + (selection != -1 && !edit ? Mecanics.Employe.get(selection).getCode() : CodeGenerate()));
+            }
+        };
+
+        edadListener = new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                jlUserEdad.setText(EdadI[language] + ": " + jsEdad.getValue());
+                jlUserCode.setText(CodeI[language] + ": " + (selection != -1 ? Mecanics.Employe.get(selection).getCode() : CodeGenerate()));
+            }
+        };
+
+        buttongroup = new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (!edit) {
+                    if (Mecanics.Employe.get(selection).getAdmin()) {
+                        p2.setSelected(true);
+                        jlUserPermisos.setText(PermisosI[language] + ": " + ElegirPI[1][language]);
+                    } else {
+                        p1.setSelected(true);
+                        jlUserPermisos.setText(PermisosI[language] + ": " + ElegirPI[0][language]);
+                    }
+
+                    switch (genero) {
+                        case 'F':
+                            g1.setSelected(true);
+                            jlUserGenero.setText(GeneroI[language] + ": " + ElegirGI[0][language]);
+                            break;
+                        case 'M':
+                            g2.setSelected(true);
+                            jlUserGenero.setText(GeneroI[language] + ": " + ElegirGI[1][language]);
+                            break;
+                        default:
+                            g3.setSelected(true);
+                            jlUserGenero.setText(GeneroI[language] + ": " + ElegirGI[2][language]);
+                            break;
+                    }
+
+                    jlUserEdad.setText(EdadI[language] + ": " + jsEdad.getValue());
+                }
+            }
+        };
+
+        deleteListener = new MouseAdapter() {
+            @Override
+            public void mouseExited(MouseEvent e) {
+                screen.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                if (!edit)
+                    screen.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (!edit) {
+                    jlDelete.setBounds(487, 255, 30, 30);
+                    jlDelete.setIcon(new ImageIcon(imgDelete.getScaledInstance(30, 30, Image.SCALE_SMOOTH)));
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                jlDelete.setBounds(482, 250, 40, 40);
+                jlDelete.setIcon(new ImageIcon(imgDelete.getScaledInstance(40, 40, Image.SCALE_SMOOTH)));
+
+                boolean comp = !Mecanics.Employe.get(selection).getCode().equals(User.trim());
+
+                if (!edit && selection != -1 && comp) {
+                    try {
+                        basedata.sentence("DELETE FROM Trabajador WHERE ID = '" + Mecanics.Employe.get(selection).getID() + "';");
+                        File destino = new File("./src/Employees/ImageEmployees/" + Mecanics.Employe.get(selection).getID() + ".png");
+
+                        if (destino.exists())
+                            Files.delete(destino.toPath());
+                        LimpiarDatos();
+                        JOptionPane.showMessageDialog(null, language == 0 ? "Empleado eliminado!" : "Employee removed!", language == 0 ? "Verificado!" : "Verified!", JOptionPane.PLAIN_MESSAGE);
+
+                        selection = -1;
+                        Recargar();
+                    } catch (SQLException | IOException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+
+                if (!comp) {
+                    JOptionPane.showMessageDialog(null, language == 0 ? "No puedes eliminarte a ti mismo!" : "You can't eliminate yourself!", language == 0 ? "Advertencia!" : "Warning!", JOptionPane.WARNING_MESSAGE);
+                }
+            }
+        };
+
+        generoListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (g1.isSelected()) {
+                    jlUserGenero.setText(GeneroI[language] + ": " + ElegirGI[0][language]);
+                    genero = 'F';
+                }
+                if (g2.isSelected()) {
+                    jlUserGenero.setText(GeneroI[language] + ": " + ElegirGI[1][language]);
+                    genero = 'M';
+                }
+                if (g3.isSelected()) {
+                    jlUserGenero.setText(GeneroI[language] + ": " + ElegirGI[2][language]);
+                    genero = 'N';
+                }
+            }
+        };
+
+        permisoListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (p1.isSelected()) {
+                    jlUserPermisos.setText(PermisosI[language] + ": " + ElegirPI[0][language]);
+                    permisos = 0;
+                }
+                if (p2.isSelected()) {
+                    jlUserPermisos.setText(PermisosI[language] + ": " + ElegirPI[1][language]);
+                    permisos = 1;
+                }
+            }
+        };
+
+        cancelListener = new MouseAdapter() {
+            @Override
+            public void mouseExited(MouseEvent e) {
+                screen.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                screen.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                jlCancel.setBounds(586, 255, 30, 30);
+                jlCancel.setIcon(new ImageIcon(imgCancel.getScaledInstance(30, 30, Image.SCALE_SMOOTH)));
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                jlCancel.setBounds(581, 250, 40, 40);
+                jlCancel.setIcon(new ImageIcon(imgCancel.getScaledInstance(40, 40, Image.SCALE_SMOOTH)));
+
+                LimpiarDatos();
+            }
+        };
+
+        acceptListener = new MouseAdapter() {
+            @Override
+            public void mouseExited(MouseEvent e) {
+                screen.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                screen.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                jlAccept.setBounds(537, 255, 30, 30);
+                jlAccept.setIcon(new ImageIcon(imgAccept.getScaledInstance(30, 30, Image.SCALE_SMOOTH)));
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                jlAccept.setBounds(532, 250, 40, 40);
+                jlAccept.setIcon(new ImageIcon(imgAccept.getScaledInstance(40, 40, Image.SCALE_SMOOTH)));
+
+                if (CheckTextfield()) {
+                    try {
+                        boolean comp = true;
+                        for (Trabajador empleados : Mecanics.Employe) {
+                            if (!edit) break; 
+                            if (empleados.getID().equals(jtCedula.getText())) {
+                                comp = false;
+                                JOptionPane.showMessageDialog(null, language == 0 ? "Cedula repetida!" : "Repeated cedula!", language == 0 ? "Advertencia!" : "Warning!", JOptionPane.WARNING_MESSAGE);
+                                break;
+                            }
+                        }
+
+                        if (edit && comp) {
+                            basedata.sentence("INSERT INTO `Trabajador` (`Code`, `ID`, `Name`, `LastName`, `Phone`, `Email`, `Address`, `Gender`, `Age`, `Admin`, `Image`) VALUES ('" +
+                                        CodeGenerate() + "' , '" +
+                                        jtCedula.getText() + "', '" +
+                                        jtNombre.getText() + "', '" +
+                                        jtApellido.getText() + "', '" +
+                                        jtContacto.getText() + "', '" +
+                                        jtEmail.getText() + "' , '" +
+                                        jtDireccion.getText() + "', '" +
+                                        genero + "' ," +
+                                        Integer.parseInt(jsEdad.getValue() + "") + ", '" +
+                                        permisos +
+                                        "', './src/Employees/ImageEmployees/" + jtCedula.getText() + ".png');");
+
+                            JOptionPane.showMessageDialog(null, language == 0 ? "Usuario ingresado!" : "User logged in!", language == 0 ? "Verificado!" : "Verified!", JOptionPane.PLAIN_MESSAGE);
+                        }
+
+                        if (!edit) {
+                            basedata.sentence("UPDATE `Trabajador` SET 'Name' = '" + jtNombre.getText() +
+                                    "', 'LastName' = '" + jtApellido.getText() +
+                                    "', 'Phone' = '" + jtContacto.getText() +
+                                    "', 'Email' = '" + jtEmail.getText() +
+                                    "', 'Address' = '" + jtDireccion.getText() +
+                                    "', 'Gender' = '" + genero +
+                                    "', 'Age' = '" + Integer.parseInt(jsEdad.getValue() + "") +
+                                    "', 'Admin' = '" + permisos +
+                                    "', 'Image' = './src/Employees/ImageEmployees/"
+                                    + Mecanics.Employe.get(selection).getID() + ".png" +
+                                    "' WHERE ID = '" + Mecanics.Employe.get(selection).getID() + "';");
+
+                            JOptionPane.showMessageDialog(null, language == 0 ? "Usuario editado!" : "User edited!", language == 0 ? "Verificado!" : "Verified!", JOptionPane.PLAIN_MESSAGE);
+                        }
+                    } catch (SQLException e1) {
+                        System.out.println(e1);
+                    }
+
+                    Recargar();
+
+                    try {
+                        File destino = new File("./src/Employees/ImageEmployees/"
+                                + (edit ? jtCedula.getText() : Mecanics.Employe.get(selection).getID()) + ".png");
+
+                        Files.copy(imagenUser.toPath(), destino.toPath(), REPLACE_EXISTING);
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, language == 0 ? "Datos erroneos" : "Wrong data", language == 0 ? "Advertencia!" : "Warning!", JOptionPane.WARNING_MESSAGE);
+                }
+            }
+        };
+
+        editListener = new MouseAdapter() {
+            @Override
+            public void mouseExited(MouseEvent e) {
+                screen.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                screen.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                edit = !edit;
+
+                jlEdit.setBounds(21, 255, 30, 30);
+                jlEdit.setIcon(new ImageIcon(imgEdit.getScaledInstance(30, 30, Image.SCALE_SMOOTH)));
+                jlLock.setIcon(
+                        new ImageIcon((edit ? imgLock : imgUnlock).getScaledInstance(40, 40, Image.SCALE_SMOOTH)));
+
+                jlDelete.setEnabled(!edit);
+                jtaEmpleados.clearSelection();
+                selection = -1;
+                jlNombre.requestFocus(false);
+
+                LimpiarDatos();
+                if (edit) {
+                    jtCedula.setEditable(true);
+                } else
+                    jtCedula.setEditable(false);
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                jlEdit.setBounds(16, 250, 40, 40);
+                jlEdit.setIcon(new ImageIcon(imgEdit.getScaledInstance(40, 40, Image.SCALE_SMOOTH)));
+            }
+        };
+
+        pdfListener = new MouseAdapter() {
+            @Override
+            public void mouseExited(MouseEvent e) {
+                screen.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                screen.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                jlPdf.setBounds(587, 10, 30, 30);
+                jlPdf.setIcon(new ImageIcon(imgPdf.getScaledInstance(30, 30, Image.SCALE_SMOOTH)));
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                jlPdf.setBounds(582, 5, 40, 40);
+                jlPdf.setIcon(new ImageIcon(imgPdf.getScaledInstance(40, 40, Image.SCALE_SMOOTH)));
+                reporte();
+            }
+        };
+
+        g1.addActionListener(generoListener);
+        g2.addActionListener(generoListener);
+        g3.addActionListener(generoListener);
+
+        p1.addActionListener(permisoListener);
+        p2.addActionListener(permisoListener);
+
+        jtaEmpleados.addMouseListener(buttongroup);
+        jtNombre.getDocument().addDocumentListener(user);
+        jtApellido.getDocument().addDocumentListener(user);
+        jtCedula.getDocument().addDocumentListener(user);
+        jtContacto.getDocument().addDocumentListener(user);
+        jtEmail.getDocument().addDocumentListener(user);
+        jtDireccion.getDocument().addDocumentListener(user);
+        jsEdad.addChangeListener(edadListener);
+        jlDelete.addMouseListener(deleteListener);
+        jlUserCode.addMouseListener(userCodeListener);
+        jlAccept.addMouseListener(acceptListener);
+        jlCancel.addMouseListener(cancelListener);
+        jlEdit.addMouseListener(editListener);
+        jlPdf.addMouseListener(pdfListener);
     }
 
     private void Listener() {
@@ -617,6 +802,11 @@ public class RegistroEmpleados {
                 jtEmail.getDocument().removeDocumentListener(user);
                 jtDireccion.getDocument().removeDocumentListener(user);
                 jlDelete.removeMouseListener(deleteListener);
+                jlUserCode.removeMouseListener(userCodeListener);
+                jlAccept.removeMouseListener(acceptListener);
+                jlCancel.removeMouseListener(cancelListener);
+                jlEdit.removeMouseListener(editListener);
+                jlPdf.removeMouseListener(pdfListener);
                 jsEdad.removeChangeListener(edadListener);
                 g1.removeActionListener(generoListener);
                 g2.removeActionListener(generoListener);
@@ -633,184 +823,6 @@ public class RegistroEmpleados {
 
                 screen.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                 screen.dispose();
-            }
-        });
-
-        jlCancel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseExited(MouseEvent e) {
-                screen.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                screen.setCursor(new Cursor(Cursor.HAND_CURSOR));
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                jlCancel.setBounds(586, 255, 30, 30);
-                jlCancel.setIcon(new ImageIcon(imgCancel.getScaledInstance(30, 30, Image.SCALE_SMOOTH)));
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                jlCancel.setBounds(581, 250, 40, 40);
-                jlCancel.setIcon(new ImageIcon(imgCancel.getScaledInstance(40, 40, Image.SCALE_SMOOTH)));
-
-                LimpiarDatos();
-            }
-        });
-
-        jlAccept.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseExited(MouseEvent e) {
-                screen.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                screen.setCursor(new Cursor(Cursor.HAND_CURSOR));
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                jlAccept.setBounds(537, 255, 30, 30);
-                jlAccept.setIcon(new ImageIcon(imgAccept.getScaledInstance(30, 30, Image.SCALE_SMOOTH)));
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                jlAccept.setBounds(532, 250, 40, 40);
-                jlAccept.setIcon(new ImageIcon(imgAccept.getScaledInstance(40, 40, Image.SCALE_SMOOTH)));
-
-                if (CheckTextfield()) {
-                    try {
-                        boolean comp = true;
-                        for (Trabajador empleados : Mecanics.Employe) {
-                            if (!edit) break; 
-                            if (empleados.getID().equals(jtCedula.getText())) {
-                                comp = false;
-                                break;
-                            }
-                        }
-
-                        if (edit && comp) {
-                            if (comp) {
-                                basedata.sentence("INSERT INTO `Trabajador` (`Code`, `ID`, `Name`, `LastName`, `Phone`, `Email`, `Address`, `Gender`, `Age`, `Admin`, `Image`) VALUES ('" +
-                                            CodeGenerate() + "' , '" +
-                                            jtCedula.getText() + "', '" +
-                                            jtNombre.getText() + "', '" +
-                                            jtApellido.getText() + "', '" +
-                                            jtContacto.getText() + "', '" +
-                                            jtEmail.getText() + "' , '" +
-                                            jtDireccion.getText() + "', '" +
-                                            genero + "' ," +
-                                            Integer.parseInt(jsEdad.getValue() + "") + ", '" +
-                                            permisos +
-                                            "', './src/Employees/ImageEmployees/" + jtCedula.getText() + ".png');");
-
-                                JOptionPane.showMessageDialog(null, "Usuario ingresado!", "Verificado", JOptionPane.PLAIN_MESSAGE);
-                            } else {
-                                JOptionPane.showMessageDialog(null, "Cedula repetida!", "Advertencia", JOptionPane.WARNING_MESSAGE);
-                            }
-                        }
-
-                        if (!edit) {
-                            basedata.sentence("UPDATE `Trabajador` SET 'Name' = '" + jtNombre.getText() +
-                                    "', 'LastName' = '" + jtApellido.getText() +
-                                    "', 'Phone' = '" + jtContacto.getText() +
-                                    "', 'Email' = '" + jtEmail.getText() +
-                                    "', 'Address' = '" + jtDireccion.getText() +
-                                    "', 'Gender' = '" + genero +
-                                    "', 'Age' = '" + Integer.parseInt(jsEdad.getValue() + "") +
-                                    "', 'Admin' = '" + permisos +
-                                    "', 'Image' = './src/Employees/ImageEmployees/"
-                                    + Mecanics.Employe.get(selection).getID() + ".png" +
-                                    "' WHERE ID = '" + Mecanics.Employe.get(selection).getID() + "';");
-
-                            JOptionPane.showMessageDialog(null, "Usuario editado!", "Verificado", JOptionPane.PLAIN_MESSAGE);
-                        }
-                    } catch (SQLException e1) {
-                        System.out.println(e1);
-                    }
-
-                    Recargar();
-
-                    try {
-                        File destino = new File("./src/Employees/ImageEmployees/"
-                                + (edit ? jtCedula.getText() : Mecanics.Employe.get(selection).getID()) + ".png");
-
-                        Files.copy(imagenUser.toPath(), destino.toPath(), REPLACE_EXISTING);
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(null, "Datos erroneos", "Advertencia", JOptionPane.WARNING_MESSAGE);
-                }
-            }
-        });
-
-        jlEdit.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseExited(MouseEvent e) {
-                screen.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                screen.setCursor(new Cursor(Cursor.HAND_CURSOR));
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                edit = !edit;
-
-                jlEdit.setBounds(21, 255, 30, 30);
-                jlEdit.setIcon(new ImageIcon(imgEdit.getScaledInstance(30, 30, Image.SCALE_SMOOTH)));
-                jlLock.setIcon(
-                        new ImageIcon((edit ? imgLock : imgUnlock).getScaledInstance(40, 40, Image.SCALE_SMOOTH)));
-
-                jlDelete.setEnabled(!edit);
-                jtaEmpleados.clearSelection();
-                selection = -1;
-
-                LimpiarDatos();
-                if (edit) {
-                    jtCedula.setEditable(true);
-                } else
-                    jtCedula.setEditable(false);
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                jlEdit.setBounds(16, 250, 40, 40);
-                jlEdit.setIcon(new ImageIcon(imgEdit.getScaledInstance(40, 40, Image.SCALE_SMOOTH)));
-            }
-        });
-
-        jlPdf.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseExited(MouseEvent e) {
-                screen.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                screen.setCursor(new Cursor(Cursor.HAND_CURSOR));
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                jlPdf.setBounds(587, 10, 30, 30);
-                jlPdf.setIcon(new ImageIcon(imgPdf.getScaledInstance(30, 30, Image.SCALE_SMOOTH)));
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                jlPdf.setBounds(582, 5, 40, 40);
-                jlPdf.setIcon(new ImageIcon(imgPdf.getScaledInstance(40, 40, Image.SCALE_SMOOTH)));
-                reporte();
             }
         });
 
@@ -1180,7 +1192,7 @@ public class RegistroEmpleados {
             Logo.scaleToFit(180, 180);
             Logo.setHorizontalAlignment(HorizontalAlignment.CENTER);
 
-            Paragraph Title = new Paragraph(screen.getTitle());
+            Paragraph Title = new Paragraph(language == 0 ? "Empleados" : "Employees");
 
             Title.setFontSize(20);
             Title.setBold();
@@ -1189,8 +1201,8 @@ public class RegistroEmpleados {
 
             Table tableta = new Table(2);
             tableta.setWidth(UnitValue.createPercentValue(100));
-            tableta.addCell(new Paragraph("IMG"));
-            tableta.addCell(new Paragraph("DATA"));
+            tableta.addCell(new Paragraph(language == 0 ? "Imagen" : "Image"));
+            tableta.addCell(new Paragraph(language == 0 ? "Datos" : "Data"));
 
             for (int j = 0; j < 2; j++)
                 tableta.getCell(0, j).setBorder(null).setBold().setFontSize(15).setTextAlignment(TextAlignment.CENTER);
