@@ -67,7 +67,7 @@ public class Actual extends JFrame {
 	private DefaultTableModel modelo;
 	private JPanel panel;
 	private String ld="Light";
-	private JList list;
+	private JList<Object> list;
 	
 
 	/**
@@ -262,8 +262,9 @@ public class Actual extends JFrame {
 		
 	
 		
-		list = new JList();
-		list.setModel(new AbstractListModel() {
+		list = new JList<>();
+		
+		AbstractListModel<Object> alm = new AbstractListModel<>(){
 			String[] values = Listar();
 			public int getSize() {
 				return values.length;
@@ -271,7 +272,9 @@ public class Actual extends JFrame {
 			public Object getElementAt(int index) {
 				return values[index];
 			}
-		});
+		};
+		
+		list.setModel(alm);
 		list.setBorder(new LineBorder(Color.black));
 		list.setBackground(new Color(238, 248, 254));
 		list.addMouseListener(new MouseAdapter() {
