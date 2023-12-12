@@ -32,7 +32,7 @@ import java.awt.Graphics2D;
 import java.awt.Cursor;
 import javax.swing.border.LineBorder;
 
-public class Inventario extends IFrame {
+public class Inventario extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
