@@ -1039,5 +1039,10 @@ public class Mecanics {
         TextField.addMouseListener(mouseListener);
         
 	}
+
+	public static void lblphoto(String ruta, JLabel label) {
+		
+		label.setIcon(new ImageIcon(new ImageIcon(ruta).getImage().getScaledInstance(label.getWidth(), label.getHeight(), java.awt.Image.SCALE_SMOOTH)));
+	}
 	
 }
