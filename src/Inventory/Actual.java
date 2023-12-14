@@ -11,10 +11,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import javax.swing.UIManager;
+
 import javax.swing.border.LineBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import java.awt.Color;
 import java.awt.Cursor;
@@ -30,26 +28,27 @@ import javax.swing.table.TableColumn;
 import Main.Mecanics;
 import Main.Menu;
 import Main.Runner;
+import Objects.Archivo;
 import Objects.ComponentBuilder;
 import Objects.Conexion;
 
 import javax.swing.AbstractListModel;
 import javax.swing.DefaultCellEditor;
-import javax.swing.ImageIcon;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
 
-import java.beans.VetoableChangeListener;
 import java.sql.ResultSet;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.EventObject;
-import java.beans.PropertyChangeEvent;
-import java.awt.event.HierarchyListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.HierarchyEvent;
 import java.awt.Font;
-import java.awt.Image;
+
 
 import javax.swing.SwingConstants;
 
@@ -67,8 +66,13 @@ public class Actual extends JFrame {
 	private DefaultTableModel modelo;
 	private JPanel panel;
 	private String ld="Light";
-	private JList<Object> list;
+	private JList list;
 	
+	protected static int fitroventa=0;
+	protected static int fitronombre=0;
+	protected static int fitrocodigo=0;
+	
+	protected static boolean filterActive=false;
 
 	/**
 	 * Launch the application.
@@ -202,10 +206,18 @@ public class Actual extends JFrame {
 			}
 			@Override
 			public void mouseClicked(MouseEvent e) {
+			
+				if(filterActive==false) {
+					emergente filtro=new emergente(lenguaje);
+					filtro.setLocationRelativeTo(thisFrame);
+					filtro.setVisible(true);
+					filterActive=true;
+				}
+			
 				
-				//proximamente//Coming soon
-			}
+			}	
 		});
+		
 		panel.add(lblFiltro);
 		
 		JLabel lblMenu = new JLabel("");
@@ -265,7 +277,7 @@ public class Actual extends JFrame {
 		list = new JList<>();
 		
 		AbstractListModel<Object> alm = new AbstractListModel<>(){
-			String[] values = Listar();
+			String[] values = Listar(0,0,0);
 			public int getSize() {
 				return values.length;
 			}
@@ -305,6 +317,7 @@ public class Actual extends JFrame {
 			}
 		
 		});
+		
 		scrollPane.setRowHeaderView(list);
 		
 		ChangeMode();
@@ -351,11 +364,12 @@ public class Actual extends JFrame {
 		
 	}
 	
-	private String[] Listar() {
+	private String[] Listar(int fc,int fn,int fv) {
 		Conexion a = new Conexion();
 		
 		String[] lista= {};
-		ArrayList<String> productos=new ArrayList<>();
+		ArrayList<Archivo> productos=new ArrayList<>();
+		ArrayList<String> med=new ArrayList<>();
 		
 		try {
 
@@ -363,15 +377,82 @@ public class Actual extends JFrame {
 
 			while (res.next()) {
 				
-				productos.add( res.getString("Code")+" / "+res.getString("Product")+" ");
-
+				//productos.add( res.getString("Code")+" / "+res.getString("Product")+" ");
+				productos.add(invMecanics.muestra(res.getString("Code")));
 			}
 
 		} catch (Exception e) {
 		}
 		
+		if(fc==1) {
+			Collections.sort(productos,new Comparator<Archivo>() {
+			    @Override
+			    public int compare(Archivo p1, Archivo p2) {
+			        return p1.getCode().compareTo(p2.getCode());
+			    }
+			});
+			
+		}
+		if(fn==1) {
+			Collections.sort(productos,new Comparator<Archivo>() {
+			    @Override
+			    public int compare(Archivo p1, Archivo p2) {
+			        return p1.getProduct().compareTo(p2.getProduct());
+			    }
+			});
+			
+		}
 		
-		lista = productos.toArray(new String[productos.size()]);
+		if(fv==1) {
+			Collections.sort(productos,new Comparator<Archivo>() {
+			    @Override
+			    public int compare(Archivo p1, Archivo p2) {
+			        return Float.compare(p2.getSold(), p1.getSold());
+			    }
+			});
+			
+		}
+		
+		if(fc==2) {
+			Collections.sort(productos,new Comparator<Archivo>() {
+			    @Override
+			    public int compare(Archivo p1, Archivo p2) {
+			        return p1.getCode().compareTo(p2.getCode());
+			    }
+			});
+			
+			Collections.reverse(productos);
+		}
+		
+		if(fn==2) {
+			Collections.sort(productos,new Comparator<Archivo>() {
+			    @Override
+			    public int compare(Archivo p1, Archivo p2) {
+			        return p1.getProduct().compareTo(p2.getProduct());
+			    }
+			});
+			
+			Collections.reverse(productos);
+		}
+		
+		if(fv==2) {
+			Collections.sort(productos,new Comparator<Archivo>() {
+			    @Override
+			    public int compare(Archivo p1, Archivo p2) {
+			        return Float.compare(p2.getSold(), p1.getSold());
+			    }
+			});
+			
+			Collections.reverse(productos);
+		}
+		
+		
+		for(int i=0; i<productos.size();i++) {
+			
+			med.add(productos.get(i).getCode() +" / "+ productos.get(i).getProduct()+" ");
+		}
+		
+		lista = med.toArray(new String[med.size()]);
 		
 		return lista;
 	}
@@ -411,4 +492,115 @@ public class Actual extends JFrame {
 		}
 		
 	}
+
+
+class emergente extends JFrame{
+	private JPanel content;
+	private JComboBox<String> cmbnombre;
+	private JComboBox<String> cmbventas;
+	private JComboBox<String> cmbcode;
+
+	public emergente(boolean lenguaje) {
+		
+		setResizable(false);
+		setAlwaysOnTop(true);
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		setBounds(100, 100, 300, 300);
+		content = new JPanel();
+		content.setBorder(new EmptyBorder(5, 5, 5, 5));
+
+		setContentPane(content);
+		content.setLayout(null);
+		
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				
+				filterActive=false;
+				dispose();
+			
+			}
+		});
+		
+		JLabel txttitle = new JLabel(lenguaje?"Filtros":"Filters");
+		txttitle.setBounds(109, 11, 59, 23);
+		txttitle.setFont(new Font("Futura Md BT", Font.PLAIN, 20));
+		//txttitle.setBorder(new LineBorder(new Color(0, 0, 0)));
+		content.add(txttitle);
+		
+		JLabel lblVentas = new JLabel(lenguaje?"Ventas: ":"Sales: ");
+		//lblVentas.setBorder(new LineBorder(new Color(0, 0, 0)));
+		lblVentas.setBounds(40, 121, 59, 23);
+		content.add(lblVentas);
+		
+		String [] fv= {"Desactivado","Mayor a menor","Menor a mayor"};
+		String [] fn= {"Desactivado","A-Z","Z-A"};
+		String [] fc= {"Desactivado","A-Z","Z-A"};
+				
+		if(lenguaje==false) {
+			
+			fv=new String[] {"Off","High to low","Low to high"};
+			fn=new String[] {"Off","A - Z","Z - A"};
+			fc=new String[] {"Off","A - Z","Z - A"};
+		}
+		
+		cmbventas = new JComboBox();
+		cmbventas.setBounds(109, 121, 125, 23);
+		cmbventas.setModel(new DefaultComboBoxModel(fv));
+		cmbventas.setSelectedIndex(fitroventa);
+		content.add(cmbventas);
+		
+		JLabel lblNombre = new JLabel(lenguaje?"Nombre: ":"Name: ");
+		//lblNombre.setBorder(new LineBorder(new Color(0, 0, 0)));
+		lblNombre.setBounds(40, 75, 59, 23);
+		content.add(lblNombre);
+		
+		cmbnombre = new JComboBox();
+		cmbnombre.setBounds(109, 75, 125, 23);
+		cmbnombre.setModel(new DefaultComboBoxModel(fn));
+		cmbnombre.setSelectedIndex(fitronombre);
+		content.add(cmbnombre);
+		
+		JLabel lblCodigo = new JLabel(lenguaje?"Codigo: ": "Code: ");
+		//lblCodigo.setBorder(new LineBorder(new Color(0, 0, 0)));
+		lblCodigo.setBounds(40, 163, 59, 23);
+		content.add(lblCodigo);
+		
+
+		cmbcode = new JComboBox();
+		cmbcode.setBounds(109, 163, 125, 23);
+		cmbcode.setModel(new DefaultComboBoxModel(fc));
+		cmbcode.setSelectedIndex(fitrocodigo);
+		content.add(cmbcode);
+		
+		JButton apply = new JButton(lenguaje?"Aplicar":"Apply");
+		apply.setBounds(97, 212, 89, 23);
+		apply.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				Actual.fitronombre=cmbnombre.getSelectedIndex();
+				Actual.fitrocodigo=cmbcode.getSelectedIndex();
+				Actual.fitroventa=cmbventas.getSelectedIndex();
+				
+				AbstractListModel<Object> alm = new AbstractListModel<>(){
+					String[] values = Listar(Actual.fitrocodigo,Actual.fitronombre,Actual.fitroventa);
+					public int getSize() {
+						return values.length;
+					}
+					public Object getElementAt(int index) {
+						return values[index];
+					}
+				};
+				
+				list.setModel(alm);
+				
+				filterActive=false;
+				dispose();
+			}
+		});
+		content.add(apply);
+		
+		
+	}
+}
 }
