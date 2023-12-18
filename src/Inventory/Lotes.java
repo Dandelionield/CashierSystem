@@ -1,26 +1,77 @@
 package Inventory;
 
 import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.EventObject;
 
+import javax.swing.AbstractListModel;
+import javax.swing.DefaultCellEditor;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
+import javax.swing.border.MatteBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
+
+import Main.Mecanics;
+import Main.Menu;
+import Main.Runner;
+import Objects.Archivo;
+import Objects.ComponentBuilder;
+import Objects.Conexion;
 
 import java.awt.Color;
+import java.awt.Cursor;
+
 import javax.swing.JScrollPane;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.JList;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 public class Lotes extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private JTable ltable;
 	private JTextField lote;
 	private JTextField price;
+
+	private int theme = Mecanics.getMode(true);
+	private boolean lenguaje=true;
+	private static JTable table;
+	private Color[] Fondo= { new Color(238, 248, 254), new Color(20, 35, 54) };
+	private final ComponentBuilder cp;
+	private static DefaultTableModel modelo;
+	private String ld="Light";
+	private ArrayList<String> dp=new ArrayList<String>(Arrays.asList(Actual.Listar(0,0,0)));
+	private String[] disponibles=Actual.Listar(0,0,0);
+	private JList list;
+	private JPanel panel;
+	private JLabel txtlote;
+	private JLabel txtObt;
+	private JLabel txtAct;
+	private JLabel txtsoldprice;
+	private JLabel txtprice;
+	private JLabel txtgan;
+	private JLabel volver;
+	private JLabel gan;
+	private JLabel soldprice;
+	
+	private static ArrayList<Selected> sl=new ArrayList<Selected>();
 
 	/**
 	 * Launch the application.
@@ -29,7 +80,7 @@ public class Lotes extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Lotes frame = new Lotes();
+					Lotes frame = new Lotes("","");
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -41,98 +92,514 @@ public class Lotes extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public Lotes() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	public Lotes(String User, String UserName) {
+
+		if(Mecanics.getLanguage(true)==1) {
+			lenguaje=false;
+		}
+		
+		cp = new ComponentBuilder("./src/ResourcePackCaja", Fondo[theme]);
+		
+		final Lotes thisFrame = this;
+
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+
+				boolean scp = Mecanics.Leave(thisFrame);
+
+				if (scp == true) {
+
+					Runner lg = new Runner();
+
+					Runner.contentPane.removeAll();
+
+					Runner.Opciones = new Menu(lg, User, UserName);
+
+					Runner.contentPane.add(Runner.Opciones, Integer.valueOf(0));
+
+					lg.setVisible(true);
+
+					dispose();
+
+					repaint();
+				}
+
+			}
+		});
+		
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		setResizable(false);
 		setBounds(100, 100, 1013, 609);
 		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		//contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JPanel panel = new JPanel();
-		panel.setBackground(new Color(255, 255, 255));
+		panel = new JPanel();
+		panel.setBackground(new Color(238, 248, 254));
 		panel.setBounds(40, 40, 917, 499);
 		contentPane.add(panel);
 		panel.setLayout(null);
 		
-		JScrollPane lscrollPane = new JScrollPane();
-		lscrollPane.setBounds(591, 49, 305, 439);
-		panel.add(lscrollPane);
+		JScrollPane lscrollList = new JScrollPane();
+		lscrollList.setBounds(591, 49, 305, 439);
+		panel.add(lscrollList);
 		
-		ltable = new JTable();
-		lscrollPane.setViewportView(ltable);
+		list = new JList<>();
+		list.setBackground(new Color(238, 248, 254));
+		AbstractListModel<Object> alm = new AbstractListModel<>(){
+			
+			String[] values = disponibles;
+			public int getSize() {
+				return values.length;
+			}
+			public Object getElementAt(int index) {
+				return values[index];
+			}
+		};
 		
-		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(215, 49, 305, 439);
-		panel.add(scrollPane_1);
+		list.setModel(alm);
 		
-		JList llist = new JList();
-		scrollPane_1.setViewportView(llist);
+		list.addMouseListener(new MouseAdapter() {
+			
+			public void mouseClicked(MouseEvent evt) {
+
+				try {
+
+					if (evt.getClickCount() == 2) {
+
+						String selected= list.getSelectedValue().toString();
+						String [] div=selected.split("/");
+						
+						sl.add(new Selected(div[0],div[1],0));
+						modelo.setRowCount(0);
+						mostrar();
+						
+						
+						dp.remove(selected);
+						
+						
+						reloadList();
+						
+						
+						repaint();
+
+					}
+
+				} catch (Exception e) {
+
+					repaint();
+				}
+
+			}
 		
-		JLabel soldprice = new JLabel("");
-		soldprice.setBorder(new LineBorder(new Color(0, 0, 0)));
-		soldprice.setBounds(10, 383, 195, 23);
+		});
+		lscrollList.setViewportView(list);
+		
+		String[] titulos = { "Codigo", "Producto", "#Añadir" };
+		
+		if(!lenguaje) {
+			titulos =new String[] { "Code", "Product", "#Add" };
+		}
+		
+		cp.buildTable(titulos, cp.doBounds(250, 49, 305, 439));		
+		JScrollPane scrollTable = cp.getJScrollPane();
+		scrollTable.setBounds(250, 49, 305, 439);
+		panel.add(scrollTable);
+
+		modelo=cp.getDefaultTableModel();
+		table = new JTable();
+		table.setBackground(new Color(238, 248, 254));
+		table.addMouseListener(new MouseAdapter() {
+			// @Override
+			public void mouseClicked(MouseEvent evt) {
+
+				try {
+
+					if (evt.getClickCount() == 2) {
+
+						JTable rec = (JTable) evt.getSource();
+
+						int delete=rec.getSelectedRow();
+						
+						String element=rec.getModel().getValueAt(rec.getSelectedRow(), 0).toString()+" / "+rec.getModel().getValueAt(rec.getSelectedRow(), 1).toString();
+						
+						dp.add(element);
+						
+						
+						reloadList();
+						sl.remove(delete);
+						modelo.setRowCount(0);
+						mostrar();
+						repaint();
+
+					}
+
+				} catch (Exception e) {
+
+					repaint();
+				}
+
+			}
+		});
+		table.setModel(modelo);
+		modelo.addTableModelListener(new TableModelListener() {
+		    public void tableChanged(TableModelEvent e) {
+		        if (e.getType() == TableModelEvent.UPDATE) {
+		            int row = e.getFirstRow();
+		            int column = e.getColumn();
+		            TableModel model = (TableModel) e.getSource();
+		            Object data = model.getValueAt(row, column);
+		            
+		            float neodata= Float.parseFloat(data.toString()); 
+		            
+		            sl.get(row).setCantidad(neodata);
+		            
+		            ventas();
+		            
+		        }
+		    }
+		});
+		
+		
+		
+		scrollTable.setViewportView(table);
+		
+		soldprice = new JLabel("0");
+		soldprice.setBorder(new MatteBorder(0, 0, 2, 0, (Color) new Color(128, 0, 255)));
+		soldprice.setHorizontalAlignment(SwingConstants.CENTER);
+		soldprice.setBounds(45, 383, 195, 23);
 		panel.add(soldprice);
 		
-		JLabel enter = new JLabel("");
-		enter.setBorder(new LineBorder(new Color(0, 0, 0)));
-		enter.setBounds(530, 182, 50, 50);
-		panel.add(enter);
-		
-		JLabel outer = new JLabel("");
-		outer.setBorder(new LineBorder(new Color(0, 0, 0)));
-		outer.setBounds(530, 243, 50, 50);
-		panel.add(outer);
-		
-		JLabel txtlote = new JLabel("");
-		txtlote.setBorder(new LineBorder(new Color(0, 0, 0)));
-		txtlote.setBounds(10, 94, 72, 23);
+		txtlote = new JLabel(lenguaje?"Lote: ":"Batch: ");
+//		txtlote.setBorder(new LineBorder(new Color(0, 0, 0)));
+		txtlote.setBounds(45, 94, 72, 23);
 		panel.add(txtlote);
 		
-		JLabel txtObt = new JLabel("");
-		txtObt.setBorder(new LineBorder(new Color(0, 0, 0)));
-		txtObt.setBounds(215, 15, 195, 23);
+		txtObt = new JLabel(lenguaje?"Productos Seleccionados: ": "Selected Products: ");
+//		txtObt.setBorder(new LineBorder(new Color(0, 0, 0)));
+		txtObt.setFont(new Font("Franklin Gothic Heavy", Font.PLAIN, 15));
+		txtObt.setBounds(250, 15, 195, 23);
 		panel.add(txtObt);
 		
-		JLabel txtAct = new JLabel("");
-		txtAct.setBorder(new LineBorder(new Color(0, 0, 0)));
+		txtAct = new JLabel(lenguaje?"Productos Disponibles: ": "Available Products: ");
+	//	txtAct.setBorder(new LineBorder(new Color(0, 0, 0)));
+		txtAct.setFont(new Font("Franklin Gothic Heavy", Font.PLAIN, 15));
 		txtAct.setBounds(591, 15, 195, 23);
 		panel.add(txtAct);
 		
+		if(theme==1) {
+			ld="Dark";
+		}
+		
+		volver = new JLabel("");
+	//	volver.setBorder(new LineBorder(new Color(0, 0, 0)));
+		volver.setBounds(25, 15, 50, 44);
+		Mecanics.lblphoto("./src/ResourcePackCaja/back"+ld+".png", volver);
+		volver.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				volver.setBounds(28, 18, 47, 41);
+				Mecanics.lblphoto("./src/ResourcePackCaja/back"+ld+".png", volver);
+				volver.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				volver.setBounds(25, 15, 50, 44);
+				Mecanics.lblphoto("./src/ResourcePackCaja/back"+ld+".png", volver);
+			}
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				
+				modify mdf=new modify(User,UserName);
+				mdf.setLocationRelativeTo(null);
+				mdf.setVisible(true);
+				dispose();
+			}
+		});
+		panel.add(volver);
+		
 		JLabel menu = new JLabel("");
-		menu.setBorder(new LineBorder(new Color(0, 0, 0)));
-		menu.setBounds(10, 15, 50, 44);
-		panel.add(menu);
+//		menu.setBorder(new LineBorder(new Color(0, 0, 0)));
+		menu.setBounds(174, 15, 50, 44);
+		Mecanics.lblphoto("./src/ResourcePackCaja/inventario.png", menu);
+		menu.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				menu.setBounds(177, 18, 47, 41);
+				Mecanics.lblphoto("./src/ResourcePackCaja/inventario.png", menu);
+				menu.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				menu.setBounds(174, 15, 50, 44);
+				Mecanics.lblphoto("./src/ResourcePackCaja/inventario.png", menu);
+			}
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				
+				Inventario inv=new Inventario(User,UserName);
+				inv.setLocationRelativeTo(thisFrame);
+				inv.setVisible(true);
+				dispose();
+			}
+		});
+		panel.add(menu);	
 		
-		lote = new JTextField();
-		lote.setBounds(92, 97, 97, 20);
+		lote = cp.buildTextField("", cp.doBounds(98, 97, 126, 20), SwingConstants.LEFT,new Font("Microsoft JhengHei UI", Font.BOLD, 12), Color.BLUE, Color.BLUE, true, true);	
 		panel.add(lote);
-		lote.setColumns(10);
 		
-		JLabel txtsoldprice = new JLabel("");
-		txtsoldprice.setBorder(new LineBorder(new Color(0, 0, 0)));
-		txtsoldprice.setBounds(10, 349, 72, 23);
+		txtsoldprice = new JLabel(lenguaje?"Ventas estimadas: ":"Sales estimate: ");
+//		txtsoldprice.setBorder(new LineBorder(new Color(0, 0, 0)));
+		txtsoldprice.setBounds(45, 349, 122, 23);
 		panel.add(txtsoldprice);
 		
-		JLabel txtprice = new JLabel("");
-		txtprice.setBorder(new LineBorder(new Color(0, 0, 0)));
-		txtprice.setBounds(10, 150, 72, 23);
+		txtprice = new JLabel(lenguaje?"Costo: ":"Cost: ");
+//		txtprice.setBorder(new LineBorder(new Color(0, 0, 0)));
+		txtprice.setBounds(45, 150, 72, 23);
 		panel.add(txtprice);
 		
-		price = new JTextField();
-		price.setBounds(10, 184, 179, 20);
+		price = cp.buildTextField("", cp.doBounds(45, 184, 179, 20), SwingConstants.LEFT,new Font("Microsoft JhengHei UI", Font.BOLD, 12), Color.BLUE, Color.BLUE, true, true);	
+		price.getDocument().addDocumentListener(new DocumentListener() {
+
+			public void insertUpdate(DocumentEvent e) {
+				verifyprice();
+			}
+
+			public void removeUpdate(DocumentEvent e) {
+				verifyprice();
+			}
+
+			public void changedUpdate(DocumentEvent e) {
+				verifyprice();
+			}
+
+			private void verifyprice() {
+
+				try {
+				
+					float data=(Float.parseFloat(price.getText())-Float.parseFloat(soldprice.getText()));
+					gan.setText(data+"");
+				
+				}catch(Exception e) {
+					gan.setText("0");
+					
+					int ln=0;
+					String[] error = { "Introducir sólo números", "Enter only numbers" };
+					if(lenguaje==false) {
+						ln=1;
+					}
+					Mecanics.txtErrorMessage(price, error[ln]);
+				}
+
+
+			}
+		});
 		panel.add(price);
-		price.setColumns(10);
 		
-		JLabel gan = new JLabel("");
-		gan.setBorder(new LineBorder(new Color(0, 0, 0)));
-		gan.setBounds(10, 451, 195, 23);
+		gan = new JLabel("0");
+		gan.setBorder(new MatteBorder(0, 0, 2, 0, (Color) new Color(128, 0, 255)));
+		gan.setHorizontalAlignment(SwingConstants.CENTER);
+		gan.setBounds(45, 451, 195, 23);
 		panel.add(gan);
 		
-		JLabel txtgan = new JLabel("");
-		txtgan.setBorder(new LineBorder(new Color(0, 0, 0)));
-		txtgan.setBounds(10, 417, 72, 23);
+		txtgan = new JLabel(lenguaje?"Ganancias estimadas: ":"Estimated earnings: ");
+//		txtgan.setBorder(new LineBorder(new Color(0, 0, 0)));
+		txtgan.setBounds(45, 417, 151, 23);
 		panel.add(txtgan);
+		
+		JButton confirmacion = new JButton(lenguaje?"Confirmar":"confirm");
+		confirmacion.setBounds(45, 248, 179, 44);
+		confirmacion.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				
+				Conexion a = new Conexion();
+				
+				for (int i = 0; i < sl.size(); i++) {
+					
+					try {
+						
+						String code=modelo.getValueAt(i, 0).toString();
+						Archivo producto=invMecanics.muestra(code);
+						
+						float cantidad=producto.getAmount() + Float.parseFloat(modelo.getValueAt(i, 2).toString());
+						
+						
+						
+						a.sentence("UPDATE `Inventario` SET  `Product`='" + producto.getProduct() + "', `Brand`='"
+								+ producto.getBrand() + "', `Description`='" + producto.getDescription() + "', `Amount`='"
+								+ cantidad + "',`Price`='"
+								+ producto.getPrice() + "',`Unid`='"
+								+ producto.getUnid() + "',`Image`='" + producto.getImage() + "'  WHERE `Code`='"
+								+ code + "';");
+
+
+					} catch (Exception b) {
+
+						repaint();
+					}
+					
+				}
+				
+				modelo.setRowCount(0);
+				list.setModel(alm);
+				soldprice.setText("0");
+				gan.setText("0");
+				price.setText("");
+				lote.setText("");
+				
+				
+			}
+		});
+		panel.add(confirmacion);
+		
+		JLabel fondo = new JLabel("");
+		fondo.setBounds(0, 0, 997, 570);
+		Mecanics.lblphoto("./src/ResourcePackCaja/fondo.jpg", fondo);
+		contentPane.add(fondo);
+		
+		changeMode();
+		
 	}
+	
+	
+	protected void ventas() {
+		
+		double venta=0;
+		int row=0;
+		
+		try {
+			
+			for (int i = 0; i < sl.size(); i++) {
+			row=i;
+			Archivo prod=invMecanics.muestra(modelo.getValueAt(i, 0).toString());
+
+			venta += prod.getPrice()*Float.parseFloat(modelo.getValueAt(i, 2).toString());
+			
+		}
+
+		}catch(Exception e) {
+			
+			modelo.setValueAt(0, row, 2);
+		}
+		
+		soldprice.setText(venta+"");
+	}
+
+	protected void reloadList() {
+		
+		disponibles=dp.toArray(new String[dp.size()]);
+		
+		AbstractListModel<Object> alm = new AbstractListModel<>(){
+			String[] values = disponibles;
+			public int getSize() {
+				return values.length;
+			}
+			public Object getElementAt(int index) {
+				return values[index];
+			}
+		};
+		list.setModel(alm);
+		
+	}
+
+	public static void mostrar() {
+
+		try {
+			
+			
+			for (int i=0; i<sl.size(); i++) {
+
+				Archivo prod=invMecanics.muestra(sl.get(i).getCode().trim());
+				
+
+				Object[] products = {prod.getCode(),prod.getProduct(),sl.get(i).getCantidad()};
+				
+				modelo.addRow(products);
+				
+			}
+			
+
+		} catch (Exception e) {
+			System.out.println("uis: "+e);
+		}
+
+		for (int i = 0; i < table.getColumnCount()-1; i++) {
+
+			TableColumn column = table.getColumnModel().getColumn(i);
+
+			column.setCellEditor(new DefaultCellEditor(new JTextField()) {
+
+				public boolean isCellEditable(EventObject e) {
+
+					return false;
+
+				}
+				
+
+			});
+			
+		
+		}
+	}
+	
+	public void changeMode(){
+		
+		if(theme==1) {
+			
+			panel.setBackground(new Color(20, 35, 54));
+			list.setBackground(new Color(20, 35, 54));
+			txtAct.setForeground(new Color(238, 248, 254));
+			txtgan.setForeground(new Color(238, 248, 254));
+			txtlote.setForeground(new Color(238, 248, 254));
+			txtObt.setForeground(new Color(238, 248, 254));
+			txtprice.setForeground(new Color(238, 248, 254));
+			txtsoldprice.setForeground(new Color(238, 248, 254));
+			list.setForeground(new Color(238, 248, 254));
+			table.setBackground(new Color(20, 35, 54));
+			table.setForeground(new Color(238, 248, 254));
+			soldprice.setForeground(new Color(238, 248, 254));
+			gan.setForeground(new Color(238, 248, 254));
+		}
+		
+		
+	}
+	
+	
+	
+}
+
+class Selected{
+	
+	private String code; 
+	private float cantidad;
+	private String Name;
+	
+	public Selected(String code, String Name, float cantidad) {
+		
+		this.code=code;
+		this.Name=Name;
+		this.cantidad=cantidad;
+		
+	}
+	
+	public String getName() {
+		return Name;
+	}
+	
+	public String getCode() {
+		return code;
+	}
+	
+	public float getCantidad() {
+		return cantidad;
+	}
+	
+	public void setCantidad(float neo) {
+		cantidad=neo;
+	}
+	
 }
