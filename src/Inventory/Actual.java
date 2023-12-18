@@ -364,7 +364,7 @@ public class Actual extends JFrame {
 		
 	}
 	
-	private String[] Listar(int fc,int fn,int fv) {
+	static String[] Listar(int fc,int fn,int fv) {
 		Conexion a = new Conexion();
 		
 		String[] lista= {};
