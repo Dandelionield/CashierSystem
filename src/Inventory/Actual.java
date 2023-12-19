@@ -66,7 +66,7 @@ public class Actual extends JFrame {
 	private DefaultTableModel modelo;
 	private JPanel panel;
 	private String ld="Light";
-	private JList list;
+	private JList<Object> list;
 	
 	protected static int fitroventa=0;
 	protected static int fitronombre=0;
@@ -276,7 +276,11 @@ public class Actual extends JFrame {
 		
 		list = new JList<>();
 		
-		AbstractListModel<Object> alm = new AbstractListModel<>(){
+		AbstractListModel<Object> alm = new AbstractListModel<Object>(){
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
 			String[] values = Listar(0,0,0);
 			public int getSize() {
 				return values.length;
@@ -346,6 +350,11 @@ public class Actual extends JFrame {
 			TableColumn column = table.getColumnModel().getColumn(i);
 
 			column.setCellEditor(new DefaultCellEditor(new JTextField()) {
+
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
 
 				public boolean isCellEditable(EventObject e) {
 
@@ -495,6 +504,10 @@ public class Actual extends JFrame {
 
 
 class emergente extends JFrame{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JPanel content;
 	private JComboBox<String> cmbnombre;
 	private JComboBox<String> cmbventas;
@@ -544,9 +557,9 @@ class emergente extends JFrame{
 			fc=new String[] {"Off","A - Z","Z - A"};
 		}
 		
-		cmbventas = new JComboBox();
+		cmbventas = new JComboBox<String>();
 		cmbventas.setBounds(109, 121, 125, 23);
-		cmbventas.setModel(new DefaultComboBoxModel(fv));
+		cmbventas.setModel(new DefaultComboBoxModel<String>(fv));
 		cmbventas.setSelectedIndex(fitroventa);
 		content.add(cmbventas);
 		
@@ -555,9 +568,9 @@ class emergente extends JFrame{
 		lblNombre.setBounds(40, 75, 59, 23);
 		content.add(lblNombre);
 		
-		cmbnombre = new JComboBox();
+		cmbnombre = new JComboBox<String>();
 		cmbnombre.setBounds(109, 75, 125, 23);
-		cmbnombre.setModel(new DefaultComboBoxModel(fn));
+		cmbnombre.setModel(new DefaultComboBoxModel<String>(fn));
 		cmbnombre.setSelectedIndex(fitronombre);
 		content.add(cmbnombre);
 		
@@ -567,9 +580,9 @@ class emergente extends JFrame{
 		content.add(lblCodigo);
 		
 
-		cmbcode = new JComboBox();
+		cmbcode = new JComboBox<String>();
 		cmbcode.setBounds(109, 163, 125, 23);
-		cmbcode.setModel(new DefaultComboBoxModel(fc));
+		cmbcode.setModel(new DefaultComboBoxModel<String>(fc));
 		cmbcode.setSelectedIndex(fitrocodigo);
 		content.add(cmbcode);
 		
@@ -582,7 +595,11 @@ class emergente extends JFrame{
 				Actual.fitrocodigo=cmbcode.getSelectedIndex();
 				Actual.fitroventa=cmbventas.getSelectedIndex();
 				
-				AbstractListModel<Object> alm = new AbstractListModel<>(){
+				AbstractListModel<Object> alm = new AbstractListModel<Object>(){
+					/**
+					 * 
+					 */
+					private static final long serialVersionUID = 1L;
 					String[] values = Listar(Actual.fitrocodigo,Actual.fitronombre,Actual.fitroventa);
 					public int getSize() {
 						return values.length;
