@@ -59,7 +59,7 @@ public class Lotes extends JFrame {
 	private String ld="Light";
 	private ArrayList<String> dp=new ArrayList<String>(Arrays.asList(Actual.Listar(0,0,0)));
 	private String[] disponibles=Actual.Listar(0,0,0);
-	private JList list;
+	private JList<Object> list;
 	private JPanel panel;
 	private JLabel txtlote;
 	private JLabel txtObt;
@@ -149,8 +149,12 @@ public class Lotes extends JFrame {
 		
 		list = new JList<>();
 		list.setBackground(new Color(238, 248, 254));
-		AbstractListModel<Object> alm = new AbstractListModel<>(){
+		AbstractListModel<Object> alm = new AbstractListModel<Object>(){
 			
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
 			String[] values = disponibles;
 			public int getSize() {
 				return values.length;
@@ -493,7 +497,11 @@ public class Lotes extends JFrame {
 		
 		disponibles=dp.toArray(new String[dp.size()]);
 		
-		AbstractListModel<Object> alm = new AbstractListModel<>(){
+		AbstractListModel<Object> alm = new AbstractListModel<Object>(){
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
 			String[] values = disponibles;
 			public int getSize() {
 				return values.length;
@@ -532,6 +540,11 @@ public class Lotes extends JFrame {
 			TableColumn column = table.getColumnModel().getColumn(i);
 
 			column.setCellEditor(new DefaultCellEditor(new JTextField()) {
+
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
 
 				public boolean isCellEditable(EventObject e) {
 
