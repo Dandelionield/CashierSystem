@@ -320,7 +320,9 @@ public class Lotes extends JFrame {
 				modify mdf=new modify(User,UserName);
 				mdf.setLocationRelativeTo(null);
 				mdf.setVisible(true);
+				sl.removeAll(sl);
 				dispose();
+				
 			}
 		});
 		panel.add(volver);
@@ -454,7 +456,7 @@ public class Lotes extends JFrame {
 				gan.setText("0");
 				price.setText("");
 				lote.setText("");
-				
+				sl.removeAll(sl);
 				
 			}
 		});
