@@ -1,25 +1,21 @@
 package Inventory;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Insets;
-import java.awt.RenderingHints;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.border.AbstractBorder;
 import javax.swing.border.Border;
 
 import com.itextpdf.io.image.ImageDataFactory;
@@ -215,6 +211,32 @@ public class invMecanics {
 		}
 
 		return prod;
+	}
+
+	public static void addAction(String tipo, int size, String Date, String usun, String content, String lote) {
+			
+		Conexion a = new Conexion();
+		
+		try {
+			a.sentence(
+					"INSERT INTO `Acciones` (`tipo`, `nelements`, `fecha`, `user`, `content`, `lote`) "
+							+ "VALUES ('" + tipo + "', '" + size
+							+ "', '" +Date + "', '" + usun + "', '"
+							+ content + "', '" + lote + "');");
+		} catch (SQLException e) {
+			
+			System.out.println("usi: "+e);
+		}
+		
+		a.Close();
+	}
+	
+	public static String ActualDate() {
+		
+		LocalDateTime Hora = LocalDateTime.now();
+        String formattedDateTime = Hora.format(DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm:ss"));
+        
+        return formattedDateTime;
 	}
 
 }
