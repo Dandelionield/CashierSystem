@@ -96,6 +96,7 @@ public class modify extends JFrame {
 
 	private JButton btnEliminar, btnimage, btnguardar, nuevoLote;
 
+	@SuppressWarnings("unused")
 	private JScrollPane scrolldescripcion;
 	private JTextArea descripcion;
 
@@ -454,6 +455,8 @@ public class modify extends JFrame {
 										+ "', '" + prod.getImage() + "');");
 
 						Mecanics.iArchivo(ruta, "./src/Inventory/productPhoto", codigo.getText().toUpperCase());
+						invMecanics.addAction("INS", 1, invMecanics.ActualDate(), (User+"/"+UserName), codigo.getText(), "-----");
+						
 
 					} catch (Exception b) {
 
@@ -479,7 +482,8 @@ public class modify extends JFrame {
 								+ codigo.getText().toUpperCase() + "';");
 
 						Mecanics.iArchivo(ruta, "./src/Inventory/productPhoto", codigo.getText().toUpperCase());
-
+						invMecanics.addAction("UPT", 1, invMecanics.ActualDate(), (User+"/"+UserName), codigo.getText(), "-----");
+						
 					} catch (Exception b) {
 
 						limpieza = false;
@@ -513,6 +517,8 @@ public class modify extends JFrame {
 					JOptionPane.showMessageDialog(null, "Verifique los datos\nError: " + e.toString());
 					repaint();
 				}
+				
+				invMecanics.addAction("DLT", 1, invMecanics.ActualDate(), (User+"/"+UserName), codigo.getText(), "-----");
 				Mecanics.getFile(true);
 				modelo.setRowCount(0);
 				mostrar();
