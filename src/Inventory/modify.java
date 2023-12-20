@@ -629,7 +629,7 @@ public class modify extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 
-			 Lotes lt=new Lotes(User, Username);
+			 Lotes lt=new Lotes(User, UserName);
    lt.setLocationRelativeTo(thisFrame); 
    lt.setVisible(true);
    dispose();
