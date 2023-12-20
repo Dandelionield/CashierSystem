@@ -14,8 +14,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.SwingConstants;
 
 import java.awt.Color;
-
-
+import java.awt.Cursor;
 import java.util.EventObject;
 
 import javax.swing.JTable;
@@ -54,6 +53,8 @@ import java.io.File;
 
 public class modify extends JFrame {
 
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * Launch the application.
 	 */
@@ -88,10 +89,12 @@ public class modify extends JFrame {
 	private JLabel sold;
 	private JLabel popular;
 	private JLabel unpopular;
-
+	
+	protected String [] edit = {"Light","Dark"};
+	
 	private JTextField codigo, producto, precio, existencias, marca;
 
-	private JButton btnEliminar, btnimage, btnguardar, imprimir;
+	private JButton btnEliminar, btnimage, btnguardar, nuevoLote;
 
 	private JScrollPane scrolldescripcion;
 	private JTextArea descripcion;
@@ -520,26 +523,61 @@ public class modify extends JFrame {
 		panel.add(btnEliminar);
 
 		JLabel candado = new JLabel("");
-		candado.setBounds(843, 11, 35, 35);
+		candado.setBounds(805, 11, 35, 35);
 		ImageIcon can = new ImageIcon(new ImageIcon("./src/ResourcePackCaja/CandadoCerrado.png").getImage()
 				.getScaledInstance(candado.getWidth(), candado.getHeight(), Image.SCALE_AREA_AVERAGING));
 		candado.setIcon(can);
 		panel.add(candado);
-
+		
+		JLabel volver = new JLabel("");
+		volver.setBounds(848, 7, 50, 50);
+		Mecanics.lblphoto("./src/ResourcePackCaja/inventario.png", volver);
+		volver.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				volver.setBounds(853, 12, 40, 40);
+				Mecanics.lblphoto("./src/ResourcePackCaja/inventario.png", volver);
+				volver.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				volver.setBounds(848, 7, 50, 50);
+				Mecanics.lblphoto("./src/ResourcePackCaja/inventario.png", volver);
+			}
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				
+				Inventario inv=new Inventario(User,UserName);
+				inv.setLocationRelativeTo(null);
+				inv.setVisible(true);
+				dispose();
+			}
+		});
+		panel.add(volver);
+		
 		editar = new JLabel("");
 		editar.setBounds(452, 11, 35, 35);
-		ImageIcon ed = new ImageIcon(new ImageIcon("./src/ResourcePackCaja/EditarLight.png").getImage()
-				.getScaledInstance(editar.getWidth(), editar.getHeight(), Image.SCALE_AREA_AVERAGING));
-		editar.setIcon(ed);
-
+		Mecanics.lblphoto("./src/ResourcePackCaja/Editar"+edit[theme]+".png", editar);
 		editar.addMouseListener(new MouseAdapter() {
+			
+			public void mouseEntered(MouseEvent e) {
+				editar.setBounds(454, 13, 32, 32);
+				Mecanics.lblphoto("./src/ResourcePackCaja/Editar"+edit[theme]+".png", editar);
+				editar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+			
+			public void mouseExited(MouseEvent e) {
+				editar.setBounds(452, 11, 35, 35);
+				Mecanics.lblphoto("./src/ResourcePackCaja/Editar"+edit[theme]+".png", editar);
+			}
 
 			public void mouseClicked(MouseEvent e) {
 
 				access = (!access);
 
 				if (access == true) {
-
+					
+					
 					candadoIcon = new ImageIcon(new ImageIcon("./src/ResourcePackCaja/CandadoAbierto.png").getImage()
 							.getScaledInstance(candado.getWidth(), candado.getHeight(), Image.SCALE_AREA_AVERAGING));
 					candado.setIcon(candadoIcon);
@@ -623,38 +661,36 @@ public class modify extends JFrame {
 		unpopular.setBounds(10, 123, 172, 14);
 		propiedades.add(unpopular);
 
-		imprimir = cp.buildButton("", cp.doBounds(143, 11, 53, 53), "Lotes", JButton.CENTER, JButton.RIGHT,
+		nuevoLote = cp.buildButton("", cp.doBounds(143, 11, 53, 53), "lotes", JButton.CENTER, JButton.RIGHT,
 				JButton.LEFT, true, true);
-		imprimir.addMouseListener(new MouseAdapter() {
+		nuevoLote.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-
-			 Lotes lt=new Lotes(User, UserName);
-   lt.setLocationRelativeTo(thisFrame); 
-   lt.setVisible(true);
-   dispose();
-
-
+				
+				Lotes lt=new Lotes(User,UserName);
+				lt.setLocationRelativeTo(thisFrame);
+				lt.setVisible(true);
+				dispose();
 			}
 
-			public void mousePressed(MouseEvent e) {
+			public void mouseEntered(MouseEvent e) {
 
-				imprimir.setSize(63, 63);
+				nuevoLote.setSize(48, 48);
 
 				repaint();
 
 			}
 
-			public void mouseReleased(MouseEvent e) {
+			public void mouseExited(MouseEvent e) {
 
-				imprimir.setSize(53, 53);
+				nuevoLote.setSize(53, 53);
 
 				repaint();
 
 			}
 		});
 
-		propiedades.add(imprimir);
+		propiedades.add(nuevoLote);
 
 		boolean aspect = false;
 
@@ -761,12 +797,11 @@ public class modify extends JFrame {
 	public void modifymode(boolean b) {
 
 		Color colorfuente = new Color(20, 35, 54), colorfondo = new Color(238, 248, 254);
-		String labelcolor = "Light";
+		
 
 		if (b == false) {
 			colorfuente = new Color(238, 248, 254);
 			colorfondo = new Color(20, 35, 54);
-			labelcolor = "Dark";
 		}
 
 		panel.setBackground(colorfondo);
@@ -780,9 +815,6 @@ public class modify extends JFrame {
 		txtmarca.setForeground(colorfuente);
 		txtdescripcion.setForeground(colorfuente);
 		txtidioma.setForeground(colorfuente);
-
-		editar.setIcon(new ImageIcon(new ImageIcon("./src/ResourcePackCaja/Editar" + labelcolor + ".png").getImage()
-				.getScaledInstance(editar.getWidth(), editar.getHeight(), Image.SCALE_DEFAULT)));
 
 		codigo.setForeground(colorfuente);
 		precio.setForeground(colorfuente);
