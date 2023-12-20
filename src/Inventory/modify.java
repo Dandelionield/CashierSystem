@@ -623,13 +623,17 @@ public class modify extends JFrame {
 		unpopular.setBounds(10, 123, 172, 14);
 		propiedades.add(unpopular);
 
-		imprimir = cp.buildButton("", cp.doBounds(143, 11, 53, 53), "pdfLight", JButton.CENTER, JButton.RIGHT,
+		imprimir = cp.buildButton("", cp.doBounds(143, 11, 53, 53), "Lotes", JButton.CENTER, JButton.RIGHT,
 				JButton.LEFT, true, true);
 		imprimir.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 
-				invMecanics.reporte1();
+			 Lotes lt=new Lotes(User, Username);
+   lt.setLocationRelativeTo(thisFrame); 
+   lt.setVisible(true);
+   dispose();
+
 
 			}
 
