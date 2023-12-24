@@ -11,6 +11,7 @@ import java.awt.event.WindowEvent;
 import java.sql.ResultSet;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.EventObject;
 
 import javax.swing.DefaultCellEditor;
@@ -18,6 +19,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Color;
 import java.awt.Cursor;
 
@@ -33,6 +36,7 @@ import javax.swing.table.TableColumn;
 import Main.Mecanics;
 import Main.Menu;
 import Main.Runner;
+import Objects.Archivo;
 import Objects.ComponentBuilder;
 import Objects.Conexion;
 
@@ -53,6 +57,7 @@ public class history extends JFrame {
 	private JLabel hnummodify;
 	private JLabel hlote;
 	private JLabel title;
+	ArrayList<String> selected= new ArrayList<String>();
 	
 	/**
 	 * Launch the application.
@@ -89,7 +94,7 @@ public class history extends JFrame {
 		contentPane.setLayout(null);
 		
 		final history thisFrame = this;
-
+		
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
@@ -197,6 +202,103 @@ public class history extends JFrame {
 		table = new JTable();
 		table.setBackground(Fondo[theme]);	
 		table.setModel(modelo);
+		table.addMouseListener(new MouseAdapter() {
+			// @Override
+			public void mouseClicked(MouseEvent evt) {
+				
+				Conexion a=new Conexion();
+				
+				try {
+
+					if (evt.getClickCount() == 2) {
+
+						JTable rec = (JTable) evt.getSource();
+
+						String act=selected.get(rec.getSelectedRow());
+						String date=rec.getModel().getValueAt(rec.getSelectedRow(), 0).toString();
+						
+//						System.out.println(rec.getSelectedRow());
+						ResultSet res= a.consulta("SELECT * FROM Acciones WHERE `fecha`='" + date + "'");
+						
+						if(act.equals("DLT")) {
+							
+							String [] con= res.getString("content").split("//");
+							
+							Archivo prod=new Archivo(con[0],con[1],con[4],con[7],Float.parseFloat(con[6]),Float.parseFloat(con[2]),Float.parseFloat(con[3]),con[5],"");
+							
+							vision vis=new vision(prod,false);
+							vis.setLocationRelativeTo(thisFrame);
+							vis.setVisible(true);
+							
+						}
+						
+						
+						if(act.equals("INS")||act.equals("UPT")) {
+							
+							String [] content=res.getString("content").split("//");
+							boolean view=true;
+							Archivo prod=invMecanics.muestra(content[0].toUpperCase().trim());
+							
+							if(prod==null) {
+							String [] msj= {"Elemento no encontrado", "Item not found", "ADVERTENCIA", "WARNING"};
+							JOptionPane.showMessageDialog(thisFrame, msj[Mecanics.getLanguage(true)],msj[(Mecanics.getLanguage(true)+2)],JOptionPane.WARNING_MESSAGE);
+							}
+							if(act.equals("INS")) {
+								view=false;
+							}
+							if(prod!=null) {
+							vision vis=new vision(prod,view);
+							
+							if(act.equals("UPT")) {
+								vis.content= content;
+							}
+							
+							vis.setLocationRelativeTo(thisFrame);
+							vis.setVisible(true);
+							}
+						}
+						
+						if(act.equals("NL")) {
+//							System.out.println("yes");
+							
+							Lotes lt=new Lotes(User,UserName,true);
+							String [] con= res.getString("content").split("//");
+							int add=0;
+//							System.out.println("yes");
+							for(int i=0;i<Integer.parseInt(res.getString("nelements"));i++) {
+//								System.out.println(i);
+								lt.sl.add(new Selected(con[0+add],con[1+add],Float.parseFloat(con[2+add]),Float.parseFloat(con[3+add])));
+								add+=4;
+							}
+//							System.out.println("yes");
+							lt.lote.setText(res.getString("lote"));
+							lt.inicio(res.getString("fecha"));
+							lt.setLocationRelativeTo(thisFrame);
+							lt.setVisible(true);
+							a.Close();
+							dispose();
+//							System.out.println("yes");
+							
+						}
+						
+						
+						
+						
+						a.Close();
+						
+						
+
+						repaint();
+
+					}
+
+				} catch (Exception e) {
+
+					repaint();
+				}
+
+			}
+		});
 		mostrar();
 		
 		
@@ -240,14 +342,50 @@ public class history extends JFrame {
 	private void mostrar() {
 
 		Conexion a = new Conexion();
-
+		String Tipo="";
 		try {
 
 			ResultSet res = a.consulta("SELECT * FROM Acciones");
 
 			while (res.next()) {
+				selected.add(res.getString("tipo"));
+				switch(res.getString("tipo")) {
+				
+				case "NL":
+					if(lenguaje) {
+						Tipo="Nuevo Lote";
+					}else {
+						Tipo="New Batch";
+					}
+					break;
+					
+				case "INS":
+					if(lenguaje) {
+						Tipo="Elemento Registrado";
+					}else {
+						Tipo="Registered Item";
+					}
+					break;
+				
+				case "UPT":
+					if(lenguaje) {
+						Tipo="Elemento Actualizado";
+					}else {
+						Tipo="Updated Item";
+					}
+					break;
+				
+				case "DLT":
+					if(lenguaje) {
+						Tipo="Elemento Eliminado";
+					}else {
+						Tipo="Deleted Item";
+					}
+					break;
+					
+				}
 
-				Object[] products = { res.getString("fecha"), res.getString("user"), res.getString("tipo"), res.getString("nelements"),
+				Object[] products = { res.getString("fecha"), res.getString("user"), Tipo, res.getString("nelements"),
 						res.getString("lote") };
 				modelo.addRow(products);
 				
@@ -281,7 +419,7 @@ public class history extends JFrame {
 			column.setCellRenderer(rightRenderer);
 		
 		}
-		
+		a.Close();
 	}
 
 	public void Clock() {
