@@ -1043,6 +1043,10 @@ public class Mecanics {
 
 	public static void lblphoto(String ruta, JLabel label) {
 		
+		if(new File(ruta).exists()==false) {
+			ruta="./src/ResourcePackCaja/image-not-found.png";
+		}
+		
 		label.setIcon(new ImageIcon(new ImageIcon(ruta).getImage().getScaledInstance(label.getWidth(), label.getHeight(), java.awt.Image.SCALE_SMOOTH)));
 	}
 	
