@@ -1,9 +1,7 @@
 package Inventory;
 
-import java.awt.Component;
 import java.awt.Desktop;
-import java.awt.Graphics;
-import java.awt.Insets;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -15,8 +13,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.border.Border;
 
 import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.geom.PageSize;
@@ -36,11 +32,6 @@ import Objects.Conexion;
 
 public class invMecanics {
 	
-	public static void roundPanel(JPanel panel, int radious) {
-		
-		panel.setBorder(new RoundedBorder(radious));
-	}
-	
 	public static void reporte1() {
 		
 		String[] len={ "Informacion de producto:", "Productos Disponibles:", "Codigo:", "Producto:", "Precio:",
@@ -48,7 +39,7 @@ public class invMecanics {
 				"(ESP)", "Editar", "Vendido:", "Mas popular:", "Menos popular:", "Producto mas vendido: ",
 				"Producto menos vendido: ", "Inventario" };
 		
-		if(Mecanics.getMode(true)==1) {
+		if(Mecanics.getLanguage(true)==1) {
 			
 			len= new String[]{ "Product information:", "Available products:", "Code:", "Product:", "Price:", "Stock:",
 					"Unit:", "Brand:", "Description:", "Select Image", "Save", "Delete", "(ENG)", "Edit", "Sold:",
@@ -174,8 +165,10 @@ public class invMecanics {
 					res.getString("Unid"), res.getString("Image"));
 
 			res.close();
-
+			a.Close();
 		} catch (Exception e) {
+			
+
 		}
 
 		return prod;
@@ -209,8 +202,11 @@ public class invMecanics {
 
 		} catch (Exception e) {
 		}
-
+		
+		a.Close();
+		
 		return prod;
+		
 	}
 
 	public static void addAction(String tipo, int size, String Date, String usun, String content, String lote) {
@@ -238,25 +234,6 @@ public class invMecanics {
         
         return formattedDateTime;
 	}
+	
 
-}
-
-class RoundedBorder implements Border {
-    private int radius;
-
-    RoundedBorder(int radius) {
-        this.radius = radius;
-    }
-
-    public Insets getBorderInsets(Component c) {
-        return new Insets(this.radius + 1, this.radius + 1, this.radius + 2, this.radius);
-    }
-
-    public boolean isBorderOpaque() {
-        return true;
-    }
-
-    public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
-        g.drawRoundRect(x, y, width - 1, height - 1, radius, radius);
-    }
 }
