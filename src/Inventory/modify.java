@@ -33,7 +33,6 @@ import java.awt.Toolkit;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-
 import javax.swing.JButton;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -49,7 +48,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-
 
 public class modify extends JFrame {
 
@@ -89,9 +87,9 @@ public class modify extends JFrame {
 	private JLabel sold;
 	private JLabel popular;
 	private JLabel unpopular;
-	
-	protected String [] edit = {"Light","Dark"};
-	
+
+	protected String[] edit = { "Light", "Dark" };
+
 	private JTextField codigo, producto, precio, existencias, marca;
 
 	private JButton btnEliminar, btnimage, btnguardar, nuevoLote;
@@ -178,13 +176,15 @@ public class modify extends JFrame {
 
 		JLabel fondo = new JLabel("");
 		fondo.setBounds(0, 0, 1013, 609);
-		ImageIcon imgfondo = new ImageIcon(new ImageIcon("./src/ResourcePackCaja/Fondo.JPG").getImage().getScaledInstance(fondo.getWidth(), fondo.getHeight(), Image.SCALE_SMOOTH));	
+		ImageIcon imgfondo = new ImageIcon(new ImageIcon("./src/ResourcePackCaja/Fondo.JPG").getImage()
+				.getScaledInstance(fondo.getWidth(), fondo.getHeight(), Image.SCALE_SMOOTH));
 		fondo.setIcon(imgfondo);
 		contentPane.add(fondo);
 
 		foto = new JLabel("");
 		foto.setBounds(25, 25, 204, 176);
-		ImageIcon pfoto = new ImageIcon(new ImageIcon("./src/ResourcePackCaja/image-not-found.png").getImage().getScaledInstance(foto.getWidth(), foto.getHeight(), Image.SCALE_SMOOTH));	
+		ImageIcon pfoto = new ImageIcon(new ImageIcon("./src/ResourcePackCaja/image-not-found.png").getImage()
+				.getScaledInstance(foto.getWidth(), foto.getHeight(), Image.SCALE_SMOOTH));
 		foto.setIcon(pfoto);
 		foto.setBorder(new LineBorder(new Color(0, 0, 0)));
 		panel.add(foto);
@@ -248,7 +248,8 @@ public class modify extends JFrame {
 		txtcodigo.setFont(new java.awt.Font("Microsoft JhengHei UI", 1, 12));
 		panel.add(txtcodigo);
 
-		codigo = cp.buildTextField("", cp.doBounds(344, 65, 86, 20), SwingConstants.LEFT,new Font("Microsoft JhengHei UI", Font.BOLD, 12), Color.BLUE, Color.BLUE, true, true);			
+		codigo = cp.buildTextField("", cp.doBounds(344, 65, 86, 20), SwingConstants.LEFT,
+				new Font("Microsoft JhengHei UI", Font.BOLD, 12), Color.BLUE, Color.BLUE, true, true);
 		codigo.getDocument().addDocumentListener(new DocumentListener() {
 
 			public void insertUpdate(DocumentEvent e) {
@@ -298,7 +299,8 @@ public class modify extends JFrame {
 		txtproductos.setBounds(262, 98, 72, 26);
 		panel.add(txtproductos);
 
-		producto = cp.buildTextField("", cp.doBounds(344, 102, 144, 20), SwingConstants.LEFT,new Font("Microsoft JhengHei UI", Font.BOLD, 12), Color.BLUE, Color.BLUE, true, true);		
+		producto = cp.buildTextField("", cp.doBounds(344, 102, 144, 20), SwingConstants.LEFT,
+				new Font("Microsoft JhengHei UI", Font.BOLD, 12), Color.BLUE, Color.BLUE, true, true);
 		panel.add(producto);
 		producto.setColumns(10);
 
@@ -307,7 +309,8 @@ public class modify extends JFrame {
 		txtprecio.setBounds(262, 133, 72, 26);
 		panel.add(txtprecio);
 
-		precio = cp.buildTextField("", cp.doBounds(344, 137, 144, 20), SwingConstants.LEFT,new Font("Microsoft JhengHei UI", Font.BOLD, 12), Color.BLUE, Color.BLUE, true, true);	
+		precio = cp.buildTextField("", cp.doBounds(344, 137, 144, 20), SwingConstants.LEFT,
+				new Font("Microsoft JhengHei UI", Font.BOLD, 12), Color.BLUE, Color.BLUE, true, true);
 		panel.add(precio);
 		precio.getDocument().addDocumentListener(new DocumentListener() {
 
@@ -344,7 +347,8 @@ public class modify extends JFrame {
 		txtexistencia.setBounds(262, 170, 72, 26);
 		panel.add(txtexistencia);
 
-		existencias = cp.buildTextField("", cp.doBounds(344, 174, 144, 20), SwingConstants.LEFT,new Font("Microsoft JhengHei UI", Font.BOLD, 12), Color.BLUE, Color.BLUE, true, true);		
+		existencias = cp.buildTextField("", cp.doBounds(344, 174, 144, 20), SwingConstants.LEFT,
+				new Font("Microsoft JhengHei UI", Font.BOLD, 12), Color.BLUE, Color.BLUE, true, true);
 		panel.add(existencias);
 		existencias.getDocument().addDocumentListener(new DocumentListener() {
 
@@ -390,7 +394,8 @@ public class modify extends JFrame {
 		txtmarca.setBounds(262, 242, 72, 26);
 		panel.add(txtmarca);
 
-		marca = cp.buildTextField("", cp.doBounds(344, 246, 144, 20), SwingConstants.LEFT,new Font("Microsoft JhengHei UI", Font.BOLD, 12), Color.BLUE, Color.BLUE, true, true);		
+		marca = cp.buildTextField("", cp.doBounds(344, 246, 144, 20), SwingConstants.LEFT,
+				new Font("Microsoft JhengHei UI", Font.BOLD, 12), Color.BLUE, Color.BLUE, true, true);
 		panel.add(marca);
 		marca.setColumns(10);
 
@@ -434,6 +439,7 @@ public class modify extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 
 				boolean limpieza = true;
+				String content = "";
 
 				if (access == false) {
 
@@ -455,14 +461,15 @@ public class modify extends JFrame {
 										+ "', '" + prod.getImage() + "');");
 
 						Mecanics.iArchivo(ruta, "./src/Inventory/productPhoto", codigo.getText().toUpperCase());
-						invMecanics.addAction("INS", 1, invMecanics.ActualDate(), (User+"/"+UserName), codigo.getText(), "-----");
-						
+						invMecanics.addAction("INS", 1, invMecanics.ActualDate(), (User + "/" + UserName),
+								codigo.getText(), "-----");
 
 					} catch (Exception b) {
-
+						System.out.println(b);
 						limpieza = false;
 						repaint();
 					}
+					a.Close();
 				}
 
 				if (access == true) {
@@ -474,6 +481,11 @@ public class modify extends JFrame {
 						String imgurl = "./src/Inventory/productPhoto/" + codigo.getText() + "."
 								+ Mecanics.getExtension(new File(ruta));
 
+						Archivo old = invMecanics.muestra(codigo.getText().toUpperCase().trim());
+						content += codigo.getText().toUpperCase() + "//" + old.getProduct() + "//" + old.getBrand()
+								+ "//" + old.getDescription() + "//" + old.getAmount() + "//" + old.getSold() + "//"
+								+ old.getPrice() + "//" + old.getUnid() + "//" + old.getImage();
+
 						a.sentence("UPDATE `Inventario` SET  `Product`='" + producto.getText() + "', `Brand`='"
 								+ marca.getText() + "', `Description`='" + descripcion.getText() + "', `Amount`='"
 								+ Float.parseFloat(existencias.getText()) + "',`Price`='"
@@ -482,13 +494,15 @@ public class modify extends JFrame {
 								+ codigo.getText().toUpperCase() + "';");
 
 						Mecanics.iArchivo(ruta, "./src/Inventory/productPhoto", codigo.getText().toUpperCase());
-						invMecanics.addAction("UPT", 1, invMecanics.ActualDate(), (User+"/"+UserName), codigo.getText(), "-----");
-						
+						invMecanics.addAction("UPT", 1, invMecanics.ActualDate(), (User + "/" + UserName), content,
+								"-----");
+
 					} catch (Exception b) {
 
 						limpieza = false;
 						repaint();
 					}
+					a.Close();
 
 				}
 				Mecanics.getFile(true);
@@ -508,17 +522,22 @@ public class modify extends JFrame {
 		btnEliminar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent d) {
 
+				Archivo prod = invMecanics.muestra(codigo.getText());
+				String Content = prod.getCode() + "//" + prod.getProduct() + "//" + prod.getSold() + "//"
+						+ prod.getPrice() + "//" + prod.getBrand() + "//" + prod.getUnid() + "//" + prod.getAmount()
+						+ "//" + prod.getDescription();
+
 				try {
 					Conexion a = new Conexion();
 
 					a.sentence("DELETE FROM `inventario` WHERE `Code`='" + codigo.getText().toUpperCase() + "';");
-
+					a.Close();
 				} catch (Exception e) {
 					JOptionPane.showMessageDialog(null, "Verifique los datos\nError: " + e.toString());
 					repaint();
 				}
-				
-				invMecanics.addAction("DLT", 1, invMecanics.ActualDate(), (User+"/"+UserName), codigo.getText(), "-----");
+
+				invMecanics.addAction("DLT", 1, invMecanics.ActualDate(), (User + "/" + UserName), Content, "-----");
 				Mecanics.getFile(true);
 				modelo.setRowCount(0);
 				mostrar();
@@ -534,7 +553,7 @@ public class modify extends JFrame {
 				.getScaledInstance(candado.getWidth(), candado.getHeight(), Image.SCALE_AREA_AVERAGING));
 		candado.setIcon(can);
 		panel.add(candado);
-		
+
 		JLabel volver = new JLabel("");
 		volver.setBounds(848, 7, 50, 50);
 		Mecanics.lblphoto("./src/ResourcePackCaja/inventario.png", volver);
@@ -545,36 +564,38 @@ public class modify extends JFrame {
 				Mecanics.lblphoto("./src/ResourcePackCaja/inventario.png", volver);
 				volver.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 			}
+
 			@Override
 			public void mouseExited(MouseEvent e) {
 				volver.setBounds(848, 7, 50, 50);
 				Mecanics.lblphoto("./src/ResourcePackCaja/inventario.png", volver);
 			}
+
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				
-				Inventario inv=new Inventario(User,UserName);
+
+				Inventario inv = new Inventario(User, UserName);
 				inv.setLocationRelativeTo(null);
 				inv.setVisible(true);
 				dispose();
 			}
 		});
 		panel.add(volver);
-		
+
 		editar = new JLabel("");
 		editar.setBounds(452, 11, 35, 35);
-		Mecanics.lblphoto("./src/ResourcePackCaja/Editar"+edit[theme]+".png", editar);
+		Mecanics.lblphoto("./src/ResourcePackCaja/Editar" + edit[theme] + ".png", editar);
 		editar.addMouseListener(new MouseAdapter() {
-			
+
 			public void mouseEntered(MouseEvent e) {
 				editar.setBounds(454, 13, 32, 32);
-				Mecanics.lblphoto("./src/ResourcePackCaja/Editar"+edit[theme]+".png", editar);
+				Mecanics.lblphoto("./src/ResourcePackCaja/Editar" + edit[theme] + ".png", editar);
 				editar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 			}
-			
+
 			public void mouseExited(MouseEvent e) {
 				editar.setBounds(452, 11, 35, 35);
-				Mecanics.lblphoto("./src/ResourcePackCaja/Editar"+edit[theme]+".png", editar);
+				Mecanics.lblphoto("./src/ResourcePackCaja/Editar" + edit[theme] + ".png", editar);
 			}
 
 			public void mouseClicked(MouseEvent e) {
@@ -582,8 +603,7 @@ public class modify extends JFrame {
 				access = (!access);
 
 				if (access == true) {
-					
-					
+
 					candadoIcon = new ImageIcon(new ImageIcon("./src/ResourcePackCaja/CandadoAbierto.png").getImage()
 							.getScaledInstance(candado.getWidth(), candado.getHeight(), Image.SCALE_AREA_AVERAGING));
 					candado.setIcon(candadoIcon);
@@ -672,8 +692,8 @@ public class modify extends JFrame {
 		nuevoLote.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				
-				Lotes lt=new Lotes(User,UserName);
+
+				Lotes lt = new Lotes(User, UserName, false);
 				lt.setLocationRelativeTo(thisFrame);
 				lt.setVisible(true);
 				dispose();
@@ -715,8 +735,8 @@ public class modify extends JFrame {
 		modifylen();
 
 	}
-	
-	//===============================================================================================================================================================
+
+	// ===============================================================================================================================================================
 
 	private void fill(String code) {
 
@@ -749,13 +769,11 @@ public class modify extends JFrame {
 		}
 
 		ImageIcon ima = new ImageIcon(new ImageIcon(ruta).getImage().getScaledInstance(foto.getWidth(),
-		foto.getHeight(), Image.SCALE_AREA_AVERAGING));
+				foto.getHeight(), Image.SCALE_AREA_AVERAGING));
 		foto.setIcon(ima);
 		foto.repaint();
 
 	}
-
-	
 
 	public void esp() {
 		String leno[] = { "Informacion de producto:", "Productos Disponibles:", "Codigo:", "Producto:", "Precio:",
@@ -803,7 +821,6 @@ public class modify extends JFrame {
 	public void modifymode(boolean b) {
 
 		Color colorfuente = new Color(20, 35, 54), colorfondo = new Color(238, 248, 254);
-		
 
 		if (b == false) {
 			colorfuente = new Color(238, 248, 254);
@@ -847,6 +864,7 @@ public class modify extends JFrame {
 
 	}
 
+	@SuppressWarnings("serial")
 	public void mostrar() {
 
 		Conexion a = new Conexion();
@@ -881,8 +899,7 @@ public class modify extends JFrame {
 			});
 
 		}
-
+		a.Close();
 	}
 
-	
 }
