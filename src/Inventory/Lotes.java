@@ -102,6 +102,9 @@ public class Lotes extends JFrame {
 
 		cp = new ComponentBuilder("./src/ResourcePackCaja", Fondo[theme]);
 
+		setIconImage(Toolkit.getDefaultToolkit().getImage("./src/ResourcePackCaja/Inventario.png"));
+		setResizable(false);
+		
 		final Lotes thisFrame = this;
 
 		addWindowListener(new WindowAdapter() {
