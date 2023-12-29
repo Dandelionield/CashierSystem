@@ -70,6 +70,7 @@ public class vision extends JFrame {
 	 * Create the frame.
 	 */
 	public vision(Archivo prod, boolean acceso) {
+		setIconImage(Toolkit.getDefaultToolkit().getImage("./src/ResourcePackCaja/Inventario.png"));
 		setResizable(false);
 
 		if (Mecanics.getLanguage(true) == 1) {
