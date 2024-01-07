@@ -13,6 +13,7 @@ import javax.swing.border.LineBorder;
 
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.Toolkit;
 
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
