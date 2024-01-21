@@ -2,18 +2,23 @@ package Objects;
 
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
+
 import javax.swing.JViewport;
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
 import javax.swing.table.TableColumn;
 import javax.swing.DefaultCellEditor;
-import javax.swing.border.MatteBorder;
 import javax.swing.SwingConstants;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import javax.swing.JTextArea;
 import javax.swing.ImageIcon;
+
+import javax.swing.border.MatteBorder;
+import javax.swing.border.EmptyBorder;
+
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -67,6 +72,14 @@ public class ComponentBuilder{
 		this.url = url+"/";
 		this.extention = ".png";
 		this.Fondo = null;
+		
+	}
+	
+	public ComponentBuilder(Color Fondo){
+		
+		this.url = "";
+		this.extention = ".png";
+		this.Fondo = Fondo;
 		
 	}
 	
@@ -137,6 +150,45 @@ public class ComponentBuilder{
 		this.Colour = Colour;
 		
 	}
+	
+	/*public static String actionimage(JPanel panel) {
+		
+		File archivo=new File("./src/ResourcePackCaja/image-not-found.png");
+		
+		try {
+		
+			try {
+			  
+				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+
+			} catch (Exception e) {}
+
+			JFileChooser jf=new JFileChooser();
+			jf.setDialogTitle("Searcher");
+			jf.showSaveDialog(panel);
+			
+			archivo= jf.getSelectedFile();
+			String arc= Mecanics.getExtension(archivo);
+			
+			if(arc.equalsIgnoreCase("png")==false && arc.equalsIgnoreCase("jpg")==false) {
+				
+				String []error= {"ERROR, Seleccione un archivo con los formatos permitidos.","ERROR, Select a file with the allowed formats."};
+				
+			    JOptionPane.showMessageDialog(null, error[getLanguage(true)]+" \n\n->PNG\n->JPG\n", "Error", JOptionPane.ERROR_MESSAGE);
+			    archivo=new File("./src/ResourcePackCaja/image-not-found.png");
+				
+			}
+
+		}catch(Exception e) {
+			
+			String []error= {"Error de búsqueda: Documento no encontrado.","Search error: Document not found."};
+			JOptionPane.showMessageDialog(null, error[getLanguage(true)], "Error", JOptionPane.ERROR_MESSAGE);
+			archivo=new File("./src/ResourcePackCaja/image-not-found.png");
+			
+		}
+
+		return archivo;
+	}//*/
 	
 	public void buildTable(String[] Column, int[] Bounds){
 		
@@ -256,6 +308,24 @@ public class ComponentBuilder{
 
 	}
 	
+	public JScrollPane buildJScrollPane(Table Tabla, int[] Bounds){
+		
+		JViewport View = new JViewport();
+		View.setView(Tabla);
+		View.setBackground(Tabla.getBackground());
+		
+		JScrollPane Scroll = new JScrollPane();
+		Scroll.setViewport(View);
+		Scroll.setBorder(new EmptyBorder(0, 0, 0, 0));
+		Scroll.getVerticalScrollBar().setUI(new ScrollBar(Tabla.getBackground(), (Tabla.getColumn(0)!=null) ? Tabla.getColumn(0).getFocusRowBackground() : Color.GRAY));
+		Scroll.setBackground(Tabla.getBackground());
+		
+		Scroll.setBounds(Bounds[0], Bounds[1], Bounds[2], Bounds[3]);
+		
+		return Scroll;
+		
+	}
+	
 	public DefaultTableModel getDefaultTableModel(){
 		
 		return Tablita;
@@ -272,6 +342,12 @@ public class ComponentBuilder{
 		
 		return Table;
 		
+	}
+	
+	public static JPanel buildPanel(int[] Bounds, int[] Rectangle, Color color){
+
+		return buildPanel(Bounds, Rectangle, 0, 0, color);
+
 	}
 	
 	public static JPanel buildPanel(int[] Bounds, int[] Rectangle, float sx, float sy, Color color){
@@ -317,6 +393,22 @@ public class ComponentBuilder{
 		
 	}
 	
+	public JLabel buildLabel(String Text, int[] Bounds, int VTextPosition, int HTextPosition, Font Format){
+		
+		JLabel Etiqueta = new JLabel(Text);
+		
+		Etiqueta.setBounds(Bounds[0], Bounds[1], Bounds[2], Bounds[3]);
+		Etiqueta.setVerticalTextPosition(VTextPosition);
+        Etiqueta.setHorizontalTextPosition(HTextPosition);
+		Etiqueta.setForeground(Colour);
+		Etiqueta.setBackground(Fondo);
+		Etiqueta.setOpaque(true);
+		Etiqueta.setFont(Format);
+		
+		return Etiqueta;
+		
+	}
+	
 	public JLabel buildLabel(String Text, int[] Bounds, String Name, int Width, int Height, int VTextPosition, int HTextPosition, int HAlignment, Font Format){
 		
 		JLabel Etiqueta = new JLabel(Text);
@@ -344,8 +436,8 @@ public class ComponentBuilder{
 		Etiqueta.setBounds(Bounds[0], Bounds[1], Bounds[2], Bounds[3]);
 
 		Image icono = new ImageIcon(url+Name+extention).getImage().getScaledInstance(Bounds[3], Bounds[3], Image.SCALE_SMOOTH);
-
         Etiqueta.setIcon(new ImageIcon(icono));
+		
 		Etiqueta.setVerticalTextPosition(VTextPosition);
         Etiqueta.setHorizontalTextPosition(HTextPosition);
 		Etiqueta.setHorizontalAlignment(HAlignment);
@@ -377,6 +469,25 @@ public class ComponentBuilder{
 		
 	}
 	
+	public JTextField buildTextField(String Text, int[] Bounds, int HAlignment, Font Format, MatteBorder Border, Color Caret, boolean Editable, boolean Visible){
+
+		JTextField PanelTexto = new JTextField(Text);
+
+		PanelTexto.setBounds(Bounds[0], Bounds[1], Bounds[2], Bounds[3]);
+		PanelTexto.setHorizontalAlignment(HAlignment);
+		PanelTexto.setOpaque(true);
+		PanelTexto.setFont(Format);
+		PanelTexto.setBorder(Border);
+		PanelTexto.setForeground(Colour);
+		PanelTexto.setCaretColor(Caret);
+		PanelTexto.setBackground(Fondo);
+		PanelTexto.setEditable(Editable);
+		PanelTexto.setVisible(Visible);
+		
+		return PanelTexto;
+		
+	}
+	
 	public JTextField buildTextField(String Text, int[] Bounds, int HAlignment, Font Format, Color Caret, boolean Editable, boolean Visible){
 
 		JTextField PanelTexto = new JTextField(Text);
@@ -389,6 +500,70 @@ public class ComponentBuilder{
 		PanelTexto.setCaretColor(Caret);
 		PanelTexto.setBackground(Fondo);
 		PanelTexto.setEditable(Editable);
+		PanelTexto.setVisible(Visible);
+		
+		return PanelTexto;
+		
+	}
+	
+	public JTextArea buildTextArea(String Text, int[] Bounds, boolean LineWrap, boolean WrapStyle, Font Format, Color Caret, boolean Editable, boolean Visible){
+
+		JTextArea PanelTexto = new JTextArea(Text);
+		
+		PanelTexto.setLineWrap(LineWrap);
+        PanelTexto.setWrapStyleWord(WrapStyle);
+		PanelTexto.setBounds(Bounds[0], Bounds[1], Bounds[2], Bounds[3]);
+		PanelTexto.setAlignmentX(0);
+		PanelTexto.setAlignmentY(0);
+		PanelTexto.setOpaque(true);
+		PanelTexto.setFont(Format);
+		PanelTexto.setForeground(Colour);
+		PanelTexto.setCaretColor(Caret);
+		PanelTexto.setBackground(Fondo);
+		PanelTexto.setEditable(Editable);
+		PanelTexto.getCaret().setVisible(Editable);
+		PanelTexto.getCaret().setSelectionVisible(Editable);
+		PanelTexto.setVisible(Visible);
+		
+		return PanelTexto;
+		
+	}
+	
+	public JTextArea buildTextArea(String Text, int[] Bounds, Font Format, Color Caret, boolean Editable, boolean Visible){
+
+		JTextArea PanelTexto = new JTextArea(Text);
+		
+		PanelTexto.setBounds(Bounds[0], Bounds[1], Bounds[2], Bounds[3]);
+		PanelTexto.setAlignmentX(0);
+		PanelTexto.setAlignmentY(0);
+		PanelTexto.setOpaque(true);
+		PanelTexto.setFont(Format);
+		PanelTexto.setForeground(Colour);
+		PanelTexto.setCaretColor(Caret);
+		PanelTexto.setBackground(Fondo);
+		PanelTexto.setEditable(Editable);
+		PanelTexto.getCaret().setVisible(Editable);
+		PanelTexto.getCaret().setSelectionVisible(Editable);
+		PanelTexto.setVisible(Visible);
+		
+		return PanelTexto;
+		
+	}
+	
+	public JTextArea buildTextArea(String Text, Font Format, Color Caret, boolean Editable, boolean Visible){
+
+		JTextArea PanelTexto = new JTextArea(Text);
+		
+		PanelTexto.setAlignmentX(0);
+		PanelTexto.setAlignmentY(0);
+		PanelTexto.setOpaque(true);
+		PanelTexto.setFont(Format);
+		PanelTexto.setForeground(Colour);
+		PanelTexto.setCaretColor(Caret);
+		PanelTexto.setBackground(Fondo);
+		PanelTexto.setEditable(Editable);
+		PanelTexto.getCaret().setVisible(Editable);
+		PanelTexto.getCaret().setSelectionVisible(Editable);
 		PanelTexto.setVisible(Visible);
 		
 		return PanelTexto;
@@ -513,6 +688,7 @@ public class ComponentBuilder{
 		Boton.setVerticalTextPosition(VTextPosition);
         Boton.setHorizontalTextPosition(HTextPosition);
 		Boton.setBackground(color);
+		Boton.setForeground(Colour);
 		Boton.setFocusable(false);
 		Boton.setOpaque(true);
         Boton.setContentAreaFilled(false);
