@@ -260,8 +260,6 @@ public class Table extends JTable{
 		
 		this.Tablita.addColumn(ColumnName);
 		
-		adder();
-		
 	}
 	
 	public void addColumn(ImageIcon icono){
@@ -292,33 +290,11 @@ public class Table extends JTable{
 		
 		this.Tablita.addColumn(ColumnName, ColumnData);
 		
-		adder();
-		
 	}
 	
 	public void addColumn(Object ColumnName, Vector<?> ColumnData){
 		
 		this.Tablita.addColumn(ColumnName, ColumnData);
-		
-		adder();
-		
-	}
-	
-	private void adder(){
-		
-		try{
-			
-			this.CellEditable.add(CellEditable.get(CellEditable.size()-1));
-			
-			this.Cell.add(new TableCell(Cell.get(Cell.size()-1)));
-			
-		}catch(Exception e){
-			
-			this.CellEditable.add(true);
-			
-			this.Cell.add(new TableCell());
-			
-		}
 		
 	}
 	
@@ -390,7 +366,18 @@ public class Table extends JTable{
 			
 			TableColumn Column = this.getColumnModel().getColumn(i);
 			
-			Column.setCellRenderer(this.Cell.get(i));
+			try{
+				
+				Column.setCellRenderer(this.Cell.get(i));
+				
+			}catch(Exception e){
+				
+				Column.setCellRenderer((Cell.size()!=0) ? this.Cell.get(Cell.size()-1) : new TableCell());
+				
+				this.CellEditable.add((CellEditable.size()!=0) ? CellEditable.get(CellEditable.size()-1) : true);
+				this.Cell.add((Cell.size()!=0) ? this.Cell.get(Cell.size()-1) : new TableCell());
+				
+			}
 			
 			if (this.Cell.get(i).hasImage()){
 				
