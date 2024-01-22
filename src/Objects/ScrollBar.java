@@ -23,11 +23,13 @@ public class ScrollBar extends BasicScrollBarUI {
 	
 	private Color Background;
 	private Color ThumbBackground;
+	private Color ArrowBackground;
 	
 	public ScrollBar(){
 		
 		this.Background = Color.WHITE;
 		this.ThumbBackground = Color.GRAY;
+		this.ArrowBackground = Color.BLACK;
 		
 		innit();
 		
@@ -37,6 +39,7 @@ public class ScrollBar extends BasicScrollBarUI {
 		
 		this.Background = Background;
 		this.ThumbBackground = Color.GRAY;
+		this.ArrowBackground = Color.BLACK;
 		
 		innit();
 		
@@ -46,6 +49,17 @@ public class ScrollBar extends BasicScrollBarUI {
 		
 		this.Background = Background;
 		this.ThumbBackground = ThumbBackground;
+		this.ArrowBackground = Color.BLACK;
+		
+		innit();
+		
+	}
+	
+	public ScrollBar(Color Background, Color ThumbBackground, Color ArrowBackground){
+		
+		this.Background = Background;
+		this.ThumbBackground = ThumbBackground;
+		this.ArrowBackground = ArrowBackground;
 		
 		innit();
 		
@@ -82,7 +96,7 @@ public class ScrollBar extends BasicScrollBarUI {
 				RenderingHints Render = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 				g2d.setRenderingHints(Render);
 			
-                g2d.setColor(Color.BLACK);
+                g2d.setColor(ArrowBackground);
 				g2d.fillOval(x - 1, y, getIconWidth(), getIconHeight());
                 g2d.dispose();
 			
@@ -121,7 +135,7 @@ public class ScrollBar extends BasicScrollBarUI {
 				RenderingHints Render = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 				g2d.setRenderingHints(Render);
 			
-                g2d.setColor(Color.BLACK);
+                g2d.setColor(ArrowBackground);
 				g2d.fillOval(x - 1, y, getIconWidth(), getIconHeight());
                 g2d.dispose();
 				
@@ -149,10 +163,21 @@ public class ScrollBar extends BasicScrollBarUI {
 		
     }
 	
-	private void setScrollBarWidth(JScrollBar scrollBar, int width){
+	private void setScrollBarWidth(JScrollBar scrollbar, int width){
 		
-        Dimension dim = new Dimension(width, Integer.MAX_VALUE);
-        scrollBar.setPreferredSize(dim);
+		Dimension dim;
+		
+		if (scrollbar.getOrientation() == JScrollBar.VERTICAL){
+			
+			dim = new Dimension(width, Integer.MAX_VALUE);
+			
+		}else{
+			
+			dim = new Dimension(Integer.MAX_VALUE, width);
+			
+		}
+		
+        scrollbar.setPreferredSize(dim);
 		
     }
 	
@@ -170,4 +195,3 @@ public class ScrollBar extends BasicScrollBarUI {
 	}
 	
 }
-	
