@@ -2,6 +2,7 @@ package CashCashier;
 
 import Main.Mecanics;
 import Objects.ComponentBuilder;
+import Objects.Table;
 import Objects.Factura;
 import Objects.Cliente;
 import Objects.Trabajador;
@@ -96,9 +97,7 @@ public class CajaRegistradora extends JPanel{
 	private JButton Check;
 	private JButton Print;
 
-	private JScrollPane Table;
-	private DefaultTableModel Tablita;
-	private JTable Tablitita;
+	private Table Tabla;
 
 	private String[] CodeTexto = {"Código","Code"};
 	private String[] NameTexto = {"Producto","Product"};
@@ -156,17 +155,15 @@ public class CajaRegistradora extends JPanel{
 
 		if (Allow==true){
 			
-			cp.buildTable(Column, cp.doBounds(20, 150, 900, 150));
+			Tabla = getCustomTable(Column);
+			
+			Tabla.setRowCount(8);
 			
 		}else{
 			
-			cp.buildTable(Column, Data, cp.doBounds(20, 150, 900, 150));
+			Tabla = getCustomTable(Data, Column);
 			
 		}
-		
-		Tablita = cp.getDefaultTableModel();
-		Tablitita = cp.getJTable();
-		Table = cp.getJScrollPane();
 		
 		Code = cp.buildLabel(CodeTexto[l], cp.doBounds(30, 60, 50, 20), SwingConstants.LEFT, Format);
 		Name = cp.buildLabel(NameTexto[l], cp.doBounds(210, 60, 70, 20), SwingConstants.LEFT, Format);
@@ -198,7 +195,7 @@ public class CajaRegistradora extends JPanel{
 		Print = cp.buildButton("", cp.doBounds(30, 350, 190, 35), CajaImprimir[m], 60, 35, JButton.CENTER, JButton.RIGHT, JButton.LEFT, true, false);
 
 		setLayout(null);
-		setComponentZOrder(Table, z);	z++;
+		setComponentZOrder(cp.buildJScrollPane(Tabla, cp.doBounds(20, 150, 900, 150)), z);	z++;
 		setComponentZOrder(Code, z);	z++;
 		setComponentZOrder(Name, z);	z++;
 		setComponentZOrder(Amount, z);	z++;
@@ -228,7 +225,7 @@ public class CajaRegistradora extends JPanel{
 		setComponentZOrder(Check, z);	z++;
 		setComponentZOrder(Print, z);	z++;
 
-		Table.setVisible(true);
+		Tabla.setVisible(true);
 		Code.setVisible(true);
 		Name.setVisible(true);
 		Amount.setVisible(true);
@@ -261,7 +258,56 @@ public class CajaRegistradora extends JPanel{
 		Actions();
 
 		setVisible(true);
+		
+		Tabla.repaint();
 
+	}
+	
+	private Table getCustomTable(String[] ColumnName){
+		
+		Object[][] Data = new Object[1][ColumnName.length];
+		
+		for (int i=0; i<ColumnName.length; i++){
+			
+			Data[0][i] = 0;
+			
+		}
+		
+		Table Tabla = getCustomTable(Data, ColumnName);
+		
+		Tabla.setRowCount(0);
+		
+		return Tabla;
+		
+	}
+	
+	private Table getCustomTable(Object[][] Data, String[] ColumnName){
+		
+		Table Tabla = new Table(Data, ColumnName, false);
+		
+		for(int i=0; i<Tabla.getColumnCount(); i++){
+			
+			Tabla.getColumn(i).setHorizontalAlignment(SwingConstants.CENTER);
+			Tabla.getColumn(i).setFocusCellBackground(Fondo[Math.abs(m-1)]);
+			
+		}
+		
+		Tabla.getColumn(3).setDefaultForeground(new Color(60, 133, 100));
+		Tabla.getColumn(4).setDefaultForeground(new Color(60, 133, 100));
+		
+		Tabla.getColumn(3).setFocusCellBackground(new Color(60, 133, 100));
+		Tabla.getColumn(4).setFocusCellBackground(new Color(60, 133, 100));
+		
+		Tabla.getHeader().setBackground((m==0) ? Color.BLACK : Color.WHITE);
+		Tabla.getHeader().setForeground((m==0) ? Color.WHITE : Color.BLACK);
+		Tabla.getHeader().showInnerBorder(false);
+		
+		Tabla.setBackground(Fondo[m]);
+		Tabla.setShowHorizontalLines(false);
+		Tabla.setShowVerticalLines(false);
+		
+		return Tabla;
+		
 	}
 
 	protected void paintComponent(Graphics g){
@@ -527,17 +573,25 @@ public class CajaRegistradora extends JPanel{
 						NewRow[3] = Precio+"$";
 						NewRow[4] = Total+"$";
 
-						for (int i=0; i<Tablita.getRowCount(); i++){
+						for (int i=0; i<Tabla.getRowCount(); i++){
+							
+							if (Tabla.getValueAt(i, 0)==null){
+								
+								//Pass = true;
+								
+								continue;
+								
+							}
 
-							if (Codigo.equals(Tablitita.getValueAt(i, 0).toString())==true){
+							if (Codigo.equals(Tabla.getValueAt(i, 0).toString())==true){
 
-								bup = Tablitita.getValueAt(i, 2).toString();
+								bup = Tabla.getValueAt(i, 2).toString();
 
-								Tablita.setValueAt((Float.parseFloat(bup)+Cantidad)+"", i, 2);
+								Tabla.setValueAt((Float.parseFloat(bup)+Cantidad)+"", i, 2);
 
-								bup = Tablitita.getValueAt(i, 4).toString();
+								bup = Tabla.getValueAt(i, 4).toString();
 
-								Tablita.setValueAt((Float.parseFloat(Mecanics.DeleteChar(bup,bup.length()-1))+Total)+"$", i, 4);
+								Tabla.setValueAt((Float.parseFloat(Mecanics.DeleteChar(bup,bup.length()-1))+Total)+"$", i, 4);
 
 								Pass = false;
 
@@ -552,9 +606,24 @@ public class CajaRegistradora extends JPanel{
 						}
 
 						if (Pass==true){
-
-							Tablita.addRow(NewRow);
-							Tablitita.repaint();
+							
+							if (Tabla.getRowCount()!=0){
+								
+								if (Tabla.getValueAt(Tabla.getRowCount()-1, 0)==null){Tabla.removeRow(Tabla.getRowCount()-1);}
+								
+							}
+							
+							if (Tabla.getRowCount()!=0){
+								
+								Tabla.insertRow(0, NewRow);
+								
+							}else{
+								
+								Tabla.addRow(NewRow);
+								
+							}
+							
+							Tabla.repaint();
 							
 						}
 						
@@ -566,15 +635,15 @@ public class CajaRegistradora extends JPanel{
 
 					if (Pass==true){
 						
-						for (int i=0; i<Tablita.getRowCount(); i++){
+						for (int i=0; i<Tabla.getRowCount(); i++){
 
-							if (Codigo.equals(Tablitita.getValueAt(i, 0).toString())==true){
+							if (Codigo.equals(Tabla.getValueAt(i, 0).toString())==true){
 
-								Tablita.setValueAt((Cantidad)+"", i, 2);
+								Tabla.setValueAt((Cantidad)+"", i, 2);
 
-								bup = Tablitita.getValueAt(i, 4).toString();
+								bup = Tabla.getValueAt(i, 4).toString();
 
-								Tablita.setValueAt((Total)+"$", i, 4);
+								Tabla.setValueAt((Total)+"$", i, 4);
 								
 								break;
 
@@ -592,9 +661,15 @@ public class CajaRegistradora extends JPanel{
 
 					Total = 0;
 
-					for (int i=0; i<Tablita.getRowCount(); i++){
+					for (int i=0; i<Tabla.getRowCount(); i++){
+						
+						if (Tabla.getValueAt(i, 4)==null){
+							
+							continue;
+							
+						}
 
-						bup = Tablitita.getValueAt(i, 4).toString();
+						bup = Tabla.getValueAt(i, 4).toString();
 
 						Total+= Double.parseDouble(Mecanics.DeleteChar(bup,bup.length()-1));
 
@@ -662,9 +737,9 @@ public class CajaRegistradora extends JPanel{
 					TextPanelPrice.repaint();
 					TextPanelTotal.repaint();
 
-				}else{
+				}else if (Tabla.getSelectedRow()!=-1){
 
-					Tablita.removeRow(Tablitita.getSelectedRow());
+					Tabla.removeRow(Tabla.getSelectedRow());
 
 					TextPanelCode.setText("");
 					TextPanelName.setText("");
@@ -688,13 +763,19 @@ public class CajaRegistradora extends JPanel{
 
 				}
 
-				if (Tablita.getRowCount()>=1){
+				if (Tabla.getRowCount()>=1){
 
 					Total = 0;
 
-					for (int i=0; i<Tablita.getRowCount(); i++){
+					for (int i=0; i<Tabla.getRowCount(); i++){
+						
+						if (Tabla.getValueAt(i, 4)==null){
+							
+							continue;
+							
+						}
 
-						bup = Tablitita.getValueAt(i, 4).toString();
+						bup = Tabla.getValueAt(i, 4).toString();
 
 						Total+= Double.parseDouble(Mecanics.DeleteChar(bup,bup.length()-1));
 						
@@ -722,7 +803,7 @@ public class CajaRegistradora extends JPanel{
 			public void actionPerformed(ActionEvent e){
 
 
-				Tablita.setRowCount(0);
+				Tabla.setRowCount(0);
 
 				TextPanelCode.setText("");
 				TextPanelName.setText("");
@@ -857,7 +938,7 @@ public class CajaRegistradora extends JPanel{
 
 				}
 
-				if (Tablita.getRowCount()<=0){
+				if (Tabla.getRowCount()<=0){
 
 					Pass = false;
 
@@ -865,7 +946,7 @@ public class CajaRegistradora extends JPanel{
 
 				if (Pass==true){
 					
-					Buyout = new Object[Tablita.getRowCount()][5];
+					Buyout = new Object[Tabla.getRowCount()][5];
 
 					bup = TextPanelChange.getText();
 
@@ -873,9 +954,9 @@ public class CajaRegistradora extends JPanel{
 
 					if (Vuelto>=0 && Pago>=Total){
 
-						for (int i=0; i<Tablita.getRowCount(); i++){
+						for (int i=0; i<Tabla.getRowCount(); i++){
 							
-							bup = Tablitita.getValueAt(i, 0).toString();
+							bup = Tabla.getValueAt(i, 0).toString();
 							
 							if (Allow==true){
 								
@@ -885,7 +966,7 @@ public class CajaRegistradora extends JPanel{
 									
 									d = Mecanics.Archive.get(indice);
 									
-									d.withDraw(Float.parseFloat(Tablitita.getValueAt(i, 2).toString()));
+									d.withDraw(Float.parseFloat(Tabla.getValueAt(i, 2).toString()));
 									
 									Mecanics.Archive.remove(indice);
 									Mecanics.Archive.add(indice,d);
@@ -895,11 +976,11 @@ public class CajaRegistradora extends JPanel{
 								
 							}
 
-							Buyout[i][0] = Tablitita.getValueAt(i, 0);
-							Buyout[i][1] = Tablitita.getValueAt(i, 1);
-							Buyout[i][2] = Tablitita.getValueAt(i, 2);
-							Buyout[i][3] = Tablitita.getValueAt(i, 3);
-							Buyout[i][4] = Tablitita.getValueAt(i, 4);
+							Buyout[i][0] = Tabla.getValueAt(i, 0);
+							Buyout[i][1] = Tabla.getValueAt(i, 1);
+							Buyout[i][2] = Tabla.getValueAt(i, 2);
+							Buyout[i][3] = Tabla.getValueAt(i, 3);
+							Buyout[i][4] = Tabla.getValueAt(i, 4);
 							
 						}
 						
@@ -2147,7 +2228,7 @@ public class CajaRegistradora extends JPanel{
 
 		});
 
-		Tablitita.addMouseListener(new MouseAdapter() {
+		Tabla.addMouseListener(new MouseAdapter() {
 
 			public void mouseEntered(MouseEvent e) {
 
@@ -2159,19 +2240,19 @@ public class CajaRegistradora extends JPanel{
 
 				if (e.getButton() == MouseEvent.BUTTON1){
 
-					int row = Tablitita.getSelectedRow();
+					int row = Tabla.getSelectedRow();
 
 					Object[] value = new Object[5];
 
-					value[0] = Tablitita.getValueAt(row, 0);
-					value[1] = Tablitita.getValueAt(row, 1);
-					value[2] = Tablitita.getValueAt(row, 2);
-					value[3] = Tablitita.getValueAt(row, 3);
-					value[4] = Tablitita.getValueAt(row, 4);
+					value[0] = Tabla.getValueAt(row, 0);
+					value[1] = Tabla.getValueAt(row, 1);
+					value[2] = Tabla.getValueAt(row, 2);
+					value[3] = Tabla.getValueAt(row, 3);
+					value[4] = Tabla.getValueAt(row, 4);
 					
-					String bup = value[2].toString();
+					String bup = (value[2]!=null) ? value[2].toString() : "";
 					
-					if (Float.parseFloat(bup)%1==0){
+					if (Float.parseFloat(bup.equals("") ? "0" : bup)%1==0){
 						
 						bup = Mecanics.DeleteChar(bup,bup.length()-1);
 						bup = Mecanics.DeleteChar(bup,bup.length()-1);
@@ -2182,7 +2263,7 @@ public class CajaRegistradora extends JPanel{
 					
 					for (Archivo p : Mecanics.Archive){
 
-						if (p.getCode().equalsIgnoreCase(value[0].toString())==true){
+						if (p.getCode().equalsIgnoreCase((value[0]!=null) ? value[0].toString() : "")==true){
 
 							Unid.setText(p.getUnid());
 
@@ -2192,11 +2273,11 @@ public class CajaRegistradora extends JPanel{
 
 					}
 
-					TextPanelCode.setText(value[0]+"");
-					TextPanelName.setText(value[1]+"");
-					TextPanelAmount.setText(value[2]+"");
-					TextPanelPrice.setText(value[3]+"");
-					TextPanelTotal.setText(value[4]+"");
+					TextPanelCode.setText((value[0]!=null) ? value[0]+"" : "");
+					TextPanelName.setText((value[1]!=null) ? value[1]+"" : "");
+					TextPanelAmount.setText((value[2]!=null) ? value[2]+"" : "");
+					TextPanelPrice.setText((value[3]!=null) ? value[3]+"" : "");
+					TextPanelTotal.setText((value[4]!=null) ? value[3]+"" : "");
 
 					TextPanelCode.repaint();
 					TextPanelName.repaint();

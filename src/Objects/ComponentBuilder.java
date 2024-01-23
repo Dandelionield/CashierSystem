@@ -322,6 +322,8 @@ public class ComponentBuilder{
 		
 		Scroll.setBounds(Bounds[0], Bounds[1], Bounds[2], Bounds[3]);
 		
+		Scroll.setVisible(true);
+		
 		return Scroll;
 		
 	}
