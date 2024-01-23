@@ -2,6 +2,7 @@ package CashCashier;
 
 import Main.Mecanics;
 import Objects.ComponentBuilder;
+import Objects.Table;
 import Objects.Cliente;
 
 import java.awt.event.ActionListener;

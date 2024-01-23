@@ -348,6 +348,20 @@ public class Table extends JTable{
 		
 	}
 	
+	public void clearFocus(){
+		
+		this.focusedColumn = -1;
+		this.focusedRow = -1;
+		
+		for (int i=0; i<Cell.size(); i++){
+			
+			this.Cell.get(i).setFocusedRow(-1);
+			this.Cell.get(i).setFocusedColumn(-1);
+			
+		}
+		
+	}
+	
 	protected void paintComponent(Graphics g){
 		
         Graphics2D g2 = (Graphics2D) g.create();

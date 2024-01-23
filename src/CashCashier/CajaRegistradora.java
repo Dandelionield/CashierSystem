@@ -287,6 +287,8 @@ public class CajaRegistradora extends JPanel{
 			
 			Tabla.getColumn(i).setHorizontalAlignment(SwingConstants.CENTER);
 			Tabla.getColumn(i).setFocusCellBackground(Fondo[Math.abs(m-1)]);
+			Tabla.getColumn(i).setDefaultForeground((m==0) ? Color.BLACK : Color.WHITE);
+			Tabla.getColumn(i).setFocusCellForeground((m==0) ? Color.WHITE : Color.BLACK);
 			
 		}
 		
@@ -2271,7 +2273,7 @@ public class CajaRegistradora extends JPanel{
 
 			public void mouseExited(MouseEvent e) {
 
-				repaint();
+				Tabla.clearFocus();
 
 			}
 
