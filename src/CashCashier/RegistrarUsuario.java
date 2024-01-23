@@ -67,10 +67,8 @@ public class RegistrarUsuario extends JPanel{
 	private JButton Accept;
 	private JButton Cancel;
 	private JButton Edit;
-	
-	private JScrollPane Table;
-	private DefaultTableModel Tablita;
-	private JTable Tablitita;
+
+	private Table Tabla;
 	
 	private String[] IDTexto = {"ID","ID"};
 	private String[] NameTexto = {"Nombre/s","Name/s"};
@@ -118,17 +116,13 @@ public class RegistrarUsuario extends JPanel{
 
 			}
 			
-			cp.buildTable(Column, Data, cp.doBounds(325, 30, 600, 300));
+			Tabla = getCustomTable(Data, Column);
 
 		}else{
 			
-			cp.buildTable(Column, cp.doBounds(325, 30, 600, 300));
+			Tabla = getCustomTable(Column);
 			
 		}
-		
-		Tablita = cp.getDefaultTableModel();
-		Tablitita = cp.getJTable();
-		Table = cp.getJScrollPane();
 		
 		ID = cp.buildLabel(IDTexto[l], cp.doBounds(30, 50, 50, 20), SwingConstants.LEFT, Format);
 		Name = cp.buildLabel(NameTexto[l], cp.doBounds(30, 155, 70, 20), SwingConstants.LEFT, Format);
@@ -150,7 +144,7 @@ public class RegistrarUsuario extends JPanel{
 		Edit = cp.buildButton(CajaEditar[m], cp.doBounds(30, 20, 22, 22), false, false);
 		
 		setLayout(null);
-		setComponentZOrder(Table, z);	z++;
+		setComponentZOrder(cp.buildJScrollPane(Tabla, cp.doBounds(325, 30, 600, 300)), z);	z++;
 		setComponentZOrder(ID, z);	z++;
 		setComponentZOrder(Name, z);z++;
 		setComponentZOrder(LastName, z);z++;
@@ -170,7 +164,7 @@ public class RegistrarUsuario extends JPanel{
 		setComponentZOrder(Cancel, z);	z++;
 		setComponentZOrder(Edit, z);	z++;
 		
-		Table.setVisible(true);
+		Tabla.setVisible(true);
 		ID.setVisible(true);
 		Name.setVisible(true);
 		LastName.setVisible(true);
@@ -191,6 +185,55 @@ public class RegistrarUsuario extends JPanel{
 		Edit.setVisible(true);
 		
 		Actions();
+		
+	}
+	
+	private Table getCustomTable(String[] ColumnName){
+		
+		Object[][] Data = new Object[1][ColumnName.length];
+		
+		for (int i=0; i<ColumnName.length; i++){
+			
+			Data[0][i] = 0;
+			
+		}
+		
+		Table Tabla = getCustomTable(Data, ColumnName);
+		
+		Tabla.setRowCount(0);
+		
+		return Tabla;
+		
+	}
+	
+	private Table getCustomTable(Object[][] Data, String[] ColumnName){
+		
+		Table Tabla = new Table(Data, ColumnName, false);
+		
+		for(int i=0; i<Tabla.getColumnCount(); i++){
+			
+			Tabla.getColumn(i).setHorizontalAlignment(SwingConstants.CENTER);
+			Tabla.getColumn(i).setFocusCellBackground(Fondo[Math.abs(m-1)]);
+			Tabla.getColumn(i).setDefaultForeground((m==0) ? Color.BLACK : Color.WHITE);
+			Tabla.getColumn(i).setFocusCellForeground((m==0) ? Color.WHITE : Color.BLACK);
+			
+		}
+		
+		/*Tabla.getColumn(3).setDefaultForeground(new Color(60, 133, 100));
+		Tabla.getColumn(4).setDefaultForeground(new Color(60, 133, 100));
+		
+		Tabla.getColumn(3).setFocusCellBackground(new Color(60, 133, 100));
+		Tabla.getColumn(4).setFocusCellBackground(new Color(60, 133, 100));//*/
+		
+		Tabla.getHeader().setBackground((m==0) ? Color.BLACK : Color.WHITE);
+		Tabla.getHeader().setForeground((m==0) ? Color.WHITE : Color.BLACK);
+		Tabla.getHeader().showInnerBorder(false);
+		
+		Tabla.setBackground(Fondo[m]);
+		Tabla.setShowHorizontalLines(false);
+		Tabla.setShowVerticalLines(false);
+		
+		return Tabla;
 		
 	}
 	
@@ -449,9 +492,9 @@ public class RegistrarUsuario extends JPanel{
 
 				if (ed==false){
 					
-					for (int i=0; i<Tablita.getRowCount(); i++){
+					for (int i=0; i<Tabla.getRowCount(); i++){
 
-						if (ID.equals(Tablitita.getValueAt(i, 0).toString())==true){
+						if (ID.equals(Tabla.getValueAt(i, 0).toString())==true){
 							
 							Pass = false;
 							
@@ -474,8 +517,8 @@ public class RegistrarUsuario extends JPanel{
 						
 						Mecanics.Client.add(new Cliente(Nombre,Apellido,ID,Telefono,Email,Direccion));
 						
-						Tablita.addRow(NewRow);
-						Tablitita.repaint();
+						Tabla.addRow(NewRow);
+						Tabla.repaint();
 						
 					}
 
@@ -485,12 +528,12 @@ public class RegistrarUsuario extends JPanel{
 						
 						if (indice!=-1){
 							
-							Tablita.setValueAt(ID, indice, 0);
-							Tablita.setValueAt(Nombre, indice, 1);
-							Tablita.setValueAt(Apellido, indice, 2);
-							Tablita.setValueAt(Telefono, indice, 3);
-							Tablita.setValueAt(Email, indice, 4);
-							Tablita.setValueAt(Direccion, indice, 5);
+							Tabla.setValueAt(ID, indice, 0);
+							Tabla.setValueAt(Nombre, indice, 1);
+							Tabla.setValueAt(Apellido, indice, 2);
+							Tabla.setValueAt(Telefono, indice, 3);
+							Tabla.setValueAt(Email, indice, 4);
+							Tabla.setValueAt(Direccion, indice, 5);
 							
 							Mecanics.Client.get(indice).setID(ID);
 							Mecanics.Client.get(indice).setName(Nombre);
@@ -558,7 +601,7 @@ public class RegistrarUsuario extends JPanel{
 				
 				bupID = "";
 				
-				Tablitita.clearSelection();
+				Tabla.clearSelection();
 				
 				TextPanelID.requestFocus();
 
@@ -572,11 +615,11 @@ public class RegistrarUsuario extends JPanel{
 
 			public void actionPerformed(ActionEvent e){
 	
-				int row = Tablitita.getSelectedRow();
+				int row = Tabla.getSelectedRow();
 				
 				if (row>=0){
 					
-					Tablita.removeRow(row);
+					Tabla.removeRow(row);
 					Mecanics.Client.remove(row);
 					
 					Mecanics.setClient(true);
@@ -614,7 +657,7 @@ public class RegistrarUsuario extends JPanel{
 				
 				ed = true;
 				
-				Tablitita.clearSelection();
+				Tabla.clearSelection();
 
 				repaint();
 
@@ -850,11 +893,11 @@ public class RegistrarUsuario extends JPanel{
 					
 					bupID = p.getID();
 					
-					for (int i=0; i<Tablita.getRowCount(); i++){
+					for (int i=0; i<Tabla.getRowCount(); i++){
 						
-						if (bupID.equals(Tablitita.getValueAt(i, 0).toString())==true){
+						if (bupID.equals(Tabla.getValueAt(i, 0).toString())==true){
 							
-							Tablitita.setRowSelectionInterval(i, i);
+							Tabla.setRowSelectionInterval(i, i);
 							
 							break;
 							
@@ -1069,7 +1112,7 @@ public class RegistrarUsuario extends JPanel{
 
         });
 		
-		Tablitita.addMouseListener(new MouseAdapter() {
+		Tabla.addMouseListener(new MouseAdapter() {
 
 			public void mouseEntered(MouseEvent e) {
 
@@ -1081,9 +1124,9 @@ public class RegistrarUsuario extends JPanel{
 
 				if (e.getButton() == MouseEvent.BUTTON1){
 
-					int row = Tablitita.getSelectedRow();
+					int row = Tabla.getSelectedRow();
 
-					Object value = Tablitita.getValueAt(row, 0);
+					Object value = Tabla.getValueAt(row, 0);
 
 					TextPanelID.setText(value.toString());
 
@@ -1107,6 +1150,8 @@ public class RegistrarUsuario extends JPanel{
 
 			public void mouseExited(MouseEvent e) {
 
+				Tabla.clearFocus();
+				
 				repaint();
 
 			}

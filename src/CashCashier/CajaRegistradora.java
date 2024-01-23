@@ -2274,6 +2274,8 @@ public class CajaRegistradora extends JPanel{
 			public void mouseExited(MouseEvent e) {
 
 				Tabla.clearFocus();
+				
+				repaint();
 
 			}
 

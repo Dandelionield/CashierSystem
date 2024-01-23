@@ -2,6 +2,7 @@ package CashCashier;
 
 import Main.Mecanics;
 import Objects.ComponentBuilder;
+import Objects.Table;
 import Objects.Factura;
 import Objects.Cliente;
 import Objects.Trabajador;
@@ -81,13 +82,8 @@ public class Facturas extends JPanel{
 	private JButton PDF;
 	private JButton Edit;
 	
-	private JScrollPane Table1;
-	private DefaultTableModel Tablita1;
-	private JTable Tablitita1;
-	
-	private JScrollPane Table2;
-	private DefaultTableModel Tablita2;
-	private JTable Tablitita2;
+	private Table Tabla1;
+	private Table Tabla2;
 	
 	private String[] CodeTexto = {"Código","Code"};
 	private String[] NameTexto = {"Producto","Product"};
@@ -126,11 +122,7 @@ public class Facturas extends JPanel{
 		
 		String[] Column = {ColumnaNombre1[l][0],ColumnaNombre1[l][1],ColumnaNombre1[l][2],ColumnaNombre1[l][3],ColumnaNombre1[l][4]};
 	
-		cp.buildTable(Column, cp.doBounds(20, 200, 900, 140));
-		
-		Tablita1 = cp.getDefaultTableModel();
-		Tablitita1 = cp.getJTable();
-		Table1 = cp.getJScrollPane();
+		Tabla1 = getCustomTable(Column);
 		
 		Column = new String[] {ColumnaNombre2[l][0], ColumnaNombre2[l][1]};
 		
@@ -145,17 +137,13 @@ public class Facturas extends JPanel{
 
 			}
 			
-			cp.buildTable(Column, Data, cp.doBounds(460, 20, 400, 100));
+			Tabla2 = getCustomTable(Data, Column);
 
 		}else{
 			
-			cp.buildTable(Column, cp.doBounds(460, 20, 400, 100));
+			Tabla2 = getCustomTable(Column);
 			
 		}
-		
-		Tablita2 = cp.getDefaultTableModel();
-		Tablitita2 = cp.getJTable();
-		Table2 = cp.getJScrollPane();
 		
 		Code = cp.buildLabel(CodeTexto[l], cp.doBounds(30, 125, 50, 20), SwingConstants.LEFT, Format);
 		Name = cp.buildLabel(NameTexto[l], cp.doBounds(210, 125, 70, 20), SwingConstants.LEFT, Format);
@@ -184,8 +172,8 @@ public class Facturas extends JPanel{
 		Edit = cp.buildButton(CajaEditar[m], cp.doBounds(420, 20, 22, 22), false, false);
 		
 		setLayout(null);
-		setComponentZOrder(Table1, z);	z++;
-		setComponentZOrder(Table2, z);	z++;
+		setComponentZOrder(cp.buildJScrollPane(Tabla1, cp.doBounds(20, 200, 900, 140)), z);	z++;
+		setComponentZOrder(cp.buildJScrollPane(Tabla2, cp.doBounds(460, 20, 400, 100)), z);	z++;
 		setComponentZOrder(Code, z);	z++;
 		setComponentZOrder(Name, z);	z++;
 		setComponentZOrder(Amount, z);	z++;
@@ -212,8 +200,8 @@ public class Facturas extends JPanel{
 		setComponentZOrder(PDF, z);	z++;
 		setComponentZOrder(Edit, z);	z++;
 		
-		Table1.setVisible(true);
-		Table2.setVisible(true);
+		Tabla1.setVisible(true);
+		Tabla2.setVisible(true);
 		Code.setVisible(true);
 		Name.setVisible(true);
 		Amount.setVisible(true);
@@ -244,6 +232,61 @@ public class Facturas extends JPanel{
 		
 	}
 	
+	
+	
+	private Table getCustomTable(String[] ColumnName){
+		
+		Object[][] Data = new Object[1][ColumnName.length];
+		
+		for (int i=0; i<ColumnName.length; i++){
+			
+			Data[0][i] = 0;
+			
+		}
+		
+		Table Tabla = getCustomTable(Data, ColumnName);
+		
+		Tabla.setRowCount(0);
+		
+		return Tabla;
+		
+	}
+	
+	private Table getCustomTable(Object[][] Data, String[] ColumnName){
+		
+		Table Tabla = new Table(Data, ColumnName, false);
+		
+		for(int i=0; i<Tabla.getColumnCount(); i++){
+			
+			Tabla.getColumn(i).setHorizontalAlignment(SwingConstants.CENTER);
+			Tabla.getColumn(i).setFocusCellBackground(Fondo[Math.abs(m-1)]);
+			Tabla.getColumn(i).setDefaultForeground((m==0) ? Color.BLACK : Color.WHITE);
+			Tabla.getColumn(i).setFocusCellForeground((m==0) ? Color.WHITE : Color.BLACK);
+			
+		}
+		
+		if (ColumnName.length>2){
+			
+			Tabla.getColumn(3).setDefaultForeground(new Color(60, 133, 100));
+			Tabla.getColumn(4).setDefaultForeground(new Color(60, 133, 100));
+			
+			Tabla.getColumn(3).setFocusCellBackground(new Color(60, 133, 100));
+			Tabla.getColumn(4).setFocusCellBackground(new Color(60, 133, 100));
+			
+		}
+		
+		Tabla.getHeader().setBackground((m==0) ? Color.BLACK : Color.WHITE);
+		Tabla.getHeader().setForeground((m==0) ? Color.WHITE : Color.BLACK);
+		Tabla.getHeader().showInnerBorder(false);
+		
+		Tabla.setBackground(Fondo[m]);
+		Tabla.setShowHorizontalLines(false);
+		Tabla.setShowVerticalLines(false);
+		
+		return Tabla;
+		
+	}
+	
 	protected void paintComponent(Graphics g){
 		
         super.paintComponent(g);
@@ -265,7 +308,7 @@ public class Facturas extends JPanel{
 
 			public void actionPerformed(ActionEvent e){
 	
-				int row = Tablitita2.getSelectedRow();
+				int row = Tabla2.getSelectedRow();
 				
 				if (row>=0){
 					
@@ -283,7 +326,7 @@ public class Facturas extends JPanel{
 
 			public void actionPerformed(ActionEvent e){
 	
-				int row = Tablitita2.getSelectedRow();
+				int row = Tabla2.getSelectedRow();
 				int indice = -1;
 				String Code = TextPanelSearch.getText().trim();
 				
@@ -307,7 +350,7 @@ public class Facturas extends JPanel{
 						
 					}
 					
-					Tablita2.removeRow(row);
+					Tabla2.removeRow(row);
 					Mecanics.Receipt.remove(row);
 					
 					Mecanics.setReceipt(true);
@@ -327,7 +370,7 @@ public class Facturas extends JPanel{
 
 			public void actionPerformed(ActionEvent e){
 	
-				int row = Tablitita2.getSelectedRow();
+				int row = Tabla2.getSelectedRow();
 				
 				Dashboard.Caja = new CajaRegistradora(false,Mecanics.Receipt.get(row));
 				
@@ -353,8 +396,8 @@ public class Facturas extends JPanel{
 
             public void insertUpdate(DocumentEvent e){
 				
-				Tablita1.setRowCount(0);
-				Tablitita2.clearSelection();
+				Tabla1.setRowCount(0);
+				Tabla2.clearSelection();
 				Edit.setEnabled(false);
 
 				TextPanelCode.setText("");
@@ -372,11 +415,11 @@ public class Facturas extends JPanel{
 				String Code = TextPanelSearch.getText().trim();
 				int row = -1;
 				
-				for (int i=0; i<Tablita2.getRowCount(); i++){
+				for (int i=0; i<Tabla2.getRowCount(); i++){
 
-					if (Code.equalsIgnoreCase(Tablitita2.getValueAt(i, 0).toString())==true){
+					if (Code.equalsIgnoreCase(Tabla2.getValueAt(i, 0).toString())==true){
 						
-						Tablitita2.setRowSelectionInterval(i, i);
+						Tabla2.setRowSelectionInterval(i, i);
 						row = i;
 						
 						break;
@@ -389,7 +432,7 @@ public class Facturas extends JPanel{
 					
 					for (Object[] Fila : Mecanics.Receipt.get(row).getBuyout()){
 						
-						Tablita1.addRow(Fila);
+						Tabla1.addRow(Fila);
 						
 					}
 
@@ -537,7 +580,7 @@ public class Facturas extends JPanel{
 
 		});
 		
-		Tablitita1.addMouseListener(new MouseAdapter() {
+		Tabla1.addMouseListener(new MouseAdapter() {
 
 			public void mouseEntered(MouseEvent e) {
 
@@ -549,15 +592,15 @@ public class Facturas extends JPanel{
 
 				if (e.getButton() == MouseEvent.BUTTON1){
 
-					int row = Tablitita1.getSelectedRow();
+					int row = Tabla1.getSelectedRow();
 
 					Object[] value = new Object[5];
 
-					value[0] = Tablitita1.getValueAt(row, 0);
-					value[1] = Tablitita1.getValueAt(row, 1);
-					value[2] = Tablitita1.getValueAt(row, 2);
-					value[3] = Tablitita1.getValueAt(row, 3);
-					value[4] = Tablitita1.getValueAt(row, 4);
+					value[0] = Tabla1.getValueAt(row, 0);
+					value[1] = Tabla1.getValueAt(row, 1);
+					value[2] = Tabla1.getValueAt(row, 2);
+					value[3] = Tabla1.getValueAt(row, 3);
+					value[4] = Tabla1.getValueAt(row, 4);
 					
 					for (Archivo p : Mecanics.Archive){
 
@@ -604,14 +647,16 @@ public class Facturas extends JPanel{
 			}
 
 			public void mouseExited(MouseEvent e) {
-
+				
+				Tabla1.clearFocus();
+				
 				repaint();
 
 			}
 
 		});
 		
-		Tablitita2.addMouseListener(new MouseAdapter() {
+		Tabla2.addMouseListener(new MouseAdapter() {
 
 			public void mouseEntered(MouseEvent e) {
 
@@ -623,7 +668,7 @@ public class Facturas extends JPanel{
 
 				if (e.getButton() == MouseEvent.BUTTON1){
 
-					int row = Tablitita2.getSelectedRow();
+					int row = Tabla2.getSelectedRow();
 					
 					TextPanelSearch.setText(Mecanics.Receipt.get(row).getCode());
 
@@ -647,6 +692,8 @@ public class Facturas extends JPanel{
 
 			public void mouseExited(MouseEvent e) {
 
+				Tabla2.clearFocus();
+				
 				repaint();
 
 			}
