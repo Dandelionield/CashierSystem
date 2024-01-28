@@ -1,5 +1,10 @@
 package Objects;
 
+import java.sql.SQLException;
+import java.sql.ResultSet;
+
+import javax.swing.JOptionPane;
+
 public class Archivo{
 	
 	private String Codigo;
@@ -23,6 +28,20 @@ public class Archivo{
 		this.Precio = Precio;
 		this.Unidad = Unidad;
 		this.Imagen = Imagen;
+		
+	}
+	
+	public Archivo(String Codigo, String Producto, String Marca, float Cantidad, float Precio, String Unidad){
+		
+		this.Codigo = Codigo;
+		this.Producto = Producto;
+		this.Marca = Marca;
+		this.Descripcion = "None";
+		this.Cantidad = Cantidad;
+		this.Vendido = 0;
+		this.Precio = Precio;
+		this.Unidad = Unidad;
+		this.Imagen = "./src/ResourcePackCaja/image-not-found.png";
 		
 	}
 
@@ -138,6 +157,153 @@ public class Archivo{
 		
 		Cantidad-= wd;
 		Vendido+= wd;
+		
+	}
+	
+	public static Archivo get(String Code){
+		
+		try{
+			
+			Conexion cn = new Conexion();
+			
+			ResultSet Script = cn.consulta("SELECT * FROM Inventario WHERE `Code`= '"+Code+"' ");
+			
+			Archivo p = new Archivo(Script.getString("Code"), Script.getString("Product"), Script.getString("Brand"), Script.getString("Description"), Script.getFloat("Amount"), Script.getFloat("Sold"), Script.getFloat("Price"), Script.getString("Unid"), Script.getString("Image"));
+			
+			cn.Close();
+			
+			return p;
+			
+		}catch(SQLException e){
+			
+			JOptionPane.showMessageDialog(null,"Error de Selección:  "+e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+			
+			return null;
+			
+		}
+		
+	}
+	
+	public static Archivo[] get(){
+		
+		try{
+			
+			Conexion cn = new Conexion();
+			
+			ResultSet Script = cn.consulta("SELECT * FROM Inventario;");
+			
+			Archivo[] p = new Archivo[length()];
+			
+			int n = 0;
+			
+			while (Script.next()){
+				
+				p[n] = new Archivo(Script.getString("Code"), Script.getString("Product"), Script.getString("Brand"), Script.getString("Description"), Script.getFloat("Amount"), Script.getFloat("Sold"), Script.getFloat("Price"), Script.getString("Unid"), Script.getString("Image"));
+				
+				n++;
+				
+			}
+			
+			cn.Close();
+			
+			return p;
+			
+		}catch(SQLException e){
+			
+			JOptionPane.showMessageDialog(null,"Error de Selección:  "+e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+			
+			return null;
+			
+		}
+		
+	}
+	
+	public static int length(){
+		
+		try{
+			
+			Conexion cn = new Conexion();
+			
+			ResultSet Script = cn.consulta("SELECT COUNT(*) AS total FROM Inventario");
+			
+			int p = Script.getInt("total");
+			
+			cn.Close();
+			
+			return p;
+			
+		}catch(SQLException e){
+			
+			JOptionPane.showMessageDialog(null,"Error de Selección:  "+e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+			
+			return 0;
+			
+		}
+		
+	}
+	
+	public void add(){
+		
+		try{
+			
+			Conexion cn = new Conexion();
+			
+			cn.sentence("INSERT INTO Inventario (Code, Product, Brand, Description, Amount, Sold, Price, Unid, Image) VALUES "
+			+"('"+this.getCode()+"', '"+this.getProduct()+"', '"+this.getBrand()+"', '"+this.getDescription()+"', "+this.getAmount()+", "+this.getSold()
+			+", "+this.getPrice()+", '"+this.getUnid()+"', '"+this.getImage()+"');");
+			
+			cn.Close();
+			
+		}catch(SQLException e){
+			
+			JOptionPane.showMessageDialog(null,"Error de Inserción:  "+e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+			
+		}
+		
+	}
+	
+	public void remove(){
+		
+		try{
+			
+			Conexion cn = new Conexion();
+			
+			cn.sentence("DELETE FROM `Inventario` WHERE `Code`='"+this.getCode()+"';");
+			
+			cn.Close();
+			
+		}catch(SQLException e){
+			
+			JOptionPane.showMessageDialog(null,"Error de Remoción:  "+e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+			
+		}
+		
+	}
+	
+	public void edit(String Code){
+		
+		try{
+			
+			Conexion cn = new Conexion();
+			
+			cn.sentence("UPDATE `Inventario` SET 'Code' = '"+this.getCode()+
+            "', 'Product' = '"+this.getProduct()+
+            "', 'Brand' = '"+this.getBrand()+
+            "', 'Description' = '"+this.getDescription()+
+            "', 'Amount' = '"+this.getAmount()+
+            "', 'Sold' = '"+this.getSold()+
+            "', 'Price' = '"+this.getPrice()+
+            "', 'Unid' = '"+this.getUnid()+
+            "', 'Image' = '"+this.getImage()+
+            "' WHERE Code = '"+Code+"';");
+			
+			cn.Close();
+			
+		}catch(SQLException e){
+			
+			JOptionPane.showMessageDialog(null,"Error de Edición:  "+e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+			
+		}
 		
 	}
 	

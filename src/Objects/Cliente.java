@@ -1,5 +1,10 @@
 package Objects;
 
+import java.sql.SQLException;
+import java.sql.ResultSet;
+
+import javax.swing.JOptionPane;
+
 public class Cliente{
 	
 	private String Nombre;
@@ -89,6 +94,149 @@ public class Cliente{
 	public void setAddress(String Direccion){
 		
 		this.Direccion = Direccion;
+		
+	}
+	
+	public static Cliente get(String ID){
+		
+		try{
+			
+			Conexion cn = new Conexion();
+			
+			ResultSet Script = cn.consulta("SELECT * FROM Cliente WHERE `ID`= '"+ID+"' ");
+			
+			Cliente p = new Cliente(Script.getString("Nombre"), Script.getString("Apellido"), Script.getString("ID"), Script.getString("Telefono"), Script.getString("Email"), Script.getString("Direccion"));
+		
+			cn.Close();
+			
+			return p;
+			
+		}catch(SQLException e){
+			
+			JOptionPane.showMessageDialog(null,"Error de Selección:  "+e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+			
+			return null;
+			
+		}
+		
+	}
+	
+	public static Cliente[] get(){
+		
+		try{
+			
+			Conexion cn = new Conexion();
+			
+			ResultSet Script = cn.consulta("SELECT * FROM Cliente;");
+			
+			Cliente[] p = new Cliente[length()];
+			
+			int n = 0;
+			
+			while (Script.next()){
+				
+				p[n] = new Cliente(Script.getString("Nombre"), Script.getString("Apellido"), Script.getString("ID"), Script.getString("Telefono"), Script.getString("Email"), Script.getString("Direccion"));
+				
+				n++;
+				
+			}
+			
+			cn.Close();
+			
+			return p;
+			
+		}catch(SQLException e){
+			
+			JOptionPane.showMessageDialog(null,"Error de Selección:  "+e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+			
+			return null;
+			
+		}
+		
+	}
+	
+	public static int length(){
+		
+		try{
+			
+			Conexion cn = new Conexion();
+			
+			ResultSet Script = cn.consulta("SELECT COUNT(*) AS total FROM Cliente");
+			
+			int p = Script.getInt("total");
+			
+			cn.Close();
+			
+			return p;
+			
+		}catch(SQLException e){
+			
+			JOptionPane.showMessageDialog(null,"Error de Selección:  "+e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+			
+			return 0;
+			
+		}
+		
+	}
+	
+	public void add(){
+		
+		try{
+			
+			Conexion cn = new Conexion();
+			
+			cn.sentence("INSERT INTO Cliente (ID, Nombre, Apellido, Telefono, Email, Direccion) VALUES "
+			+"('"+this.getID()+"', '"+this.getName()+"', '"+this.getLastName()+"', '"+this.getPhone()+"', '"+this.getEmail()+"', '"+this.getAddress()+"');");
+			
+			cn.Close();
+			
+		}catch(SQLException e){
+			
+			JOptionPane.showMessageDialog(null,"Error de Inserción:  "+e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+			
+		}
+		
+	}
+	
+	public void remove(){
+		
+		try{
+			
+			Conexion cn = new Conexion();
+			
+			cn.sentence("DELETE FROM `Cliente` WHERE `ID`='"+this.getID()+"';");
+			
+			cn.Close();
+			
+		}catch(SQLException e){
+			
+			JOptionPane.showMessageDialog(null,"Error de Remoción:  "+e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+			
+		}
+		
+	}
+	
+	public void edit(String ID){
+		
+		try{
+			
+			Conexion cn = new Conexion();
+			
+			cn.sentence("UPDATE `Cliente` SET 'ID' = '"+this.getID()+
+            "', 'Nombre' = '"+this.getName()+
+            "', 'Apellido' = '"+this.getLastName()+
+            "', 'Telefono' = '"+this.getPhone()+
+            "', 'Email' = '"+this.getEmail()+
+            "', 'Direccion' = '"+this.getAddress()+
+            "' WHERE ID = '"+ID+"';");
+			
+			cn.Close();
+			
+		}catch(SQLException e){
+			
+			JOptionPane.showMessageDialog(null,"Error de Edición:  "+e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+			
+		}
 		
 	}
 	

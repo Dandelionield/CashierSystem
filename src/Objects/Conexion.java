@@ -414,26 +414,25 @@ public class Conexion{
 	}
 	
 	public void sentence(String query) throws SQLException{
-        
-       
-            
-            PreparedStatement snt=cn.prepareStatement(query);
-            snt.execute();
-            
-           
+  
+        PreparedStatement snt = cn.prepareStatement(query);
+		
+        snt.execute();   
         
     }
     
     public ResultSet consulta(String query){
         
-        try {
+        try{
             
             PreparedStatement snt=cn.prepareStatement(query);
             ResultSet res=snt.executeQuery();
             return res;
             
-        } catch (Exception e) {
+        }catch(Exception e){
+			
             JOptionPane.showMessageDialog(null, "Ejecucion fallida, Error: "+e.toString());
+			
         }
         
         
