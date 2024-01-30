@@ -124,8 +124,6 @@ public class Cliente{
 			
 		}catch(SQLException e){
 			
-			JOptionPane.showMessageDialog(null,"Error de Selección:  "+e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
-			
 			return null;
 			
 		}
@@ -158,8 +156,6 @@ public class Cliente{
 			
 		}catch(SQLException e){
 			
-			JOptionPane.showMessageDialog(null,"Error de Selección:  "+e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
-			
 			return null;
 			
 		}
@@ -181,8 +177,6 @@ public class Cliente{
 			return p;
 			
 		}catch(SQLException e){
-			
-			JOptionPane.showMessageDialog(null,"Error de Selección:  "+e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
 			
 			return 0;
 			

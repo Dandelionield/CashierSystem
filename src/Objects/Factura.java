@@ -169,8 +169,6 @@ public class Factura{
 			
 		}catch(SQLException e){
 			
-			JOptionPane.showMessageDialog(null,"Error de Selección:  "+e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
-			
 			return null;
 			
 		}
@@ -203,8 +201,6 @@ public class Factura{
 			
 		}catch(SQLException e){
 			
-			JOptionPane.showMessageDialog(null,"Error de Selección:  "+e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
-			
 			return null;
 			
 		}
@@ -226,8 +222,6 @@ public class Factura{
 			return p;
 			
 		}catch(SQLException e){
-			
-			JOptionPane.showMessageDialog(null,"Error de Selección:  "+e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
 			
 			return 0;
 			

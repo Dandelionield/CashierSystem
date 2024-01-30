@@ -101,18 +101,22 @@ public class RegistrarUsuario extends JPanel{
 		setOpaque(false);
 		
 		String[] Column = {ColumnaNombre[l][0],ColumnaNombre[l][1],ColumnaNombre[l][2],ColumnaNombre[l][3],ColumnaNombre[l][4],ColumnaNombre[l][5]};
-        Object[][] Data = new Object[Mecanics.Client.size()][6];
+        Object[][] Data;
 
-		if (Mecanics.Client.size()!=0){
+		if (Cliente.length()!=0){
+			
+			Data = new Object[Cliente.length()][6];
+			
+			Cliente[] p = Cliente.get();
 
-			for (int i=0; i<Mecanics.Client.size(); i++){
+			for (int i=0; i<p.length; i++){
 
-				Data[i][0] = Mecanics.Client.get(i).getID();
-				Data[i][1] = Mecanics.Client.get(i).getName();
-				Data[i][2] = Mecanics.Client.get(i).getLastName();
-				Data[i][3] = Mecanics.Client.get(i).getPhone();
-				Data[i][4] = Mecanics.Client.get(i).getEmail();
-				Data[i][5] = Mecanics.Client.get(i).getAddress();
+				Data[i][0] = p[i].getID();
+				Data[i][1] = p[i].getName();
+				Data[i][2] = p[i].getLastName();
+				Data[i][3] = p[i].getPhone();
+				Data[i][4] = p[i].getEmail();
+				Data[i][5] = p[i].getAddress();
 
 			}
 			
@@ -218,12 +222,6 @@ public class RegistrarUsuario extends JPanel{
 			Tabla.getColumn(i).setFocusCellForeground((m==0) ? Color.WHITE : Color.BLACK);
 			
 		}
-		
-		/*Tabla.getColumn(3).setDefaultForeground(new Color(60, 133, 100));
-		Tabla.getColumn(4).setDefaultForeground(new Color(60, 133, 100));
-		
-		Tabla.getColumn(3).setFocusCellBackground(new Color(60, 133, 100));
-		Tabla.getColumn(4).setFocusCellBackground(new Color(60, 133, 100));//*/
 		
 		Tabla.getHeader().setBackground((m==0) ? Color.BLACK : Color.WHITE);
 		Tabla.getHeader().setForeground((m==0) ? Color.WHITE : Color.BLACK);

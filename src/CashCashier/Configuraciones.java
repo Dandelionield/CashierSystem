@@ -49,9 +49,6 @@ public class Configuraciones extends JPanel{
 	private JButton Logo;
 	private JButton Edit;
 	private JButton Save;
-	private JButton Logout;
-	
-	private String[] LogoutTexto = {"Salir","Logout"};
 	
 	private String[] ConfiguracionesEditar = {"EditarLight","EditarDark"};
 	private String[] ConfiguracionesGuardar = {"GuardarLight","GuardarDark"};
@@ -77,7 +74,6 @@ public class Configuraciones extends JPanel{
 		TextPanelTitle = cp.buildTextField("", cp.doBounds((this.getWidth()/2)-200, 130, 400, 30), SwingConstants.CENTER, new Font("Clarendon Blk BT", Font.BOLD, 20), Color.BLUE, Color.BLUE, true, false);
 		TextPanelAddress = cp.buildTextField("", cp.doBounds((this.getWidth()/2)-200, 165, 400, 30), SwingConstants.CENTER, new Font("Clarendon Blk BT", Font.BOLD, 15), Color.BLUE, Color.BLUE, true, false);
 		Logo = cp.buildButton("Logo", cp.doBounds((this.getWidth()/2)-50, 10, 100, 100), true, true);
-		Logout = cp.buildButton("", cp.doBounds(this.getWidth()-170, 10, 130, 25), ConfiguracionesSalir[m], 25, 25, JButton.CENTER, JButton.LEFT, JButton.RIGHT, true, false);
 		Edit = cp.buildButton(ConfiguracionesEditar[m], cp.doBounds(410, 200, 25, 25), p.getAdmin(), false);
 		Save = cp.buildButton(ConfiguracionesGuardar[m], cp.doBounds(520, 200, 25, 25), false, false);
 		
@@ -87,7 +83,6 @@ public class Configuraciones extends JPanel{
 		setComponentZOrder(Address, z);z++;
 		setComponentZOrder(TextPanelTitle, z);	z++;
 		setComponentZOrder(TextPanelAddress, z);z++;
-		setComponentZOrder(Logout, z);z++;
 		setComponentZOrder(Edit, z);	z++;
 		setComponentZOrder(Save, z);	z++;
 		
@@ -96,7 +91,6 @@ public class Configuraciones extends JPanel{
 		Address.setVisible(true);
 		TextPanelTitle.setVisible(false);
 		TextPanelAddress.setVisible(false);
-		Logout.setVisible(true);
 		Edit.setVisible(true);
 		Save.setVisible(true);
 		
@@ -192,32 +186,6 @@ public class Configuraciones extends JPanel{
 				
 				Edit.setEnabled(true);
 				Save.setEnabled(false);
-				
-				repaint();
-
-			}
-
-		});
-		
-		Logout.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent e){
-				
-				Trabajador p = Mecanics.Employe.get(Mecanics.getEmploye(Dashboard.User));
-				
-				DashboardFrame.removeAll();
-				
-				Runner lg = new Runner();
-				
-				lg.contentPane.removeAll();
-				
-				lg.Opciones = new Menu(lg, Dashboard.User, p.getName()+" "+p.getLastName());
-				
-				lg.contentPane.add(lg.Opciones, Integer.valueOf(0));
-
-				lg.setVisible(true);
-				
-				DashboardFrame.dispose();
 				
 				repaint();
 
@@ -356,52 +324,6 @@ public class Configuraciones extends JPanel{
             }
 
         });
-		
-		Logout.addMouseListener(new MouseAdapter() {
-
-			public void mouseEntered(MouseEvent e) {
-
-				Logout.setText(LogoutTexto[l]);
-
-				repaint();
-
-			}
-
-			public void mouseClicked(MouseEvent e) {
-
-				repaint();
-
-			}
-
-			public void mousePressed(MouseEvent e){
-
-				Logout.setText("");
-
-				Logout.setSize(140, 35);
-
-				repaint();
-
-			}
-
-			public void mouseReleased(MouseEvent e) {
-
-				Logout.setText(LogoutTexto[l]);
-
-				Logout.setSize(130, 25);
-
-				repaint();
-
-			}
-
-			public void mouseExited(MouseEvent e) {
-
-				Logout.setText("");
-
-				repaint();
-
-			}
-
-		});
 		
 		Edit.addMouseListener(new MouseAdapter() {
 

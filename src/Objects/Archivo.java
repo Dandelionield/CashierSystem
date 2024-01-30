@@ -176,8 +176,6 @@ public class Archivo{
 			
 		}catch(SQLException e){
 			
-			JOptionPane.showMessageDialog(null,"Error de Selección:  "+e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
-			
 			return null;
 			
 		}
@@ -210,8 +208,6 @@ public class Archivo{
 			
 		}catch(SQLException e){
 			
-			JOptionPane.showMessageDialog(null,"Error de Selección:  "+e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
-			
 			return null;
 			
 		}
@@ -233,8 +229,6 @@ public class Archivo{
 			return p;
 			
 		}catch(SQLException e){
-			
-			JOptionPane.showMessageDialog(null,"Error de Selección:  "+e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
 			
 			return 0;
 			

@@ -339,7 +339,6 @@ public class CajaRegistradora extends JPanel{
 				float plus = 0;
 				double Total = 0;
 				Object[] NewRow = new Object[5];
-				int indice = -1;
 				Archivo p;
 				
 				String[] ErrorMessages;
@@ -484,12 +483,12 @@ public class CajaRegistradora extends JPanel{
 
 				if (Allow==true && Pass==true){
 					
-					indice = Mecanics.getArchive(Codigo);
+					p = Archivo.get(Codigo);
 					
-					if (indice==Mecanics.getArchive(Producto) && indice!=-1){
+					if (((p!=null) ? p.getProduct().equalsIgnoreCase(Producto) : false) && p!=null){
 						
-						Codigo = Mecanics.Archive.get(indice).getCode();
-						Producto = Mecanics.Archive.get(indice).getProduct();
+						Codigo = p.getCode();
+						Producto = p.getProduct();
 
 						TextPanelCode.setBorder(new MatteBorder(0, 0, 2, 0, Color.BLUE));
 						TextPanelName.setBorder(new MatteBorder(0, 0, 2, 0, Color.BLUE));
@@ -505,12 +504,10 @@ public class CajaRegistradora extends JPanel{
 
 				}
 				
-				indice = Mecanics.getArchive(Codigo);
+				p = Archivo.get(Codigo);
 				
-				if (indice!=-1){
+				if (p!=null){
 					
-					p = Mecanics.Archive.get(indice);
-				
 					if (Codigo.equalsIgnoreCase(p.getCode())==true){
 					
 						for (Object[] q : Data){
@@ -804,7 +801,7 @@ public class CajaRegistradora extends JPanel{
 				TextPanelTotalPay.repaint();
 				
 				Allow = true;
-				EmployeName = Mecanics.Employe.get(Mecanics.getEmploye(Dashboard.User)).getCode();
+				EmployeName = Trabajador.get(Dashboard.User).getCode();
 				TextPanelID.setEditable(true);
 				TextPanelCode.setEditable(true);
 				TextPanelName.setEditable(true);
@@ -819,287 +816,7 @@ public class CajaRegistradora extends JPanel{
 
 			public void actionPerformed(ActionEvent e){
 
-				String ID = " ";
-				String Nombre = " ";
-				String bup = TextPanelTotalPay.getText().trim();
-				double Total = Double.parseDouble(Mecanics.DeleteChar(bup,bup.length()-1));
-				long Pago = 0;
-				double Vuelto = 0;
-				boolean Pass = true;
-				int Counter = 0;
-				int indice = -1;
-				Object[][] Buyout;
-				String[] Missing;
-				Factura p;
-				Archivo d;
-				s = -1;
-				
-				String[] ErrorMessages;
-
-				bup = TextPanelID.getText().trim();
-
-				if (bup!=null && bup.equals("")==false){
-					
-					if (TextPanelClient.getText().equals("")==true || TextPanelClient.getText()==null){
-
-						TextPanelID.setBorder(new MatteBorder(0, 0, 2, 0, Color.RED));
-						
-						ErrorMessages = new String[] {"Cliente Inexistente", "Unexistance Client"};
-					
-						Mecanics.txtErrorMessage(TextPanelID, ErrorMessages[l]);
-
-						Pass = false;
-						
-					}else if (Mecanics.Allowed(bup)==true){
-
-						if (Double.parseDouble(bup)%1==0 && Double.parseDouble(bup)>0){
-
-							ID = bup;
-							Nombre = TextPanelClient.getText();
-
-							TextPanelID.setBorder(new MatteBorder(0, 0, 2, 0, Color.BLUE));
-							
-						}else{
-
-							Pass = false;
-							
-						}
-						
-					}else{
-
-						Pass = false;
-						
-					}
-					
-				}
-
-				TextPanelID.revalidate();
-				TextPanelID.repaint();
-
-				bup = TextPanelPay.getText().trim();
-
-				if (bup!=null && bup.equals("")==false){
-
-					if (Mecanics.Allowed(bup)==true){
-
-						if (Double.parseDouble(bup)%1==0){
-
-							Pago = Long.parseLong(bup);
-
-						}else{
-
-							Pass = false;
-
-						}
-
-					}else{
-
-						Pass = false;
-
-					}
-
-				}else{
-
-					Pass = false;
-
-				}
-
-				if (Tabla.getRowCount()<=0){
-
-					Pass = false;
-
-				}
-
-				if (Pass==true){
-					
-					Buyout = new Object[Tabla.getRowCount()][5];
-
-					bup = TextPanelChange.getText();
-
-					Vuelto = Double.parseDouble(Mecanics.DeleteChar(bup,bup.length()-1));
-
-					if (Vuelto>=0 && Pago>=Total){
-
-						for (int i=0; i<Tabla.getRowCount(); i++){
-							
-							bup = Tabla.getValueAt(i, 0).toString();
-							
-							if (Allow==true){
-								
-								indice = Mecanics.getArchive(bup);
-								
-								if (indice!=-1){
-									
-									d = Mecanics.Archive.get(indice);
-									
-									d.withDraw(Float.parseFloat(Tabla.getValueAt(i, 2).toString()));
-									
-									Mecanics.Archive.remove(indice);
-									Mecanics.Archive.add(indice,d);
-									Mecanics.setFile(true);
-									
-								}
-								
-							}
-
-							Buyout[i][0] = Tabla.getValueAt(i, 0);
-							Buyout[i][1] = Tabla.getValueAt(i, 1);
-							Buyout[i][2] = Tabla.getValueAt(i, 2);
-							Buyout[i][3] = Tabla.getValueAt(i, 3);
-							Buyout[i][4] = Tabla.getValueAt(i, 4);
-							
-						}
-						
-						if (Allow==true){
-							
-							indice = Mecanics.getClient(ID);
-							
-							if (indice!=-1){
-								
-								Mecanics.Receipt.add(new Factura(Mecanics.FacturaCode(Date.getText()),Pago,Vuelto,Total,Buyout,Date.getText(),Mecanics.Employe.get(Mecanics.getEmploye(EmployeName)),Mecanics.Client.get(indice)));
-								
-							}else{
-								
-								Mecanics.Receipt.add(new Factura(Mecanics.FacturaCode(Date.getText()),Pago,Vuelto,Total,Buyout,Date.getText(),Mecanics.Employe.get(Mecanics.getEmploye(EmployeName)),new Cliente(" "," "," "," "," "," ")));
-								
-							}
-						
-							
-							Mecanics.setReceipt(true);
-							
-							s = Mecanics.Receipt.size()-1;
-							
-						}else{
-							
-							bup = "";
-							
-							indice = Mecanics.getReceipt(FacturaCode);
-							
-							if (indice!=-1){
-								
-								p = Mecanics.Receipt.get(indice);
-								
-								Missing = new String[p.getBuyout().length-Buyout.length];
-								
-								if (Missing.length!=0){
-								
-									for (Object[] q : p.getBuyout()){
-										
-										for (Object[] b : Buyout){
-											
-											if (q[0].toString().equalsIgnoreCase(b[0].toString())==false){
-												
-												bup = q[0].toString();
-												
-											}else{
-												
-												bup = "";
-												
-												break;
-												
-											}
-											
-										}
-										
-										if (bup.equals("")==false){
-											
-											Missing[Counter] = bup;
-											
-											Counter++;
-											
-										}
-										
-									}
-									
-									for (String q : Missing){
-									
-										for (Object[] b : p.getBuyout()){
-											
-											if (q.equalsIgnoreCase(b[0].toString())){
-												
-												indice = Mecanics.getArchive(q);
-												
-												if (indice!=-1){
-												
-													d = Mecanics.Archive.get(indice);
-													
-													d.withDraw(-Float.parseFloat(b[2].toString()));
-													
-													Mecanics.Archive.remove(indice);
-													Mecanics.Archive.add(indice,d);
-													Mecanics.setFile(true);
-													
-												}
-												
-											}
-											
-										}
-										
-									}
-									
-								}
-								
-								for (Object[] q : p.getBuyout()){
-								
-									for (Object[] b : Buyout){
-										
-										if (q[0].toString().equalsIgnoreCase(b[0].toString())){
-									
-											indice = Mecanics.getArchive(q[0].toString());
-										
-											if (indice!=-1){
-												
-												d = Mecanics.Archive.get(indice);
-												
-												d.withDraw(Float.parseFloat(b[2].toString())-Float.parseFloat(q[2].toString()));
-												
-												Mecanics.Archive.remove(indice);
-												Mecanics.Archive.add(indice,d);
-												Mecanics.setFile(true);
-												
-											}
-											
-										}
-										
-									}
-									
-								}
-								
-								s = Mecanics.getReceipt(FacturaCode);;
-								
-								p.setPay(Pago);
-								p.setChange(Vuelto);
-								p.setTotal(Total);
-								p.setBuyout(Buyout);
-								
-								Mecanics.Receipt.remove(s);
-								Mecanics.Receipt.add(s,p);
-								Mecanics.setReceipt(true);
-								
-							}
-							
-						}
-						
-						Allow = true;
-						
-						Erase.doClick();
-
-					}else{
-						
-						Pass = false;
-						
-					}
-					
-					Dashboard.Cuenta = new Facturas();
-
-					Facturar = Pass;
-
-				}
-
-				TextPanelPay.revalidate();
-				TextPanelPay.repaint();
-
-				repaint();
+				CheckIn().add();
 
 			}
 
@@ -1109,11 +826,13 @@ public class CajaRegistradora extends JPanel{
 
 			public void actionPerformed(ActionEvent e){
 
-				Check.doClick();
+				Factura p = CheckIn();
 				
-				if (Facturar==true && s>-1){
+				if (p!=null){
 					
-					Mecanics.Facturar(Mecanics.Receipt.get(s));
+					p.edit(p.getCode());
+					
+					Mecanics.Facturar(p);
 					
 				}
 
@@ -1395,24 +1114,20 @@ public class CajaRegistradora extends JPanel{
 					TextPanelAmount.repaint();
 					TextPanelPrice.repaint();
 					TextPanelTotal.repaint();
+					
+					Archivo p = Archivo.get(TextPanelCode.getText().trim());
+					
+					if (p!=null){
+						
+						TextPanelName.setText(p.getProduct()+"");
+						TextPanelPrice.setText(p.getPrice()+"$");
+						Unid.setText(p.getUnid());
 
-					for (Archivo p : Mecanics.Archive){
-
-						if (p.getCode().equalsIgnoreCase(TextPanelCode.getText().trim())==true){
-
-							TextPanelName.setText(p.getProduct()+"");
-							TextPanelPrice.setText(p.getPrice()+"$");
-							Unid.setText(p.getUnid());
-
-							TextPanelName.repaint();
-							TextPanelPrice.repaint();
-
-							break;
-
-						}
-
+						TextPanelName.repaint();
+						TextPanelPrice.repaint();
+						
 					}
-
+					
 				}
 
 				ed = true;
@@ -1474,8 +1189,10 @@ public class CajaRegistradora extends JPanel{
 					TextPanelAmount.repaint();
 					TextPanelPrice.repaint();
 					TextPanelTotal.repaint();
+					
+					Archivo[] q = Archivo.get();
 
-					for (Archivo p : Mecanics.Archive){
+					for (Archivo p : q){
 
 						if (p.getProduct().equalsIgnoreCase(TextPanelName.getText().trim())==true){
 
@@ -1732,7 +1449,6 @@ public class CajaRegistradora extends JPanel{
 				TextPanelClient.repaint();
 
 				boolean Pass = true;
-				int indice;
 				Cliente p;
 				String ID = "";
 				String[] ErrorMessages;
@@ -1787,11 +1503,9 @@ public class CajaRegistradora extends JPanel{
 
 				if (Pass==true){
 					
-					indice = Mecanics.getClient(ID);
+					p = Cliente.get(ID);
 					
-					if (indice!=-1){
-						
-						p = Mecanics.Client.get(indice);
+					if (p!=null){
 						
 						TextPanelClient.setText(p.getName()+" "+p.getLastName());
 						
@@ -2227,16 +1941,12 @@ public class CajaRegistradora extends JPanel{
 						
 					}
 					
-					for (Archivo p : Mecanics.Archive){
-
-						if (p.getCode().equalsIgnoreCase(value[0].toString())==true){
-
-							Unid.setText(p.getUnid());
-
-							break;
-
-						}
-
+					Archivo p = Archivo.get(value[0].toString());
+					
+					if (p!=null){
+						
+						Unid.setText(p.getUnid());
+						
 					}
 
 					TextPanelCode.setText(value[0]+"");
@@ -2672,6 +2382,267 @@ public class CajaRegistradora extends JPanel{
 			}
 
 		});*/
+		
+	}
+	
+	private Factura CheckIn(){
+		
+		String ID = " ";
+		String Nombre = " ";
+		String bup = TextPanelTotalPay.getText().trim();
+		double Total = Double.parseDouble(Mecanics.DeleteChar(bup,bup.length()-1));
+		long Pago = 0;
+		double Vuelto = 0;
+		boolean Pass = true;
+		int Counter = 0;
+		Object[][] Buyout;
+		String[] Missing;
+		Factura p = null;
+		Archivo d;
+		Cliente c;
+		s = -1;
+		
+		String[] ErrorMessages;
+
+		bup = TextPanelID.getText().trim();
+
+		if (bup!=null && bup.equals("")==false){
+			
+			if (TextPanelClient.getText().equals("")==true || TextPanelClient.getText()==null){
+
+				TextPanelID.setBorder(new MatteBorder(0, 0, 2, 0, Color.RED));
+				
+				ErrorMessages = new String[] {"Cliente Inexistente", "Unexistance Client"};
+				
+				Mecanics.txtErrorMessage(TextPanelID, ErrorMessages[l]);
+
+				Pass = false;
+				
+			}else if (Mecanics.Allowed(bup)==true){
+
+				if (Double.parseDouble(bup)%1==0 && Double.parseDouble(bup)>0){
+
+					ID = bup;
+					Nombre = TextPanelClient.getText();
+
+					TextPanelID.setBorder(new MatteBorder(0, 0, 2, 0, Color.BLUE));
+					
+				}else{
+
+					Pass = false;
+					
+				}
+				
+			}else{
+
+				Pass = false;
+				
+			}
+			
+		}
+
+		TextPanelID.revalidate();
+		TextPanelID.repaint();
+
+		bup = TextPanelPay.getText().trim();
+
+		if (bup!=null && bup.equals("")==false){
+
+			if (Mecanics.Allowed(bup)==true){
+
+				if (Double.parseDouble(bup)%1==0){
+
+					Pago = Long.parseLong(bup);
+
+				}else{
+
+					Pass = false;
+
+				}
+
+			}else{
+
+				Pass = false;
+
+			}
+
+		}else{
+
+			Pass = false;
+
+		}
+
+		if (Tabla.getRowCount()<=0){
+
+			Pass = false;
+
+		}
+
+		if (Pass==true){
+		
+			Buyout = new Object[Tabla.getRowCount()][5];
+
+			bup = TextPanelChange.getText();
+
+			Vuelto = Double.parseDouble(Mecanics.DeleteChar(bup,bup.length()-1));
+
+			if (Vuelto>=0 && Pago>=Total){
+
+				for (int i=0; i<Tabla.getRowCount(); i++){
+					
+					bup = Tabla.getValueAt(i, 0).toString();
+					
+					if (Allow==true){
+						
+						d = Archivo.get(bup);
+						
+						if (d!=null){
+							
+							d.withDraw(Float.parseFloat(Tabla.getValueAt(i, 2).toString()));
+							
+							d.edit(d.getCode());
+							
+						}
+						
+					}
+
+					Buyout[i][0] = Tabla.getValueAt(i, 0);
+					Buyout[i][1] = Tabla.getValueAt(i, 1);
+					Buyout[i][2] = Tabla.getValueAt(i, 2);
+					Buyout[i][3] = Tabla.getValueAt(i, 3);
+					Buyout[i][4] = Tabla.getValueAt(i, 4);
+					
+				}
+				
+				if (Allow==true){
+					
+					c = Cliente.get(ID);
+					
+					if (c!=null){
+						
+						p = new Factura(Mecanics.FacturaCode(Date.getText()), Pago, Vuelto, Total, Buyout, Date.getText(), Trabajador.get(EmployeName), c);
+						
+					}else{
+						
+						p = new Factura(Mecanics.FacturaCode(Date.getText()), Pago, Vuelto, Total, Buyout,Date.getText(), Trabajador.get(EmployeName));
+						
+					}
+					
+				}else{
+					
+					bup = "";
+					
+					p = Factura.get(FacturaCode);
+					
+					if (p!=null){
+						
+						Missing = new String[p.getBuyout().length-Buyout.length];
+						
+						if (Missing.length!=0){
+						
+							for (Object[] q : p.getBuyout()){
+								
+								for (Object[] b : Buyout){
+									
+									if (q[0].toString().equalsIgnoreCase(b[0].toString())==false){
+										
+										bup = q[0].toString();
+										
+									}else{
+										
+										bup = "";
+										
+										break;
+										
+									}
+									
+								}
+								
+								if (bup.equals("")==false){
+									
+									Missing[Counter] = bup;
+									
+									Counter++;
+									
+								}
+								
+							}
+							
+							for (String q : Missing){
+							
+								for (Object[] b : p.getBuyout()){
+									
+									if (q.equalsIgnoreCase(b[0].toString())){
+										
+										d = Archivo.get(q);
+										
+										if (d!=null){
+										
+											d.withDraw(-Float.parseFloat(b[2].toString()));
+											
+											d.edit(d.getCode());
+											
+										}
+										
+									}
+									
+								}
+								
+							}
+							
+						}
+						
+						for (Object[] q : p.getBuyout()){
+							
+							for (Object[] b : Buyout){
+								
+								if (q[0].toString().equalsIgnoreCase(b[0].toString())){
+							
+									d = Archivo.get(q[0].toString());
+									
+									if (d!=null){
+										
+										d.withDraw(Float.parseFloat(b[2].toString())-Float.parseFloat(q[2].toString()));
+										
+										d.edit(d.getCode());
+										
+									}
+								
+								}
+							
+							}
+						
+						}
+						
+						p.setPay(Pago);
+						p.setChange(Vuelto);
+						p.setTotal(Total);
+						p.setBuyout(Buyout);
+						
+					}
+					
+				}
+				
+				Allow = true;
+				
+				Erase.doClick();
+
+			}else{
+				
+				Pass = false;
+				
+			}
+		
+			Dashboard.Cuenta = new Facturas();
+
+		}
+
+		TextPanelPay.revalidate();
+		TextPanelPay.repaint();
+		
+		repaint();
+		
+		return Pass ? p : null;
 		
 	}
 

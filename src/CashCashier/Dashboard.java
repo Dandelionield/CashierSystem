@@ -3,7 +3,7 @@ package CashCashier;
 import Main.Mecanics;
 import Main.Runner;
 import Main.Menu;
-import Objects.Cliente;
+import Objects.Trabajador;
 import Objects.Factura;
 import Objects.ComponentBuilder;
 
@@ -60,7 +60,7 @@ public class Dashboard extends JFrame{
 		this.User = User;
 		this.Name = Name;
 		
-		Caja = new CajaRegistradora(true,new Factura("",0,0,0,datos,"",Mecanics.Employe.get(Mecanics.getEmploye(User)), new Cliente(" "," "," "," "," "," ")));
+		Caja = new CajaRegistradora(true,new Factura(Trabajador.get(User)));
 		
 		setResizable(false);
 		setTitle(CajaTitulo[l]+" - "+Name);
