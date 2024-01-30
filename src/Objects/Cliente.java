@@ -24,6 +24,17 @@ public class Cliente{
 		this.Direccion = Direccion;
 		
 	}
+	
+	public Cliente(){
+		
+		this.Nombre = "";
+		this.Apellido = "";
+		this.ID = "";
+		this.Telefono = "";
+		this.Email = "";
+		this.Direccion = "";
+		
+	}
 
 	public String getName(){
 		
