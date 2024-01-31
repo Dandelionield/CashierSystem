@@ -322,9 +322,11 @@ public class TableCell extends DefaultTableCellRenderer{
 	
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocused, int Row, int Column) {
 		
+		boolean isSelectedBackUp = isSelected;
+		
 		hasFocused = (Row==focusedRow && Column==focusedColumn) ? true : false;
 		
-		Component cp = super.getTableCellRendererComponent(table, value, isSelected, hasFocused, Row, Column);
+		Component cp = super.getTableCellRendererComponent(table, value, isSelectedBackUp, hasFocused, Row, Column);
 		
 		boolean bd = false;
 		

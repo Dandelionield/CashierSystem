@@ -1,6 +1,7 @@
 package Main;
 
 import Objects.ComponentBuilder;
+import Objects.Trabajador;
 import CashCashier.Dashboard;
 import Inventory.Inventario;
 import Employees.RegistroEmpleados;
@@ -72,11 +73,11 @@ public class Menu extends JPanel{
 		User = Usuario;
 		Name = Nombre;
 		
-		int indice = Mecanics.getEmploye(User);
+		Trabajador p = Trabajador.get(User);
 		
-		if (indice!=-1){
+		if (p!=null){
 			
-			Editable = Mecanics.Employe.get(indice).getAdmin();
+			Editable = p.getAdmin();
 			
 		}
 		
@@ -215,6 +216,7 @@ public class Menu extends JPanel{
 		newEmploye.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e){
+				
 				new RegistroEmpleados(User, Name);
 				LoginFrame.dispose();
 				

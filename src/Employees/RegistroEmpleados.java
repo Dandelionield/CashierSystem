@@ -1145,7 +1145,6 @@ public class RegistroEmpleados {
                         resultado.getString("Admin") });
             }
 
-            Mecanics.getEmploye(true);
         } catch (SQLException e) {
         }
     }

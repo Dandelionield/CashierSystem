@@ -263,8 +263,7 @@ public class Login extends JPanel{
 				String Usuario = "";
 				String UsuarioNombre = "";
 				boolean Pass = true;
-				int indice = 0;
-				Trabajador p;
+				Trabajador p = null;
 				
 				String[] ErrorMessages;
 				
@@ -272,11 +271,9 @@ public class Login extends JPanel{
 				
 				if (bup!=null){// && bup.equals("")==false){
 					
-					indice = Mecanics.getEmploye(bup);
+					p = Trabajador.get(bup);
 					
-					if (indice!=-1){
-						
-						p = Mecanics.Employe.get(indice);
+					if (p!=null){
 						
 						Usuario = p.getCode();
 						UsuarioNombre = p.getName()+" "+p.getLastName();
@@ -318,11 +315,11 @@ public class Login extends JPanel{
 					
 				}
 				
-				if (bup!=null){// && bup.equals("")==false){
+				p = Trabajador.get(Usuario);
+				
+				if (bup!=null && p!=null){// && bup.equals("")==false){
 					
-					indice = Mecanics.getEmploye(bup);
-					
-					if (indice!=-1 && (indice==Mecanics.getEmploye(Usuario))){
+					if (p.getID().equalsIgnoreCase(bup)){
 						
 						TextPanelPassword1.setBorder(new MatteBorder(0, 0, 2, 0, Color.BLUE));
 						TextPanelPassword2.setBorder(new MatteBorder(0, 0, 2, 0, Color.BLUE));
@@ -689,7 +686,7 @@ public class Login extends JPanel{
 
 		});
 		
-		this.addMouseListener(new MouseAdapter() {
+		/*this.addMouseListener(new MouseAdapter() {
 
 			public void mouseEntered(MouseEvent e) {
 				
@@ -729,7 +726,7 @@ public class Login extends JPanel{
 
 			}
 
-		});
+		});//*/
 		
 	}
 	

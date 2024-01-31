@@ -505,7 +505,7 @@ public class modify extends JFrame {
 					a.Close();
 
 				}
-				Mecanics.getFile(true);
+
 				modelo.setRowCount(0);
 				mostrar();
 
@@ -538,7 +538,7 @@ public class modify extends JFrame {
 				}
 
 				invMecanics.addAction("DLT", 1, invMecanics.ActualDate(), (User + "/" + UserName), Content, "-----");
-				Mecanics.getFile(true);
+
 				modelo.setRowCount(0);
 				mostrar();
 

@@ -12,11 +12,6 @@ public class MainRunnable {
 
             public void run() {
                 
-                Mecanics.getFile(true);
-                Mecanics.getClient(true);
-                Mecanics.getReceipt(true);
-                Mecanics.getEmploye(true);
-
                 try {
 
                     new Runner();

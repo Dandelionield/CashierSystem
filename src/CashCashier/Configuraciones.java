@@ -4,8 +4,6 @@ import Main.Mecanics;
 import Main.Runner;
 import Main.Menu;
 import Objects.ComponentBuilder;
-import Objects.Factura;
-import Objects.Cliente;
 import Objects.Trabajador;
 
 import java.awt.event.ActionListener;
@@ -64,7 +62,7 @@ public class Configuraciones extends JPanel{
 		
 		int z = 0;
 		
-		Trabajador p = Mecanics.Employe.get(Mecanics.getEmploye(Dashboard.User));
+		Trabajador p = Trabajador.get(Dashboard.User);
 		
 		setBounds(20, 45, 960, 415);
 		setOpaque(false);

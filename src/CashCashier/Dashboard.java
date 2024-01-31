@@ -36,7 +36,6 @@ public class Dashboard extends JFrame{
 	private int m = Mecanics.getMode(true);
 	private int l = Mecanics.getLanguage(true);
 	
-	public static Object[][] datos = {{000,"Prueba",0,0,0}};
 	public static String User;
 	private String Name;
 	

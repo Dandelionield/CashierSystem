@@ -126,14 +126,18 @@ public class Facturas extends JPanel{
 		
 		Column = new String[] {ColumnaNombre2[l][0], ColumnaNombre2[l][1]};
 		
-		Object[][] Data = new Object[Mecanics.Receipt.size()][2];
+		Object[][] Data;
 
-		if (Mecanics.Receipt.size()!=0){
+		if (Factura.length()!=0){
+			
+			Data = new Object[Factura.length()][2];
+			
+			Factura[] p = Factura.get();
 
-			for (int i=0; i<Mecanics.Receipt.size(); i++){
+			for (int i=0; i<p.length; i++){
 
-				Data[i][0] = Mecanics.Receipt.get(i).getCode();
-				Data[i][1] = Mecanics.Receipt.get(i).getDate();
+				Data[i][0] = p[i].getCode();
+				Data[i][1] = p[i].getDate();
 
 			}
 			
@@ -308,11 +312,13 @@ public class Facturas extends JPanel{
 
 			public void actionPerformed(ActionEvent e){
 	
-				int row = Tabla2.getSelectedRow();
+				int Row = Tabla2.getSelectedRow();
 				
-				if (row>=0){
+				Factura p = Factura.get(Tabla2.getValueAt(Row, 0).toString());
+				
+				if (p!=null){
 					
-					Mecanics.Facturar(Mecanics.Receipt.get(row));
+					Mecanics.Facturar(p);
 					
 				}
 
@@ -326,34 +332,30 @@ public class Facturas extends JPanel{
 
 			public void actionPerformed(ActionEvent e){
 	
-				int row = Tabla2.getSelectedRow();
-				int indice = -1;
+				int Row = Tabla2.getSelectedRow();
 				String Code = TextPanelSearch.getText().trim();
 				
-				if (row>=0){
+				Factura b = Factura.get(Tabla2.getValueAt(Row, 0).toString());
+				Archivo q;
+				
+				if (Row!=-1 && b!=null){
 					
-					for (Object[] p : Mecanics.Receipt.get(row).getBuyout()){
+					for (Object[] p : b.getBuyout()){
 						
-						indice = Mecanics.getArchive(p[0].toString());
+						q = Archivo.get(p[0].toString());
 						
-						if (indice!=-1){
-							
-							Archivo q =  Mecanics.Archive.get(indice);
+						if (q!=null){
 							
 							q.withDraw(-Float.parseFloat(p[2].toString()));
 							
-							Mecanics.Archive.remove(indice);
-							Mecanics.Archive.add(indice,q);
-							Mecanics.setFile(true);
+							q.edit(q.getCode());
 							
 						}
 						
 					}
 					
-					Tabla2.removeRow(row);
-					Mecanics.Receipt.remove(row);
-					
-					Mecanics.setReceipt(true);
+					Tabla2.removeRow(Row);
+					b.remove();
 					
 					TextPanelSearch.setText("");
 					TextPanelSearch.setText(Code);
@@ -370,23 +372,27 @@ public class Facturas extends JPanel{
 
 			public void actionPerformed(ActionEvent e){
 	
-				int row = Tabla2.getSelectedRow();
+				Factura q = Factura.get(TextPanelSearch.getText().trim());
 				
-				Dashboard.Caja = new CajaRegistradora(false,Mecanics.Receipt.get(row));
+				if (q!=null){
 				
-				Dashboard.contentPane.removeAll();
-				
-				Dashboard.WindowSelected.setBounds(45, 21, 225, 50);
-				
-				Dashboard.contentPane.add(Dashboard.Background, Integer.valueOf(0));
-				Dashboard.contentPane.add(Dashboard.Caja, Integer.valueOf(1));
-				Dashboard.contentPane.add(Dashboard.Window1st, Integer.valueOf(2));
-				Dashboard.contentPane.add(Dashboard.Window2nd, Integer.valueOf(3));
-				Dashboard.contentPane.add(Dashboard.Window3rd, Integer.valueOf(4));
-				Dashboard.contentPane.add(Dashboard.Window4th, Integer.valueOf(5));
-				Dashboard.contentPane.add(Dashboard.WindowSelected, Integer.valueOf(6));
+					Dashboard.Caja = new CajaRegistradora(false, q);
+					
+					Dashboard.contentPane.removeAll();
+					
+					Dashboard.WindowSelected.setBounds(45, 21, 225, 50);
+					
+					Dashboard.contentPane.add(Dashboard.Background, Integer.valueOf(0));
+					Dashboard.contentPane.add(Dashboard.Caja, Integer.valueOf(1));
+					Dashboard.contentPane.add(Dashboard.Window1st, Integer.valueOf(2));
+					Dashboard.contentPane.add(Dashboard.Window2nd, Integer.valueOf(3));
+					Dashboard.contentPane.add(Dashboard.Window3rd, Integer.valueOf(4));
+					Dashboard.contentPane.add(Dashboard.Window4th, Integer.valueOf(5));
+					Dashboard.contentPane.add(Dashboard.WindowSelected, Integer.valueOf(6));
 
-				repaint();
+					repaint();
+					
+				}
 
 			}
 
@@ -413,36 +419,29 @@ public class Facturas extends JPanel{
 				TextPanelTotalPay.setText("0.0$");
 				
 				String Code = TextPanelSearch.getText().trim();
-				int row = -1;
 				
-				for (int i=0; i<Tabla2.getRowCount(); i++){
-
-					if (Code.equalsIgnoreCase(Tabla2.getValueAt(i, 0).toString())==true){
-						
-						Tabla2.setRowSelectionInterval(i, i);
-						row = i;
-						
-						break;
-
-					}
-
-				}
+				Factura q = Factura.get(Code);
+				int indice = -1;
 				
-				if (row!=-1){
+				if (q!=null){
 					
-					for (Object[] Fila : Mecanics.Receipt.get(row).getBuyout()){
+					for (Object[] Fila : q.getBuyout()){
 						
 						Tabla1.addRow(Fila);
 						
 					}
 
-					TextPanelID.setText(Mecanics.Receipt.get(row).getClient().getID());
-					TextPanelClient.setText(Mecanics.Receipt.get(row).getClient().getName()+" "+Mecanics.Receipt.get(row).getClient().getLastName());
-					TextPanelPay.setText(Mecanics.Receipt.get(row).getPay()+"$");
-					TextPanelChange.setText(Mecanics.Receipt.get(row).getChange()+"$");
-					TextPanelTotalPay.setText(Mecanics.Receipt.get(row).getTotal()+"$");
+					TextPanelID.setText(q.getClient().getID());
+					TextPanelClient.setText(q.getClient().getName()+" "+q.getClient().getLastName());
+					TextPanelPay.setText(q.getPay()+"$");
+					TextPanelChange.setText(q.getChange()+"$");
+					TextPanelTotalPay.setText(q.getTotal()+"$");
 					
 					Edit.setEnabled(true);
+					
+					indice = Tabla2.getValueAtColumn(0, q.getCode());
+					
+					Tabla2.setRowSelectionInterval(indice, indice);
 					
 				}
 
@@ -602,16 +601,12 @@ public class Facturas extends JPanel{
 					value[3] = Tabla1.getValueAt(row, 3);
 					value[4] = Tabla1.getValueAt(row, 4);
 					
-					for (Archivo p : Mecanics.Archive){
-
-						if (p.getCode().equalsIgnoreCase(value[0].toString())==true){
-
-							Unid.setText(p.getUnid());
-
-							break;
-
-						}
-
+					Archivo q = Archivo.get(value[0].toString());
+					
+					if (q!=null){
+						
+						Unid.setText(q.getUnid());
+						
 					}
 
 					TextPanelCode.setText(value[0]+"");
@@ -668,9 +663,15 @@ public class Facturas extends JPanel{
 
 				if (e.getButton() == MouseEvent.BUTTON1){
 
-					int row = Tabla2.getSelectedRow();
+					int Row = Tabla2.getSelectedRow();
 					
-					TextPanelSearch.setText(Mecanics.Receipt.get(row).getCode());
+					Factura q = Factura.get(Tabla2.getValueAt(Row, 0).toString());
+					
+					if (q!=null){
+						
+						TextPanelSearch.setText(q.getCode());
+						
+					}
 
 				}
 

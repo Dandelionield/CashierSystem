@@ -146,6 +146,22 @@ public class Table extends JTable{
 		
 	}
 	
+	public int getValueAtColumn(int Column, Object value){
+		
+		for (int i=0; i<this.getRowCount(); i++){
+			
+			if (this.getValueAt(i, Column).equals(value)){
+				
+				return i;
+				
+			}
+			
+		}
+		
+		return -1;
+		
+	}
+	
 	public Object getValueAt(int Row, int Column){
 		
 		return this.Tablita.getValueAt(Row, Column);

@@ -219,199 +219,6 @@ public class Mecanics {
 
     }
 
-    public static void getFile(boolean b) {
-
-        long n = 0;
-
-        if (b == true) {
-
-            Mecanics.Archive.clear();
-
-            Conexion cn = new Conexion();
-            Archivo p = cn.getArchivo(n);
-
-            while (p != null) {
-
-                Mecanics.Archive.add(p);
-                n++;
-                p = cn.getArchivo(n);
-
-            }
-
-            cn.Close();
-
-        }
-
-    }
-
-    public static void setFile(boolean b) {
-
-        if (b == true) {
-
-            Conexion cn = new Conexion();
-
-            cn.clearArchivo();
-
-            if (Mecanics.Archive.size() != 0) {
-
-                for (Archivo p : Mecanics.Archive) {
-
-                    cn.setArchivo(p);
-
-                }
-
-            }
-
-            cn.Close();
-
-        }
-
-    }
-
-    public static void getClient(boolean b) {
-
-        long n = 0;
-
-        if (b == true) {
-
-            Mecanics.Client.clear();
-
-            Conexion cn = new Conexion();
-            Cliente p = cn.getCliente(n);
-
-            while (p != null) {
-
-                Mecanics.Client.add(p);
-                n++;
-                p = cn.getCliente(n);
-
-            }
-
-            cn.Close();
-
-        }
-
-    }
-
-    public static void setClient(boolean b) {
-
-        if (b == true) {
-
-            Conexion cn = new Conexion();
-
-            cn.clearCliente();
-
-            if (Mecanics.Client.size() != 0) {
-
-                for (Cliente p : Mecanics.Client) {
-
-                    cn.setCliente(p);
-
-                }
-
-            }
-
-            cn.Close();
-
-        }
-
-    }
-
-    public static void getReceipt(boolean b) {
-
-        long n = 0;
-
-        if (b == true) {
-
-            Conexion cn = new Conexion();
-            Factura p = cn.getFactura(n);
-
-            while (p != null) {
-
-                Mecanics.Receipt.add(p);
-                n++;
-                p = cn.getFactura(n);
-
-            }
-
-            cn.Close();
-
-        }
-
-    }
-
-    public static void setReceipt(boolean b) {
-
-        if (b == true) {
-
-            Conexion cn = new Conexion();
-
-            cn.clearFactura();
-
-            if (Mecanics.Receipt.size() != 0) {
-
-                for (Factura p : Mecanics.Receipt) {
-
-                    cn.setFactura(p);
-
-                }
-
-            }
-
-            cn.Close();
-
-        }
-
-    }
-
-    public static void getEmploye(boolean b) {
-
-        long n = 0;
-
-        if (b == true) {
-            Mecanics.Employe.clear();
-            
-            Conexion cn = new Conexion();
-            Trabajador p = cn.getTrabajador(n);
-
-            while (p != null) {
-
-                Mecanics.Employe.add(p);
-                n++;
-                p = cn.getTrabajador(n);
-
-            }
-
-            cn.Close();
-
-        }
-
-    }
-
-    public static void setEmploye(boolean b) {
-
-        if (b == true) {
-
-            Conexion cn = new Conexion();
-
-            cn.clearTrabajador();
-
-            if (Mecanics.Employe.size() != 0) {
-
-                for (Trabajador p : Mecanics.Employe) {
-
-                    cn.setTrabajador(p);
-
-                }
-
-            }
-
-            cn.Close();
-
-        }
-
-    }
-
     public static boolean ValidarEmail(String email) {
 
         String regex = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}$";
@@ -442,7 +249,7 @@ public class Mecanics {
 
         }
 
-        Code = "FTRA-" + Code + n + Receipt.size();
+        Code = "FTRA-" + Code + n + Factura.length();
 
         return Code;
 
@@ -548,11 +355,9 @@ public class Mecanics {
 			
 			for (int i=0; i<p.getBuyout().length; i++){
 				
-				indice = getArchive(p.getBuyout()[i][0].toString());
+				q = Archivo.get(p.getBuyout()[i][0].toString());
 				
-				if (indice!=-1){
-					
-					q = Archive.get(indice);
+				if (q!=null){
 					
 					Buyout.addCell(new Paragraph(p.getBuyout()[i][1].toString()+" - "+q.getBrand()));
 					Buyout.addCell(new Paragraph(p.getBuyout()[i][2].toString()+" "+q.getUnid()));
@@ -641,94 +446,6 @@ public class Mecanics {
 			
 		}
 		
-    }
-
-    public static int getArchive(String wd) {
-
-        if (Archive.size() != 0) {
-
-            for (int i = 0; i < Archive.size(); i++) {
-
-                Archivo p = Archive.get(i);
-
-                if (wd.equalsIgnoreCase(p.getCode()) == true || wd.equalsIgnoreCase(p.getProduct()) == true) {
-
-                    return i;
-
-                }
-
-            }
-
-        }
-
-        return -1;
-
-    }
-
-    public static int getClient(String wd) {
-
-        if (Client.size() != 0) {
-
-            for (int i = 0; i < Client.size(); i++) {
-
-                Cliente p = Client.get(i);
-
-                if (wd.equalsIgnoreCase(p.getID()) == true) {
-
-                    return i;
-
-                }
-
-            }
-
-        }
-
-        return -1;
-
-    }
-
-    public static int getReceipt(String wd) {
-
-        if (Receipt.size() != 0) {
-
-            for (int i = 0; i < Receipt.size(); i++) {
-
-                Factura p = Receipt.get(i);
-
-                if (wd.equalsIgnoreCase(p.getCode()) == true) {
-
-                    return i;
-
-                }
-
-            }
-
-        }
-
-        return -1;
-
-    }
-
-    public static int getEmploye(String wd) {
-
-        if (Employe.size() != 0) {
-
-            for (int i = 0; i < Employe.size(); i++) {
-
-                Trabajador p = Employe.get(i);
-
-                if (wd.equalsIgnoreCase(p.getCode()) == true || wd.equalsIgnoreCase(p.getID()) == true) {
-
-                    return i;
-
-                }
-
-            }
-
-        }
-
-        return -1;
-
     }
 
     public static String DeleteChar(String cadena, int indice) {

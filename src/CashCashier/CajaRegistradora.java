@@ -345,7 +345,7 @@ public class CajaRegistradora extends JPanel{
 
 				boolean Pass = true;
 
-				Codigo = TextPanelCode.getText().trim();
+				Codigo = TextPanelCode.getText().trim().toUpperCase();
 
 				if (Codigo!=null && Codigo.equals("")==false){
 
@@ -816,7 +816,7 @@ public class CajaRegistradora extends JPanel{
 
 			public void actionPerformed(ActionEvent e){
 
-				CheckIn().add();
+				CheckIn();
 
 			}
 
@@ -829,8 +829,6 @@ public class CajaRegistradora extends JPanel{
 				Factura p = CheckIn();
 				
 				if (p!=null){
-					
-					p.edit(p.getCode());
 					
 					Mecanics.Facturar(p);
 					
@@ -1115,7 +1113,7 @@ public class CajaRegistradora extends JPanel{
 					TextPanelPrice.repaint();
 					TextPanelTotal.repaint();
 					
-					Archivo p = Archivo.get(TextPanelCode.getText().trim());
+					Archivo p = Archivo.get(TextPanelCode.getText().trim().toUpperCase());
 					
 					if (p!=null){
 						
@@ -1126,7 +1124,26 @@ public class CajaRegistradora extends JPanel{
 						TextPanelName.repaint();
 						TextPanelPrice.repaint();
 						
-					}
+					}//*/
+					
+					/*Archivo[] q = Archivo.get();
+
+					for (Archivo p : q){
+
+						if (p.getCode().equalsIgnoreCase(TextPanelCode.getText().trim())==true){
+
+							TextPanelName.setText(p.getProduct()+"");
+							TextPanelPrice.setText(p.getPrice()+"$");
+							Unid.setText(p.getUnid());
+
+							TextPanelCode.repaint();
+							TextPanelPrice.repaint();
+
+							break;
+
+						}
+
+					}//*/
 					
 				}
 
@@ -2528,6 +2545,8 @@ public class CajaRegistradora extends JPanel{
 						
 					}
 					
+					p.add();
+					
 				}else{
 					
 					bup = "";
@@ -2618,6 +2637,8 @@ public class CajaRegistradora extends JPanel{
 						p.setChange(Vuelto);
 						p.setTotal(Total);
 						p.setBuyout(Buyout);
+						
+						p.edit(p.getCode());
 						
 					}
 					

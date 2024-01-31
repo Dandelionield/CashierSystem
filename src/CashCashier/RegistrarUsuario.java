@@ -256,7 +256,7 @@ public class RegistrarUsuario extends JPanel{
 
 			public void actionPerformed(ActionEvent e) {
 
-				int indice = Mecanics.getClient(bupID);
+				int indice = Tabla.getValueAtColumn(0, bupID);
 				String bup = "";
 				String ID = "";
 				String Nombre = "";
@@ -513,7 +513,7 @@ public class RegistrarUsuario extends JPanel{
 						NewRow[4] = Email;
 						NewRow[5] = Direccion;
 						
-						Mecanics.Client.add(new Cliente(Nombre,Apellido,ID,Telefono,Email,Direccion));
+						new Cliente(Nombre,Apellido,ID,Telefono,Email,Direccion).add();
 						
 						Tabla.addRow(NewRow);
 						Tabla.repaint();
@@ -533,12 +533,16 @@ public class RegistrarUsuario extends JPanel{
 							Tabla.setValueAt(Email, indice, 4);
 							Tabla.setValueAt(Direccion, indice, 5);
 							
-							Mecanics.Client.get(indice).setID(ID);
-							Mecanics.Client.get(indice).setName(Nombre);
-							Mecanics.Client.get(indice).setLastName(Apellido);
-							Mecanics.Client.get(indice).setPhone(Telefono);
-							Mecanics.Client.get(indice).setEmail(Email);
-							Mecanics.Client.get(indice).setAddress(Direccion);
+							Cliente p = Cliente.get(bupID);
+							
+							p.setID(ID);
+							p.setName(Nombre);
+							p.setLastName(Apellido);
+							p.setPhone(Telefono);
+							p.setEmail(Email);
+							p.setAddress(Direccion);
+							
+							p.edit(bupID);
 							
 							ed = false;
 
@@ -550,8 +554,6 @@ public class RegistrarUsuario extends JPanel{
 
 				if (Pass==true){
 					
-					Mecanics.setClient(true);
-
 					Cancel.doClick();
 
 				}
@@ -613,14 +615,15 @@ public class RegistrarUsuario extends JPanel{
 
 			public void actionPerformed(ActionEvent e){
 	
-				int row = Tabla.getSelectedRow();
+				int Row = Tabla.getSelectedRow();
 				
-				if (row>=0){
+				Cliente p = Cliente.get(Tabla.getValueAt(Row, 0).toString());
+				
+				if (Row!=-1 && p!=null){
 					
-					Tabla.removeRow(row);
-					Mecanics.Client.remove(row);
+					Tabla.removeRow(Row);
 					
-					Mecanics.setClient(true);
+					p.remove();
 					
 					Cancel.doClick();
 					
@@ -883,11 +886,9 @@ public class RegistrarUsuario extends JPanel{
 				
 				SwingUtilities.invokeLater(() -> setTextPanelLimit(64));
 				
-				int indice = Mecanics.getClient(TextPanelID.getText().trim());
+				Cliente p = Cliente.get(TextPanelID.getText().trim());
 				
-				if (indice!=-1){
-					
-					Cliente p = Mecanics.Client.get(indice);
+				if (p!=null){
 					
 					bupID = p.getID();
 					
