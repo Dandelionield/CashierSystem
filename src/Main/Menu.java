@@ -4,7 +4,6 @@ import Objects.ComponentBuilder;
 import Objects.Trabajador;
 import CashCashier.Dashboard;
 import Inventory.Inventario;
-import Employees.RegistroEmpleados;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -217,10 +216,10 @@ public class Menu extends JPanel{
 
 			public void actionPerformed(ActionEvent e){
 				
-				new RegistroEmpleados(User, Name);
+				/*new RegistroEmpleados(User, Name);
 				LoginFrame.dispose();
 				
-				repaint();
+				repaint();//*/
 
 			}
 

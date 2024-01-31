@@ -89,8 +89,6 @@ import javax.imageio.ImageIO;
 
 public class Mecanics {
 
-    public static ArrayList<Trabajador> Employe = new ArrayList<>();
-	
 	public static int getMode(){
 
         try{

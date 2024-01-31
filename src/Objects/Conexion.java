@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.sql.ResultSet;
 
 public class Conexion{
+	
     private String url = "jdbc:sqlite:./src/BaseData/PADataBase.s3db";
 	private Connection cn;
 	
