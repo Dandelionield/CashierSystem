@@ -47,8 +47,8 @@ import javax.swing.Timer;
 
 public class CajaRegistradora extends JPanel{
 
-	private int m = Mecanics.getMode(true);
-	private int l = Mecanics.getLanguage(true);
+	private int m = Mecanics.getMode();
+	private int l = Mecanics.getLanguage();
 	
 	private int s = -1;
 

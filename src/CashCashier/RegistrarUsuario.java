@@ -40,8 +40,8 @@ import java.util.EventObject;
 
 public class RegistrarUsuario extends JPanel{
 	
-	private int m = Mecanics.getMode(true);
-	private int l = Mecanics.getLanguage(true);
+	private int m = Mecanics.getMode();
+	private int l = Mecanics.getLanguage();
 	private String bupID = "";
 	private String bupid = "";
 	

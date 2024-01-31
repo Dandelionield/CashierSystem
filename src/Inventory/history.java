@@ -47,7 +47,7 @@ public class history extends JFrame {
 	private JPanel contentPane;
 	private JTable table;
 	private JLabel lblDate;
-	private int theme = Mecanics.getMode(true);
+	private int theme = Mecanics.getMode();
 	private boolean lenguaje=true;
 	private Color[] Fondo= { new Color(238, 248, 254), new Color(20, 35, 54) };
 	private final ComponentBuilder cp;
@@ -80,7 +80,7 @@ public class history extends JFrame {
 	 * Create the frame.
 	 */
 	public history(String User, String UserName) {
-		if(Mecanics.getLanguage(true)==1) {
+		if(Mecanics.getLanguage()==1) {
 			lenguaje=false;
 		}
 		
@@ -244,7 +244,7 @@ public class history extends JFrame {
 							
 							if(prod==null) {
 							String [] msj= {"Elemento no encontrado", "Item not found", "ADVERTENCIA", "WARNING"};
-							JOptionPane.showMessageDialog(thisFrame, msj[Mecanics.getLanguage(true)],msj[(Mecanics.getLanguage(true)+2)],JOptionPane.WARNING_MESSAGE);
+							JOptionPane.showMessageDialog(thisFrame, msj[Mecanics.getLanguage()],msj[(Mecanics.getLanguage()+2)],JOptionPane.WARNING_MESSAGE);
 							}
 							if(act.equals("INS")) {
 								view=false;

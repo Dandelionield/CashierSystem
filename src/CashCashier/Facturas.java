@@ -51,8 +51,8 @@ import java.util.EventObject;
 
 public class Facturas extends JPanel{
 	
-	private int m = Mecanics.getMode(true);
-	private int l = Mecanics.getLanguage(true);
+	private int m = Mecanics.getMode();
+	private int l = Mecanics.getLanguage();
 	
 	private Color[] Fondo = {new Color(238, 248, 254), new Color(20, 35, 54)};
 	

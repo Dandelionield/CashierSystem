@@ -33,8 +33,8 @@ public class Dashboard extends JFrame{
 	public static Facturas Cuenta;
 	public static Configuraciones Settings;
 
-	private int m = Mecanics.getMode(true);
-	private int l = Mecanics.getLanguage(true);
+	private int m = Mecanics.getMode();
+	private int l = Mecanics.getLanguage();
 	
 	public static String User;
 	private String Name;

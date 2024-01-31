@@ -116,8 +116,8 @@ public class modify extends JFrame {
 
 	public modify(String User, String UserName) {
 
-		theme = Mecanics.getMode(true);
-		lenguaje = Mecanics.getLanguage(true);
+		theme = Mecanics.getMode();
+		lenguaje = Mecanics.getLanguage();
 
 		cp = new ComponentBuilder("./src/ResourcePackCaja", Fondo[theme]);
 

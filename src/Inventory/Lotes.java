@@ -52,7 +52,7 @@ public class Lotes extends JFrame {
 	protected JTextField lote;
 	private JTextField price;
 
-	private int theme = Mecanics.getMode(true);
+	private int theme = Mecanics.getMode();
 	private boolean lenguaje = true;
 	private static JTable table;
 	private Color[] Fondo = { new Color(238, 248, 254), new Color(20, 35, 54) };
@@ -97,7 +97,7 @@ public class Lotes extends JFrame {
 	 */
 	public Lotes(String User, String UserName, boolean acceso) {
 
-		if (Mecanics.getLanguage(true) == 1) {
+		if (Mecanics.getLanguage() == 1) {
 			lenguaje = false;
 		}
 

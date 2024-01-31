@@ -58,7 +58,7 @@ public class Actual extends JFrame {
 	private JTable table;
 	private JLabel lblDate;
 	private JLabel Title;
-	private int theme = Mecanics.getMode(true);
+	private int theme = Mecanics.getMode();
 	private boolean lenguaje = true;
 	private Color[] Fondo = { new Color(238, 248, 254), new Color(20, 35, 54) };
 	private final ComponentBuilder cp;
@@ -94,11 +94,11 @@ public class Actual extends JFrame {
 	 */
 	public Actual(String User, String UserName) {
 
-		if (Mecanics.getLanguage(true) == 1) {
+		if (Mecanics.getLanguage() == 1) {
 			lenguaje = false;
 		}
 
-		if (Mecanics.getMode(true) == 1) {
+		if (Mecanics.getMode() == 1) {
 			ld = "Dark";
 		}
 

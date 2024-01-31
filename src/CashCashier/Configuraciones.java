@@ -33,8 +33,8 @@ import java.awt.Image;
 
 public class Configuraciones extends JPanel{
 	
-	private int m = Mecanics.getMode(true);
-	private int l = Mecanics.getLanguage(true);
+	private int m = Mecanics.getMode();
+	private int l = Mecanics.getLanguage();
 	
 	private JFrame DashboardFrame;
 	
@@ -67,8 +67,8 @@ public class Configuraciones extends JPanel{
 		setBounds(20, 45, 960, 415);
 		setOpaque(false);
 		
-		Title = cp.buildLabel(Mecanics.getTitle(true), cp.doBounds((this.getWidth()/2)-200, 130, 400, 30), SwingConstants.CENTER, new Font("Clarendon Blk BT", Font.BOLD, 20));
-		Address = cp.buildLabel(Mecanics.getAddress(true), cp.doBounds((this.getWidth()/2)-200, 165, 400, 30), SwingConstants.CENTER, new Font("Clarendon Blk BT", Font.BOLD, 15));
+		Title = cp.buildLabel(Mecanics.getTitle(), cp.doBounds((this.getWidth()/2)-200, 130, 400, 30), SwingConstants.CENTER, new Font("Clarendon Blk BT", Font.BOLD, 20));
+		Address = cp.buildLabel(Mecanics.getAddress(), cp.doBounds((this.getWidth()/2)-200, 165, 400, 30), SwingConstants.CENTER, new Font("Clarendon Blk BT", Font.BOLD, 15));
 		TextPanelTitle = cp.buildTextField("", cp.doBounds((this.getWidth()/2)-200, 130, 400, 30), SwingConstants.CENTER, new Font("Clarendon Blk BT", Font.BOLD, 20), Color.BLUE, Color.BLUE, true, false);
 		TextPanelAddress = cp.buildTextField("", cp.doBounds((this.getWidth()/2)-200, 165, 400, 30), SwingConstants.CENTER, new Font("Clarendon Blk BT", Font.BOLD, 15), Color.BLUE, Color.BLUE, true, false);
 		Logo = cp.buildButton("Logo", cp.doBounds((this.getWidth()/2)-50, 10, 100, 100), true, true);
@@ -179,8 +179,8 @@ public class Configuraciones extends JPanel{
 				Title.setText(TextPanelTitle.getText());
 				Address.setText(TextPanelAddress.getText());
 				
-				Mecanics.setTitle(true,TextPanelTitle.getText());
-				Mecanics.setAddress(true,TextPanelAddress.getText());
+				Mecanics.setTitle(TextPanelTitle.getText());
+				Mecanics.setAddress(TextPanelAddress.getText());
 				
 				Edit.setEnabled(true);
 				Save.setEnabled(false);

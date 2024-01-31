@@ -35,8 +35,8 @@ import java.awt.Image;
 
 public class Menu extends JPanel{
 	
-	private int m = Mecanics.getMode(true);
-	private int l = Mecanics.getLanguage(true);
+	private int m = Mecanics.getMode();
+	private int l = Mecanics.getLanguage();
 	
 	public static String User;
 	public static String Name;

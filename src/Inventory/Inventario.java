@@ -30,7 +30,7 @@ public class Inventario extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JLabel Title;
-	private int theme = Mecanics.getMode(true);
+	private int theme = Mecanics.getMode();
 	private boolean lenguaje = true;
 	private JPanel panel;
 	private JLabel UserName;
@@ -58,7 +58,7 @@ public class Inventario extends JFrame {
 	 */
 	public Inventario(String user, String userName) {
 
-		if (Mecanics.getLanguage(true) == 1) {
+		if (Mecanics.getLanguage() == 1) {
 			lenguaje = false;
 		}
 

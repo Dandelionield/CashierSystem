@@ -7,6 +7,9 @@ import Objects.Trabajador;
 import Objects.Archivo;
 import Objects.ComponentBuilder;
 
+import java.sql.SQLException;
+import java.sql.ResultSet;
+
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.colors.Color;
@@ -86,136 +89,165 @@ import javax.imageio.ImageIO;
 
 public class Mecanics {
 
-    public static ArrayList<Archivo> Archive = new ArrayList<>();
-    public static ArrayList<Cliente> Client = new ArrayList<>();
-    public static ArrayList<Factura> Receipt = new ArrayList<>();
     public static ArrayList<Trabajador> Employe = new ArrayList<>();
+	
+	public static int getMode(){
 
-    public static int getLanguage(boolean b) {
-
-        int n = 0;
-
-        if (b == true) {
-
-            Conexion cn = new Conexion();
-
-            n = cn.getLanguage();
-
-            cn.Close();
-
-        }
-
-        return n;
-
-    }
-
-    public static void setLanguage(boolean b, int l) {
-
-        if (b == true) {
-
-            Conexion cn = new Conexion();
-
-            cn.setLanguage(l);
-
-            cn.Close();
-
-        }
+        try{
+			
+			Conexion cn = new Conexion();
+			
+			ResultSet Script = cn.consulta("SELECT * FROM Aspectos WHERE `Key`= '"+1+"' ");
+			
+			int p = Script.getInt("Mode");
+			
+			cn.Close();
+			
+			return p;
+			
+		}catch(SQLException e){
+			
+			return 0;
+			
+		}
 
     }
 
-    public static int getMode(boolean b) {
+    public static void setMode(int m) {
 
-        int n = 0;
-
-        if (b == true) {
-
-            Conexion cn = new Conexion();
-
-            n = cn.getMode();
-
-            cn.Close();
-
-        }
-
-        return n;
-
-    }
-
-    public static void setMode(boolean b, int m) {
-
-        if (b == true) {
-
-            Conexion cn = new Conexion();
-
-            cn.setMode(m);
-
-            cn.Close();
-
-        }
+        try{
+			
+			Conexion cn = new Conexion();
+			
+			cn.sentence("UPDATE Aspectos SET Mode = "+m+" WHERE `Key`= '"+1+"' ");
+			
+			cn.Close();
+			
+		}catch(SQLException e){
+			
+			JOptionPane.showMessageDialog(null,"Error de Inserción:  "+e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+			
+		}
 
     }
 
-    public static String getTitle(boolean b) {
+    public static int getLanguage() {
 
-        String wd = "";
-
-        if (b == true) {
-
-            Conexion cn = new Conexion();
-
-            wd = cn.getTitle();
-
-            cn.Close();
-
-        }
-
-        return wd;
-
-    }
-
-    public static void setTitle(boolean b, String Title) {
-
-        if (b == true) {
-
-            Conexion cn = new Conexion();
-
-            cn.setTitle(Title);
-
-            cn.Close();
-
-        }
+		try{
+			
+			Conexion cn = new Conexion();
+			
+			ResultSet Script = cn.consulta("SELECT * FROM Aspectos WHERE `Key`= '"+1+"' ");
+			
+			int p = Script.getInt("Language");
+			
+			cn.Close();
+			
+			return p;
+			
+		}catch(SQLException e){
+			
+			return 0;
+			
+		}
 
     }
 
-    public static String getAddress(boolean b) {
+    public static void setLanguage(int l) {
 
-        String wd = "";
-
-        if (b == true) {
-
-            Conexion cn = new Conexion();
-
-            wd = cn.getAddress();
-
-            cn.Close();
-
-        }
-
-        return wd;
+        try{
+			
+			Conexion cn = new Conexion();
+			
+			cn.sentence("UPDATE Aspectos SET Language = "+l+" WHERE `Key`= '"+1+"' ");
+			
+			cn.Close();
+			
+		}catch(SQLException e){
+			
+			JOptionPane.showMessageDialog(null,"Error de Inserción:  "+e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+			
+		}
 
     }
 
-    public static void setAddress(boolean b, String Address) {
+    public static String getTitle() {
 
-        if (b == true) {
+        try{
+			
+			Conexion cn = new Conexion();
+			
+			ResultSet Script = cn.consulta("SELECT * FROM Aspectos WHERE `Key`= '"+1+"' ");
+			
+			String wd = Script.getString("Title");
+			
+			cn.Close();
+			
+			return wd;
+			
+		}catch(SQLException e){
+			
+			return "Error";
+			
+		}
 
-            Conexion cn = new Conexion();
+    }
 
-            cn.setAddress(Address);
+    public static void setTitle(String Title) {
 
-            cn.Close();
+        try{
+			
+			Conexion cn = new Conexion();
+			
+			cn.sentence("UPDATE `Aspectos` SET 'Title' = '"+Title+"' WHERE `Key`= '"+1+"';");
+			
+			cn.Close();
+			
+		}catch(SQLException e){
+			
+			JOptionPane.showMessageDialog(null,"Error de Inserción:  "+e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+			
+		}
 
-        }
+    }
+
+    public static String getAddress(){
+
+        try{
+			
+			Conexion cn = new Conexion();
+			
+			ResultSet Script = cn.consulta("SELECT * FROM Aspectos WHERE `Key`= '"+1+"' ");
+			
+			String wd = Script.getString("Address");
+			
+			cn.Close();
+			
+			return wd;
+			
+		}catch(SQLException e){
+			
+			return "Error";
+			
+		}
+
+    }
+
+    public static void setAddress(String Address) {
+
+        try{
+			
+			Conexion cn = new Conexion();
+			
+			cn.sentence("UPDATE `Aspectos` SET 'Address' = '"+Address+"' WHERE `Key`= '"+1+"';");
+			
+			cn.Close();
+			
+		}catch(SQLException e){
+			
+			JOptionPane.showMessageDialog(null,"Error de Inserción:  "+e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+			
+		}
 
     }
 
@@ -257,7 +289,7 @@ public class Mecanics {
 
     public static void Facturar(Factura p) {
 
-        int l = getLanguage(true);
+        int l = getLanguage();
 		
 		Archivo q = null;
 		int indice = 0;
@@ -298,14 +330,14 @@ public class Mecanics {
 			Logo.scaleToFit(200, 200);
             Logo.setHorizontalAlignment(HorizontalAlignment.CENTER);
 			
-			Paragraph Title = new Paragraph(getTitle(true));
+			Paragraph Title = new Paragraph(getTitle());
 			Title.setFontSize(20);
             Title.setBold();
             //Title.setFont(fuente);
             Title.setTextAlignment(TextAlignment.CENTER);
             Title.setVerticalAlignment(VerticalAlignment.MIDDLE);
 			
-			Paragraph Address = new Paragraph(getAddress(true));
+			Paragraph Address = new Paragraph(getAddress());
 			Address.setFontSize(16);
             Address.setBold();
             Address.setTextAlignment(TextAlignment.CENTER);
@@ -531,7 +563,7 @@ public class Mecanics {
 				
 				String []error= {"ERROR, Seleccione un archivo con los formatos permitidos.","ERROR, Select a file with the allowed formats."};
 				
-			    JOptionPane.showMessageDialog(null, error[getLanguage(true)]+" \n\n->PNG\n->JPG\n", "Error", JOptionPane.ERROR_MESSAGE);
+			    JOptionPane.showMessageDialog(null, error[getLanguage()]+" \n\n->PNG\n->JPG\n", "Error", JOptionPane.ERROR_MESSAGE);
 			    archivo=new File("./src/ResourcePackCaja/image-not-found.png");
 				
 			}
@@ -539,7 +571,7 @@ public class Mecanics {
 		}catch(Exception e) {
 			
 			String []error= {"Error de búsqueda: Documento no encontrado.","Search error: Document not found."};
-			JOptionPane.showMessageDialog(null, error[getLanguage(true)], "Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, error[getLanguage()], "Error", JOptionPane.ERROR_MESSAGE);
 			archivo=new File("./src/ResourcePackCaja/image-not-found.png");
 			
 		}
@@ -572,8 +604,8 @@ public class Mecanics {
 		
 		int z = 0;
 		
-		final int m = getMode(true);
-		final int l = getLanguage(true);
+		final int m = getMode();
+		final int l = getLanguage();
 		final java.awt.Color[] Fondo = {new java.awt.Color(238, 248, 254), new java.awt.Color(20, 35, 54)};
 		
 		final String[] MecanicsCerrar = {"xLight", "xDark"};

@@ -33,8 +33,8 @@ import java.awt.Image;
 
 public class Configuraciones extends JPanel{
 	
-	private int m = Mecanics.getMode(true);
-	private int l = Mecanics.getLanguage(true);
+	private int m = Mecanics.getMode();
+	private int l = Mecanics.getLanguage();
 	
 	private JButton Leave;
 	private JButton BackReturn;
@@ -106,7 +106,7 @@ public class Configuraciones extends JPanel{
 
 			public void actionPerformed(ActionEvent e){
 				
-				Mecanics.setMode(true,Math.abs(m-1));
+				Mecanics.setMode(Math.abs(m-1));
 				
 				Runner.contentPane.removeAll();
 				
@@ -126,7 +126,7 @@ public class Configuraciones extends JPanel{
 
 			public void actionPerformed(ActionEvent e){
 				
-				Mecanics.setLanguage(true,Math.abs(l-1));
+				Mecanics.setLanguage(Math.abs(l-1));
 				
 				Runner.contentPane.removeAll();
 				

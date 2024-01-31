@@ -36,7 +36,7 @@ public class vision extends JFrame {
 	private JLabel unidad;
 	private JLabel cantidad;
 	private boolean lenguaje = true;
-	private int theme = Mecanics.getMode(true);
+	private int theme = Mecanics.getMode();
 	private JLabel ventas;
 	private JLabel codigo;
 	private JTextArea descripcion;
@@ -74,7 +74,7 @@ public class vision extends JFrame {
 		setIconImage(Toolkit.getDefaultToolkit().getImage("./src/ResourcePackCaja/Inventario.png"));
 		setResizable(false);
 
-		if (Mecanics.getLanguage(true) == 1) {
+		if (Mecanics.getLanguage() == 1) {
 			lenguaje = false;
 		}
 

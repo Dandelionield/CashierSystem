@@ -39,7 +39,7 @@ public class invMecanics {
 				"(ESP)", "Editar", "Vendido:", "Mas popular:", "Menos popular:", "Producto mas vendido: ",
 				"Producto menos vendido: ", "Inventario" };
 		
-		if(Mecanics.getLanguage(true)==1) {
+		if(Mecanics.getLanguage()==1) {
 			
 			len= new String[]{ "Product information:", "Available products:", "Code:", "Product:", "Price:", "Stock:",
 					"Unit:", "Brand:", "Description:", "Select Image", "Save", "Delete", "(ENG)", "Edit", "Sold:",

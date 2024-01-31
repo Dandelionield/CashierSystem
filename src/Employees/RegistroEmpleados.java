@@ -81,8 +81,8 @@ public class RegistroEmpleados {
     private static JPanel mainPanel = new JPanel();
     private static JPanel userPanel = new JPanel();
 
-    private int mode = Mecanics.getMode(true);
-    private int language = Mecanics.getLanguage(true);
+    private int mode = Mecanics.getMode();
+    private int language = Mecanics.getLanguage();
     private String User = "";
     private String Name = "";
 
