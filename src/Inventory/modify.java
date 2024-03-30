@@ -270,21 +270,43 @@ public class modify extends JFrame {
 						.consulta("SELECT * FROM Inventario WHERE `Code`='" + codigo.getText().toUpperCase() + "'");
 
 				try {
+					
+					//System.out.println(codigo.getText().contains("//"));
+					
+					
 					if (codigo.getText().equalsIgnoreCase(res.getString("Code"))) {
 
 						if (access == false) {
 							String[] error = { "Codigo ya registrado", "Code already registered" };
 							codigo.setBorder(new MatteBorder(0, 0, 2, 0, Color.RED));
 							Mecanics.txtErrorMessage(codigo, error[lenguaje]);
+							btnguardar.setEnabled(false);
 						}
 						fill(codigo.getText().toUpperCase());
+						
 					}
+					
+					
+					
+					
+					
 					res.close();
 
 				} catch (SQLException e) {
 
 					codigo.setBorder(new MatteBorder(0, 0, 2, 0, Color.BLUE));
 					fill(codigo.getText().toUpperCase());
+					btnguardar.setEnabled(true);
+					//System.out.println("catch");
+					
+					if(codigo.getText().contains("/")) {
+						String[] error = { " No debe contener '/' ", "Should not contain '/'" };
+						codigo.setBorder(new MatteBorder(0, 0, 2, 0, Color.RED));
+						Mecanics.txtErrorMessage(codigo, error[lenguaje]);
+						btnguardar.setEnabled(false);
+						
+					}
+					
 				}
 				codigo.repaint();
 
@@ -301,6 +323,44 @@ public class modify extends JFrame {
 
 		producto = cp.buildTextField("", cp.doBounds(344, 102, 144, 20), SwingConstants.LEFT,
 				new Font("Microsoft JhengHei UI", Font.BOLD, 12), Color.BLUE, Color.BLUE, true, true);
+		producto.getDocument().addDocumentListener(new DocumentListener() {
+
+			public void insertUpdate(DocumentEvent e) {
+				verifyProduct();
+			}
+
+			public void removeUpdate(DocumentEvent e) {
+				verifyProduct();
+			}
+
+			public void changedUpdate(DocumentEvent e) {
+				verifyProduct();
+			}
+
+			private void verifyProduct() {
+
+
+				
+					
+					
+					if(producto.getText().contains("/")) {
+						String[] error = { " No debe contener '/' ", "Should not contain '/'" };
+						producto.setBorder(new MatteBorder(0, 0, 2, 0, Color.RED));
+						Mecanics.txtErrorMessage(producto, error[lenguaje]);
+						btnguardar.setEnabled(false);
+						
+					}
+					
+					else {
+
+					producto.setBorder(new MatteBorder(0, 0, 2, 0, Color.BLUE));
+					btnguardar.setEnabled(true);
+				}
+				producto.repaint();
+
+			}
+
+		});
 		panel.add(producto);
 		producto.setColumns(10);
 
@@ -332,10 +392,11 @@ public class modify extends JFrame {
 					String[] error = { "El campo debe ser sólo números", "The field must be only numbers" };
 					precio.setBorder(new MatteBorder(0, 0, 2, 0, Color.RED));
 					Mecanics.txtErrorMessage(precio, error[lenguaje]);
-
+					btnguardar.setEnabled(false);
 				}
 				if (Mecanics.Allowed(precio.getText()) == true || precio.getText().equals("")) {
 					precio.setBorder(new MatteBorder(0, 0, 2, 0, Color.BLUE));
+					btnguardar.setEnabled(true);
 				}
 			}
 
@@ -370,9 +431,11 @@ public class modify extends JFrame {
 					String[] error = { "El campo debe ser sólo números", "The field must be only numbers" };
 					existencias.setBorder(new MatteBorder(0, 0, 2, 0, Color.RED));
 					Mecanics.txtErrorMessage(existencias, error[lenguaje]);
+					btnguardar.setEnabled(false);
 				}
 				if (Mecanics.Allowed(existencias.getText()) == true || existencias.getText().equals("")) {
 					existencias.setBorder(new MatteBorder(0, 0, 2, 0, Color.BLUE));
+					btnguardar.setEnabled(true);
 				}
 			}
 
@@ -396,6 +459,44 @@ public class modify extends JFrame {
 
 		marca = cp.buildTextField("", cp.doBounds(344, 246, 144, 20), SwingConstants.LEFT,
 				new Font("Microsoft JhengHei UI", Font.BOLD, 12), Color.BLUE, Color.BLUE, true, true);
+		marca.getDocument().addDocumentListener(new DocumentListener() {
+
+			public void insertUpdate(DocumentEvent e) {
+				verifyBrand();
+			}
+
+			public void removeUpdate(DocumentEvent e) {
+				verifyBrand();
+			}
+
+			public void changedUpdate(DocumentEvent e) {
+				verifyBrand();
+			}
+
+			private void verifyBrand() {
+
+
+				
+					
+					//System.out.println(marca.getText().contains("//"));
+					if(marca.getText().contains("//")) {
+						String[] error = { " No debe contener '//' ", "Should not contain '//'" };
+						marca.setBorder(new MatteBorder(0, 0, 2, 0, Color.RED));
+						Mecanics.txtErrorMessage(marca, error[lenguaje]);
+						btnguardar.setEnabled(false);
+						
+					}
+					
+					else {
+
+					marca.setBorder(new MatteBorder(0, 0, 2, 0, Color.BLUE));
+					btnguardar.setEnabled(true);
+				}
+					marca.repaint();
+
+			}
+
+		});
 		panel.add(marca);
 		marca.setColumns(10);
 
@@ -448,7 +549,7 @@ public class modify extends JFrame {
 					try {
 
 						Archivo prod = new Archivo(codigo.getText(), producto.getText(), marca.getText(),
-								descripcion.getText(), Float.parseFloat(existencias.getText()), 0,
+								descripcion.getText().replaceAll("/", ""), Float.parseFloat(existencias.getText()), 0,
 								Float.parseFloat(precio.getText()), unidad.getSelectedItem().toString(),
 								"./src/Inventory/productPhoto/" + codigo.getText() + "."
 										+ Mecanics.getExtension(new File(ruta)));
