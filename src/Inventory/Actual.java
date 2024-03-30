@@ -67,9 +67,9 @@ public class Actual extends JFrame {
 	private String ld = "Light";
 	private JList<Object> list;
 
-	protected static int fitroventa = 0;
-	protected static int fitronombre = 0;
-	protected static int fitrocodigo = 0;
+	protected static int fitrotipo = 0;
+	protected static int fitroestado = 0;
+
 
 	protected static boolean filterActive = false;
 
@@ -281,7 +281,7 @@ public class Actual extends JFrame {
 			 * 
 			 */
 			private static final long serialVersionUID = 1L;
-			String[] values = Listar(0, 0, 0);
+			String[] values = Listar(0, 0);
 
 			public int getSize() {
 				return values.length;
@@ -372,7 +372,7 @@ public class Actual extends JFrame {
 
 	}
 
-	static String[] Listar(int fc, int fn, int fv) {
+	static String[] Listar(int ft, int fe) {
 		Conexion a = new Conexion();
 
 		String[] lista = {};
@@ -385,33 +385,35 @@ public class Actual extends JFrame {
 
 			while (res.next()) {
 
-				// productos.add( res.getString("Code")+" / "+res.getString("Product")+" ");
+				
 				productos.add(invMecanics.muestra(res.getString("Code")));
 			}
 
 		} catch (Exception e) {
 		}
 
-		if (fc == 1) {
+		if (ft == 1) {
 			Collections.sort(productos, new Comparator<Archivo>() {
 				@Override
 				public int compare(Archivo p1, Archivo p2) {
 					return p1.getCode().compareTo(p2.getCode());
 				}
 			});
+			
+
 
 		}
-		if (fn == 1) {
+		if (ft == 2) {
 			Collections.sort(productos, new Comparator<Archivo>() {
 				@Override
 				public int compare(Archivo p1, Archivo p2) {
-					return p1.getProduct().compareTo(p2.getProduct());
+					return (p1.getProduct().toUpperCase()).compareTo(p2.getProduct().toUpperCase());
 				}
 			});
 
 		}
 
-		if (fv == 1) {
+		if (ft == 3) {
 			Collections.sort(productos, new Comparator<Archivo>() {
 				@Override
 				public int compare(Archivo p1, Archivo p2) {
@@ -420,39 +422,12 @@ public class Actual extends JFrame {
 			});
 
 		}
-
-		if (fc == 2) {
-			Collections.sort(productos, new Comparator<Archivo>() {
-				@Override
-				public int compare(Archivo p1, Archivo p2) {
-					return p1.getCode().compareTo(p2.getCode());
-				}
-			});
-
+		
+		if(fe==2) {
 			Collections.reverse(productos);
 		}
 
-		if (fn == 2) {
-			Collections.sort(productos, new Comparator<Archivo>() {
-				@Override
-				public int compare(Archivo p1, Archivo p2) {
-					return p1.getProduct().compareTo(p2.getProduct());
-				}
-			});
-
-			Collections.reverse(productos);
-		}
-
-		if (fv == 2) {
-			Collections.sort(productos, new Comparator<Archivo>() {
-				@Override
-				public int compare(Archivo p1, Archivo p2) {
-					return Float.compare(p2.getSold(), p1.getSold());
-				}
-			});
-
-			Collections.reverse(productos);
-		}
+		
 
 		for (int i = 0; i < productos.size(); i++) {
 
@@ -507,9 +482,10 @@ public class Actual extends JFrame {
 		 */
 		private static final long serialVersionUID = 1L;
 		private JPanel content;
-		private JComboBox<String> cmbnombre;
-		private JComboBox<String> cmbventas;
-		private JComboBox<String> cmbcode;
+		private JComboBox<String> cmbstatus;
+		private JComboBox<String> cmbtype;
+		private String[] ft = { "--Seleccione--", "Codigo", "Nombre", "Ventas" };
+		private String[] fe = { "Desactivado", "A - Z", "Z - A" };
 
 		public emergente(boolean lenguaje) {
 
@@ -536,68 +512,77 @@ public class Actual extends JFrame {
 			JLabel txttitle = new JLabel(lenguaje ? "Filtros" : "Filters");
 			txttitle.setBounds(109, 11, 59, 23);
 			txttitle.setFont(new Font("Futura Md BT", Font.PLAIN, 20));
-			// txttitle.setBorder(new LineBorder(new Color(0, 0, 0)));
 			content.add(txttitle);
 
-			JLabel lblVentas = new JLabel(lenguaje ? "Ventas: " : "Sales: ");
-			// lblVentas.setBorder(new LineBorder(new Color(0, 0, 0)));
+			JLabel lblVentas = new JLabel(lenguaje ? "Estilo: " : "Style: ");
 			lblVentas.setBounds(40, 121, 59, 23);
 			content.add(lblVentas);
 
-			String[] fv = { "Desactivado", "Mayor a menor", "Menor a mayor" };
-			String[] fn = { "Desactivado", "A-Z", "Z-A" };
-			String[] fc = { "Desactivado", "A-Z", "Z-A" };
-
 			if (lenguaje == false) {
 
-				fv = new String[] { "Off", "High to low", "Low to high" };
-				fn = new String[] { "Off", "A - Z", "Z - A" };
-				fc = new String[] { "Off", "A - Z", "Z - A" };
+				ft = new String[] { "--Seleccione--",  "Code", "Name", "Sales" };
+				fe = new String[] { "Off", "A - Z", "Z - A" };
 			}
 
-			cmbventas = new JComboBox<String>();
-			cmbventas.setBounds(109, 121, 125, 23);
-			cmbventas.setModel(new DefaultComboBoxModel<String>(fv));
-			cmbventas.setSelectedIndex(fitroventa);
-			content.add(cmbventas);
+			cmbtype = new JComboBox<String>();
+			cmbtype.setBounds(109, 75, 125, 23);
+			cmbtype.setModel(new DefaultComboBoxModel<String>(ft));
+			cmbtype.setSelectedIndex(fitrotipo);
+			cmbtype.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					
+					if(cmbtype.getSelectedIndex()==3) {
+						fe = new String[] { "Desactivado", "Mayor a Menor", "Menor a Mayor" };
+						
+						if (lenguaje == false) {
+							fe = new String[] { "Off", "High to low", "Low to High" };
+						}
+					}else {
+						fe = new String[] { "Desactivado", "A - Z", "Z - A" };
+						if (lenguaje == false) {
+							fe = new String[] { "Off", "A - Z", "Z - A" };
+						}
+					}
+					
+					cmbstatus.setModel(new DefaultComboBoxModel<String>(fe));
+					
+				}
+			});
+			content.add(cmbtype);
+			
+			if(cmbtype.getSelectedIndex()==3) {
+				fe = new String[] { "Desactivado", "Mayor a Menor", "Menor a Mayor" };
+				
+				if (lenguaje == false) {
+					fe = new String[] { "Off", "High to low", "Low to High" };
+				}
+			}
 
-			JLabel lblNombre = new JLabel(lenguaje ? "Nombre: " : "Name: ");
+			JLabel lblNombre = new JLabel(lenguaje ? "Typo: " : "Type: ");
 			// lblNombre.setBorder(new LineBorder(new Color(0, 0, 0)));
 			lblNombre.setBounds(40, 75, 59, 23);
 			content.add(lblNombre);
 
-			cmbnombre = new JComboBox<String>();
-			cmbnombre.setBounds(109, 75, 125, 23);
-			cmbnombre.setModel(new DefaultComboBoxModel<String>(fn));
-			cmbnombre.setSelectedIndex(fitronombre);
-			content.add(cmbnombre);
+			cmbstatus = new JComboBox<String>();
+			cmbstatus.setBounds(109, 121, 125, 23);
+			cmbstatus.setModel(new DefaultComboBoxModel<String>(fe));
+			cmbstatus.setSelectedIndex(fitroestado);
+			content.add(cmbstatus);
 
-			JLabel lblCodigo = new JLabel(lenguaje ? "Codigo: " : "Code: ");
-			// lblCodigo.setBorder(new LineBorder(new Color(0, 0, 0)));
-			lblCodigo.setBounds(40, 163, 59, 23);
-			content.add(lblCodigo);
-
-			cmbcode = new JComboBox<String>();
-			cmbcode.setBounds(109, 163, 125, 23);
-			cmbcode.setModel(new DefaultComboBoxModel<String>(fc));
-			cmbcode.setSelectedIndex(fitrocodigo);
-			content.add(cmbcode);
 
 			JButton apply = new JButton(lenguaje ? "Aplicar" : "Apply");
 			apply.setBounds(97, 212, 89, 23);
 			apply.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-
-					Actual.fitronombre = cmbnombre.getSelectedIndex();
-					Actual.fitrocodigo = cmbcode.getSelectedIndex();
-					Actual.fitroventa = cmbventas.getSelectedIndex();
+					
+					
+					Actual.fitrotipo= cmbtype.getSelectedIndex();
+					Actual.fitroestado= cmbstatus.getSelectedIndex();
 
 					AbstractListModel<Object> alm = new AbstractListModel<Object>() {
-						/**
-						 * 
-						 */
-						private static final long serialVersionUID = 1L;
-						String[] values = Listar(Actual.fitrocodigo, Actual.fitronombre, Actual.fitroventa);
+
+					private static final long serialVersionUID = 1L;
+						String[] values = Listar(Actual.fitrotipo, Actual.fitroestado);
 
 						public int getSize() {
 							return values.length;
@@ -614,7 +599,7 @@ public class Actual extends JFrame {
 					dispose();
 				}
 			});
-			content.add(apply);
+		content.add(apply);
 
 		}
 	}
