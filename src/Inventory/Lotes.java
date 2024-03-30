@@ -8,6 +8,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -59,8 +60,8 @@ public class Lotes extends JFrame {
 	private final ComponentBuilder cp;
 	private static DefaultTableModel modelo;
 	private String ld = "Light";
-	private ArrayList<String> dp = new ArrayList<String>(Arrays.asList(Actual.Listar(0, 0, 0)));
-	private String[] disponibles = Actual.Listar(0, 0, 0);
+	private ArrayList<String> dp = new ArrayList<String>(Arrays.asList(Actual.Listar(0, 0)));
+	private String[] disponibles = Actual.Listar(0, 0);
 	private JList<Object> list;
 	private JPanel panel;
 	private JLabel txtlote;
@@ -428,7 +429,8 @@ public class Lotes extends JFrame {
 
 				try {
 
-					float data = (Float.parseFloat(soldprice.getText()) - Float.parseFloat(price.getText()));
+					BigDecimal data = new BigDecimal(soldprice.getText());
+					data=data.subtract(new BigDecimal(price.getText()));
 					gan.setText(data + "");
 
 				} catch (Exception e) {
@@ -604,7 +606,7 @@ public class Lotes extends JFrame {
 
 	protected void ventas() {
 
-		double venta = 0;
+		BigDecimal venta = new BigDecimal("0");
 		int row = 0;
 
 		try {
@@ -613,13 +615,15 @@ public class Lotes extends JFrame {
 				row = i;
 
 				Archivo prod = invMecanics.muestra(modelo.getValueAt(i, 0).toString());
-
+				
 				if (prod == null) {
-					venta += sl.get(i).getPrice() * Float.parseFloat(modelo.getValueAt(i, 2).toString());
+					venta=venta.add(new BigDecimal((sl.get(i).getPrice() * Float.parseFloat(modelo.getValueAt(i, 2).toString()))+""));
 				}
 
 				if (prod != null) {
-					venta += prod.getPrice() * Float.parseFloat(modelo.getValueAt(i, 2).toString());
+					
+					venta=venta.add(new BigDecimal((prod.getPrice() * Float.parseFloat(modelo.getValueAt(i, 2).toString()))+""));
+					
 				}
 			}
 
