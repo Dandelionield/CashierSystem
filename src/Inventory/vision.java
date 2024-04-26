@@ -51,10 +51,7 @@ public class vision extends JFrame {
 	protected String[] content;
 	boolean now = true;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -65,7 +62,7 @@ public class vision extends JFrame {
 				}
 			}
 		});
-	}
+	}//*/
 
 	/**
 	 * Create the frame.

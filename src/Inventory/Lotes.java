@@ -77,10 +77,7 @@ public class Lotes extends JFrame {
 
 	static ArrayList<Selected> sl = new ArrayList<Selected>();
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -91,7 +88,7 @@ public class Lotes extends JFrame {
 				}
 			}
 		});
-	}
+	}//*/
 
 	/**
 	 * Create the frame.

@@ -60,10 +60,7 @@ public class history extends JFrame {
 	private JLabel title;
 	ArrayList<String> selected= new ArrayList<String>();
 	
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -74,7 +71,7 @@ public class history extends JFrame {
 				}
 			}
 		});
-	}
+	}//*/
 
 	/**
 	 * Create the frame.
