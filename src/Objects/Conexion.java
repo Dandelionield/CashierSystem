@@ -15,20 +15,12 @@ import java.nio.file.StandardCopyOption;
 
 public class Conexion{
 	
-    private String url;//= "jdbc:sqlite:./src/BaseData/PADataBase.s3db";//Conexion.class.getResource("/BaseData/PADataBase.s3db").toString();
+    private String url = "jdbc:sqlite:./src/BaseData/PADataBase.s3db";
 	private Connection cn;
 	
 	public Conexion(){
 		
 		try{
-			
-			InputStream inputStream = Conexion.class.getClassLoader().getResourceAsStream("BaseData/PADataBase.s3db");
-            File tempFile = File.createTempFile("PADataBase", ".s3db");
-            tempFile.deleteOnExit(); // Eliminar el archivo temporal cuando se cierra la aplicación
-
-            Files.copy(inputStream, tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-
-            url = "jdbc:sqlite:" + tempFile.getAbsolutePath();
 			
 			cn = DriverManager.getConnection(url);
 			
