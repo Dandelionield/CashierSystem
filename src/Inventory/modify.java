@@ -762,8 +762,20 @@ public class modify extends JFrame {
 		propiedades.add(sold);
 
 		mayor = invMecanics.MayorMenor();
-		String may = mayor[0].getCode() + " - " + mayor[0].getProduct();
-		String men = mayor[1].getCode() + " - " + mayor[1].getProduct();
+		
+		String may = "";
+		String men = "";
+		
+		if (mayor.length>0){
+		
+			try{
+				
+				may = mayor[0].getCode() + " - " + mayor[0].getProduct();
+				men = mayor[1].getCode() + " - " + mayor[1].getProduct();
+				
+			}catch(Exception e){}
+			
+		}
 
 		txtpopular = new JLabel("Mas popular: ");
 		txtpopular.setFont(new Font("Agency FB", Font.BOLD, 13));
